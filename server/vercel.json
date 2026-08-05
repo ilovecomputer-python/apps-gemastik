@@ -1,6 +1,6 @@
 {
   "framework": null,
-  "buildCommand": "prisma migrate deploy && tsx prisma/seed.ts",
+  "buildCommand": "node scripts/migrate-and-seed.mjs",
   "outputDirectory": "public",
   "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
 }

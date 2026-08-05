@@ -6,6 +6,10 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // Migrations need a session-mode connection; the transaction pooler
+  // (pgbouncer) cannot hold the advisory locks Prisma takes. Falls back to
+  // DATABASE_URL when DIRECT_URL is unset (e.g. plain local Postgres).
+  directUrl = env("DIRECT_URL")
 }
 
 enum Category {

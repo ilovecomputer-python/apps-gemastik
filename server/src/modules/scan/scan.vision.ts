@@ -70,6 +70,8 @@ const BASE_PROPS = {
 } as const;
 
 const MAX_ATTEMPTS = 3;
+/** Cap a single vision call so a stalled upstream can't hang the request. */
+const ATTEMPT_TIMEOUT_MS = 25_000;
 
 /**
  * Daily/per-minute quota exhaustion. Retrying in-request is pointless here —
@@ -80,11 +82,13 @@ function isQuotaExceeded(message: string): boolean {
   return /RESOURCE_EXHAUSTED|exceeded your current quota|quota/i.test(message);
 }
 
-/** Server-side overload: short backoff genuinely helps. */
+/** Server-side overload or a stalled call: short backoff genuinely helps. */
 function isTransient(message: string): boolean {
   return (
     !isQuotaExceeded(message) &&
-    /\b(500|502|503|504)\b|UNAVAILABLE|high demand|overloaded/i.test(message)
+    /\b(500|502|503|504)\b|UNAVAILABLE|high demand|overloaded|aborted|timeout|TimeoutError/i.test(
+      message,
+    )
   );
 }
 
@@ -119,6 +123,7 @@ async function callVision<T>(
           responseSchema,
           // Keep output stable: the same photo should not swing between scans.
           temperature: 0.2,
+          abortSignal: AbortSignal.timeout(ATTEMPT_TIMEOUT_MS),
         },
       });
       break;
