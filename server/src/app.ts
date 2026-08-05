@@ -31,7 +31,8 @@ export function createApp() {
       credentials: true,
     }),
   );
-  app.use(express.json({ limit: "1mb" }));
+  // Generous enough for a base64 selfie sent to the AI scan endpoint.
+  app.use(express.json({ limit: "10mb" }));
   app.use(morgan(env.NODE_ENV === "development" ? "dev" : "combined"));
 
   const apiLimiter = rateLimit({

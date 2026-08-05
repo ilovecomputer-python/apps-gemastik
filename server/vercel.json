@@ -1,5 +1,6 @@
 {
   "framework": null,
-  "buildCommand": "",
+  "buildCommand": "prisma migrate deploy && tsx prisma/seed.ts",
+  "outputDirectory": "public",
   "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
 }

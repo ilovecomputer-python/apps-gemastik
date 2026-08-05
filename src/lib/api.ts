@@ -8,6 +8,7 @@ import type {
   QuizQuestion,
   Review,
   ReviewerStats,
+  ScanAnalysis,
   ScanMode,
   ShippingOption,
   SkinProfile,
@@ -221,11 +222,16 @@ export const reviewsApi = {
   myStats: () => request<ReviewerStats>("/users/me/reviewer-stats", { auth: true }),
 };
 
-// --- Scan ---
+// --- AI Scan (Gemini vision) ---
 export const scanApi = {
-  analyze: (mode: ScanMode) =>
-    request<{ headline: string; detail: string; recommendations: Product[] }>(
-      `/scan/${mode}`,
-      { method: "POST", auth: true },
-    ),
+  status: () => request<{ enabled: boolean }>("/scan/status"),
+  /**
+   * @param image data URL from the camera/file picker, e.g. "data:image/jpeg;base64,..."
+   */
+  analyze: (mode: ScanMode, image: string) =>
+    request<ScanAnalysis>(`/scan/${mode}`, {
+      method: "POST",
+      body: { image },
+      auth: true,
+    }),
 };

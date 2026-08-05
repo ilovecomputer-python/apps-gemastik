@@ -26,6 +26,7 @@ export function toPublicProduct(product: ProductWithStore) {
     description: product.description,
     hashtags: product.hashtags,
     shades: product.shades,
+    concerns: product.concerns,
     color: product.color,
   };
 }

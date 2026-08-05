@@ -19,6 +19,12 @@ interface SeedProduct {
   description: string;
   hashtags: string[];
   shades?: string[];
+  /**
+   * Skin concerns this product targets. Values come from the labelled skin
+   * dataset taxonomy: acne, blackheads, dark_spots, pores, wrinkles.
+   * The AI scan maps its detected conditions onto these.
+   */
+  concerns?: string[];
   color: string;
 }
 
@@ -56,6 +62,7 @@ const seedProducts: SeedProduct[] = [
     description:
       "Serum niacinamide dengan konsentrasi tinggi untuk membantu meratakan tekstur kulit, mengecilkan tampilan pori, dan mengontrol minyak berlebih. Diformulasikan tanpa alkohol dan aman untuk pemakaian harian.",
     hashtags: ["#SerumLokal", "#NiacinamideZinc", "#Halal"],
+    concerns: ["acne", "pores", "dark_spots"],
     color: "#839958",
   },
   {
@@ -71,6 +78,7 @@ const seedProducts: SeedProduct[] = [
     description:
       "Pelembap ringan dengan kandungan pencerah yang membantu menyamarkan noda hitam dan menjaga kelembapan kulit sepanjang hari. Cocok untuk kulit remaja dan pemula skincare.",
     hashtags: ["#BrightStuff", "#SkincareRemaja"],
+    concerns: ["dark_spots"],
     color: "#F2C879",
   },
   {
@@ -87,6 +95,7 @@ const seedProducts: SeedProduct[] = [
       "Foundation matte tahan lama dengan coverage tinggi, dirancang untuk kulit berminyak. Formulanya ringan namun mampu bertahan hingga 12 jam tanpa terasa berat di wajah.",
     hashtags: ["#FullCoverage", "#MatteFoundation"],
     shades: ["N02", "W20", "C30", "N40"],
+    concerns: ["pores"],
     color: "#C79A6B",
   },
   {
@@ -136,6 +145,7 @@ const seedProducts: SeedProduct[] = [
     description:
       "Face oil dengan ekstrak bunga telang asli Indonesia yang membantu menutrisi dan menenangkan kulit. Diproduksi secara artisanal oleh UMKM lokal dalam batch kecil.",
     hashtags: ["#UMKMLokal", "#BungaTelang"],
+    concerns: ["wrinkles", "dark_spots"],
     color: "#6E7FB5",
   },
   {
@@ -152,7 +162,76 @@ const seedProducts: SeedProduct[] = [
     description:
       "Scrub tubuh dengan butiran kopi robusta asli petani lokal, membantu mengangkat sel kulit mati dan melembutkan kulit. Aroma kopi yang menenangkan cocok untuk ritual mandi santai.",
     hashtags: ["#UMKMLokal", "#KopiRobusta"],
+    concerns: ["blackheads", "pores"],
     color: "#7A5138",
+  },
+  {
+    slug: "avoskin-retinol-ampoule",
+    brand: "AVOSKIN",
+    name: "Miraculous Retinol Ampoule",
+    price: 149000,
+    originalPrice: 179000,
+    rating: 4.8,
+    soldCount: 2600,
+    category: "SKINCARE",
+    storeName: "Glow Lokal Store",
+    storeRating: 4.8,
+    description:
+      "Ampoule dengan retinol dan peptide yang membantu menyamarkan garis halus, meratakan tekstur, serta memperbarui sel kulit saat tidur. Gunakan malam hari dan selalu lanjutkan dengan sunscreen di pagi harinya.",
+    hashtags: ["#Retinol", "#AntiAging", "#SkincareMalam"],
+    concerns: ["wrinkles", "dark_spots", "pores"],
+    color: "#B08A5E",
+  },
+  {
+    slug: "somethinc-salicylic-toner",
+    brand: "SOMETHINC",
+    name: "BHA Salicylic Acid Toner",
+    price: 89000,
+    rating: 4.7,
+    soldCount: 3100,
+    category: "SKINCARE",
+    halal: true,
+    storeName: "Glow Lokal Store",
+    storeRating: 4.8,
+    description:
+      "Toner eksfoliasi dengan BHA salicylic acid yang membersihkan komedo di dalam pori, mengangkat sel kulit mati, dan membantu meredakan jerawat. Cocok untuk kulit berminyak dan mudah berkomedo.",
+    hashtags: ["#BHA", "#KomedoBersih", "#Halal"],
+    concerns: ["blackheads", "acne", "pores"],
+    color: "#7FA8A0",
+  },
+  {
+    slug: "npure-centella-moisturizer",
+    brand: "NPURE",
+    name: "Centella Asiatica Gel Moisturizer",
+    price: 69000,
+    rating: 4.8,
+    soldCount: 4200,
+    category: "SKINCARE",
+    halal: true,
+    storeName: "Beauty Hub ID",
+    storeRating: 4.8,
+    description:
+      "Pelembap gel ringan dengan ekstrak centella asiatica yang menenangkan kulit kemerahan dan bekas jerawat tanpa menyumbat pori. Formulanya cepat menyerap dan aman untuk kulit sensitif maupun berjerawat.",
+    hashtags: ["#Centella", "#KulitSensitif", "#Halal"],
+    concerns: ["acne"],
+    color: "#8FA96B",
+  },
+  {
+    slug: "skintific-alpha-arbutin",
+    brand: "SKINTIFIC",
+    name: "Alpha Arbutin Brightening Serum",
+    price: 119000,
+    originalPrice: 145000,
+    rating: 4.7,
+    soldCount: 1900,
+    category: "SKINCARE",
+    storeName: "Beauty Hub ID",
+    storeRating: 4.8,
+    description:
+      "Serum alpha arbutin yang bekerja menyamarkan noda hitam, bekas jerawat, dan hiperpigmentasi sekaligus meratakan warna kulit. Ringan, tidak lengket, dan bisa dipakai pagi maupun malam.",
+    hashtags: ["#AlphaArbutin", "#NodaHitam", "#GlassSkin"],
+    concerns: ["dark_spots"],
+    color: "#C9A2B8",
   },
 ];
 
@@ -312,10 +391,12 @@ async function main() {
         description: p.description,
         hashtags: p.hashtags,
         shades: p.shades ?? [],
+        concerns: p.concerns ?? [],
         color: p.color,
         storeId: storeIdByName.get(p.storeName)!,
       },
-      update: {},
+      // Keep concern tags in sync so re-seeding picks up taxonomy changes.
+      update: { concerns: p.concerns ?? [] },
     });
   }
 

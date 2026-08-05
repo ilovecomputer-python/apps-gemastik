@@ -1,77 +1,107 @@
-import { useEffect, useState } from "react";
-import type { Product, ScanMode } from "../types";
-import { scanApi } from "../lib/api";
+import type { ScanAnalysis } from "../types";
+import { formatPrice } from "../utils/format";
 import TopBar from "../components/TopBar";
-import ProductCard from "../components/ProductCard";
+import ProductImage from "../components/ProductImage";
+import Icon from "../components/Icon";
 
 interface ScanResultPageProps {
-  mode: ScanMode;
-  wishlist: Set<string>;
+  result: ScanAnalysis;
   onBack: () => void;
   onOpenProduct: (id: string) => void;
-  onToggleWishlist: (id: string) => void;
+}
+
+function severityClass(score: number): string {
+  if (score >= 65) return "high";
+  if (score >= 30) return "medium";
+  return "low";
 }
 
 export default function ScanResultPage({
-  mode,
-  wishlist,
+  result,
   onBack,
   onOpenProduct,
-  onToggleWishlist,
 }: ScanResultPageProps) {
-  const [result, setResult] = useState<{
-    headline: string;
-    detail: string;
-    recommendations: Product[];
-  } | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    scanApi
-      .analyze(mode)
-      .then((data) => {
-        if (!cancelled) setResult(data);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [mode]);
-
   return (
     <div className="screen">
       <TopBar title="Hasil Analisa" onBack={onBack} />
 
-      {loading || !result ? (
-        <p className="loading-text">Menganalisa…</p>
-      ) : (
-        <>
-          <div className="scan-result">
-            <span className="badge badge-ai">Hasil AI (contoh)</span>
-            <h2>{result.headline}</h2>
-            <p className="scan-result-detail">{result.detail}</p>
-          </div>
+      <div className="scan-result">
+        <span className="badge badge-ai">Dianalisa AI</span>
+        <h2>{result.headline}</h2>
+        <p className="scan-result-detail">{result.detail}</p>
 
-          <div className="section-heading-row">
-            <h3>Rekomendasi untukmu</h3>
-          </div>
-          <section className="grid">
-            {result.recommendations.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                wishlisted={wishlist.has(product.id)}
-                onOpen={onOpenProduct}
-                onToggleWishlist={onToggleWishlist}
-              />
-            ))}
-          </section>
-        </>
+        {result.mode === "shade" && result.depthLabel && (
+          <p className="scan-result-detail">
+            Kedalaman warna kulit: <strong>{result.depthLabel}</strong>
+          </p>
+        )}
+        {result.mode === "face-shape" && result.tips && (
+          <p className="scan-result-detail">{result.tips}</p>
+        )}
+      </div>
+
+      {result.warning && (
+        <div className="scan-warning">
+          <Icon name="sparkle" size={15} />
+          <span>{result.warning}</span>
+        </div>
       )}
+
+      {result.conditions && result.conditions.length > 0 && (
+        <div className="checkout-section">
+          <h3 className="section-title">Kondisi kulit terdeteksi</h3>
+          <div className="condition-list">
+            {result.conditions.map((condition) => (
+              <div key={condition.key} className="condition-row">
+                <div className="condition-head">
+                  <span className="condition-label">{condition.label}</span>
+                  <span
+                    className={`condition-score ${severityClass(condition.score)}`}
+                  >
+                    {condition.severity}
+                  </span>
+                </div>
+                <div className="condition-bar">
+                  <span
+                    className={`condition-fill ${severityClass(condition.score)}`}
+                    style={{ width: `${condition.score}%` }}
+                  />
+                </div>
+                {condition.noticeable && (
+                  <p className="condition-advice">{condition.advice}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="checkout-section">
+        <h3 className="section-title">Rekomendasi untukmu</h3>
+        <div className="trial-kit-items">
+          {result.recommendations.map(({ product, reason }) => (
+            <button
+              key={product.id}
+              className="quiz-kit-item"
+              onClick={() => onOpenProduct(product.id)}
+            >
+              <ProductImage
+                color={product.color}
+                label={product.name}
+                aspect="1 / 1"
+              />
+              <div className="cart-item-body">
+                <span className="brand">{product.brand}</span>
+                <div className="name">{product.name}</div>
+                <span className="meta">{reason}</span>
+                <span className="price">{formatPrice(product.price)}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <p className="scan-disclaimer">{result.disclaimer}</p>
     </div>
   );
 }

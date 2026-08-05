@@ -17,7 +17,8 @@ apps aura/
 - Landing page, login/register (JWT auth)
 - Beranda: pencarian, filter kategori, sort & filter (Halal/UMKM), grid produk
 - **Brand Baru**: section di Beranda yang menonjolkan brand UMKM yang baru gabung, biar dapat exposure & review pertama
-- AI Scan Studio: 3 mode analisis (shade/kulit/bentuk wajah) + **Beauty Quiz** — jawab beberapa pertanyaan, AI (rule-based scoring) menyusun trial kit personal termasuk produk dari brand baru
+- **AI Scan Studio**: unggah selfie / buka kamera → foto dianalisa **Gemini VLM**. Mode kulit memberi skor 0-100 untuk 5 kondisi sesuai taksonomi dataset berlabel (jerawat, komedo, noda hitam, pori besar, garis halus), lalu dipetakan ke produk di katalog. Plus mode shade (undertone) & bentuk wajah
+- **Beauty Quiz**: jawab beberapa pertanyaan, AI (rule-based scoring) menyusun trial kit personal termasuk produk dari brand baru
 - Detail produk, wishlist, keranjang
 - **Ulasan produk**: tulis ulasan (+10 poin), tandai ulasan orang lain "membantu" (+2 poin ke penulis), badge reviewer (Pemula/Aktif/Terpercaya) berdasar jumlah & kualitas ulasan
 - Checkout penuh: alamat, metode pengiriman, metode pembayaran, ringkasan, riwayat pesanan
@@ -57,6 +58,10 @@ npm run dev
 API berjalan di `http://localhost:4000`. Detail lengkap endpoint ada di [server/README.md](server/README.md).
 
 Login demo setelah seeding: **demo@aura.id** / **password123**
+
+Untuk mengaktifkan AI Scan, isi `GEMINI_API_KEY` di `server/.env` — ambil gratis
+di [Google AI Studio](https://aistudio.google.com/apikey). Tanpa key, aplikasi
+tetap jalan penuh kecuali endpoint `/api/scan/*`.
 
 ### 3. Frontend
 

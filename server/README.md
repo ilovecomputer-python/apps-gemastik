@@ -75,6 +75,39 @@ See `.env.example`. All are validated at startup (`src/lib/env.ts`) — the proc
 | `PORT` | no (default `4000`) | |
 | `NODE_ENV` | no (default `development`) | |
 | `CORS_ORIGIN` | no (default `http://localhost:5173`) | comma-separated list of allowed origins |
+| `GEMINI_API_KEY` | no | Enables the AI scan. Get one at [AI Studio](https://aistudio.google.com/apikey). Without it the server still runs; `/api/scan/*` returns 503 |
+| `GEMINI_MODEL` | no (default `gemini-3.5-flash`) | Any vision-capable Gemini model |
+
+## AI Scan (Gemini vision)
+
+`POST /api/scan/:mode` takes a face photo and returns an analysis plus product
+recommendations drawn from the local catalogue.
+
+**Skin condition taxonomy.** The model is constrained to score exactly the five
+classes of the labelled training dataset ("Skin v2", one folder per class):
+`acne`, `blackheads`, `dark_spots`, `pores`, `wrinkles`. Each is scored 0-100.
+Products carry a matching `concerns` array, so a detected condition maps
+directly onto catalogue items — a product's rank is the sum of the severities
+of the concerns it targets.
+
+Request body accepts a data URL or raw base64:
+
+```json
+{ "image": "data:image/jpeg;base64,/9j/4AAQ..." }
+```
+
+Guards:
+
+- `subject: "other"` (not human skin) → `400 NO_FACE_DETECTED`
+- shade / face-shape modes need a full face → `400 FULL_FACE_REQUIRED`
+- poor-quality photos still return a result, with a `warning` field
+- quota exhausted → `429 AI_QUOTA_EXCEEDED`; transient overload is retried
+  three times with backoff before `502 AI_REQUEST_FAILED`
+
+Photos are sent to Gemini and never written to disk or the database; only the
+derived scores are persisted (for logged-in users) in `scan_results`.
+
+`GET /api/scan/status` reports whether the key is configured.
 
 ## API overview
 
@@ -102,7 +135,8 @@ Authenticated routes require `Authorization: Bearer <token>`.
 - `POST /api/orders` (auth) `{ addressId, shippingOptionId, paymentMethodId }` → checkout from current cart, clears cart
 - `GET /api/orders` (auth) → order history
 - `GET /api/orders/:id` (auth) → order detail
-- `POST /api/scan/:mode` where mode is `shade`/`skin`/`face-shape` → mock AI result + recommended products (saved to history if authenticated)
+- `POST /api/scan/:mode` where mode is `shade`/`skin`/`face-shape` → Gemini vision analysis + recommended products (see [AI Scan](#ai-scan-gemini-vision))
+- `GET /api/scan/status` → whether the AI scan is configured
 - `GET /api/scan/history` (auth)
 - `GET /api/subscription/plans` → AURA+ plans available
 - `GET /api/subscription` (auth) → current subscription (or `null`), with trial kit history

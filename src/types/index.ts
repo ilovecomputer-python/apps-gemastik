@@ -17,7 +17,45 @@ export interface Product {
   description: string;
   hashtags: string[];
   shades: string[];
+  concerns: string[];
   color: string;
+}
+
+/** One of the five skin conditions from the labelled dataset taxonomy. */
+export interface ScanCondition {
+  key: string;
+  label: string;
+  score: number;
+  severity: string;
+  advice: string;
+  noticeable: boolean;
+}
+
+export interface ScanRecommendation {
+  product: Product;
+  reason: string;
+}
+
+export interface ScanAnalysis {
+  mode: ScanMode;
+  headline: string;
+  detail: string;
+  warning: string | null;
+  disclaimer: string;
+  recommendations: ScanRecommendation[];
+  // skin mode
+  skinType?: string;
+  skinTypeLabel?: string;
+  conditions?: ScanCondition[];
+  topConcerns?: string[];
+  // shade mode
+  undertone?: string;
+  depth?: string;
+  depthLabel?: string;
+  // face-shape mode
+  faceShape?: string;
+  faceShapeLabel?: string;
+  tips?: string;
 }
 
 export interface CartLine {
@@ -179,7 +217,7 @@ export type View =
   | { name: "home" }
   | { name: "scan" }
   | { name: "scan-flow"; mode: ScanMode }
-  | { name: "scan-result"; mode: ScanMode }
+  | { name: "scan-result"; mode: ScanMode; result: ScanAnalysis }
   | { name: "quiz" }
   | { name: "quiz-result"; profile: SkinProfile; kit: PersonalizedKit }
   | { name: "product"; id: string }

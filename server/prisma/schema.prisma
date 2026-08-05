@@ -92,6 +92,7 @@ model Product {
   description   String
   hashtags      String[]
   shades        String[]
+  concerns      String[]
   color         String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -222,11 +223,15 @@ model OrderItem {
 }
 
 model ScanResult {
-  id        String   @id @default(cuid())
-  mode      ScanMode
-  headline  String
-  detail    String
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  mode       ScanMode
+  headline   String
+  detail     String
+  skinType   String?
+  undertone  String?
+  faceShape  String?
+  conditions Json?
+  createdAt  DateTime @default(now())
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

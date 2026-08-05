@@ -193,19 +193,17 @@ function App() {
           <ScanFlowPage
             mode={view.mode}
             onBack={() => setView({ name: "scan" })}
-            onAnalyze={() =>
-              setView({ name: "scan-result", mode: view.mode })
+            onAnalyzed={(result) =>
+              setView({ name: "scan-result", mode: view.mode, result })
             }
           />
         );
       case "scan-result":
         return (
           <ScanResultPage
-            mode={view.mode}
-            wishlist={wishlistIds}
+            result={view.result}
             onBack={() => setView({ name: "scan" })}
             onOpenProduct={(id) => setView({ name: "product", id })}
-            onToggleWishlist={toggleWishlist}
           />
         );
       case "product":
