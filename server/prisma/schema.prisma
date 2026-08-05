@@ -1,0 +1,391 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Category {
+  SKINCARE
+  MAKEUP
+  BODYCARE
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  COMPLETED
+  CANCELLED
+}
+
+enum ScanMode {
+  SHADE
+  SKIN
+  FACE_SHAPE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+}
+
+enum TrialKitStatus {
+  PROCESSING
+  SHIPPED
+  DELIVERED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  points       Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  wishlists         Wishlist[]
+  cartItems         CartItem[]
+  addresses         Address[]
+  orders            Order[]
+  scanResults       ScanResult[]
+  subscriptions     Subscription[]
+  quizResults       QuizResult[]
+  personalizedKits  PersonalizedKit[]
+  reviews           Review[]
+  reviewHelpfulVotes ReviewHelpful[]
+
+  @@map("users")
+}
+
+model Store {
+  id         String    @id @default(cuid())
+  name       String
+  rating     Float     @default(0)
+  isNewBrand Boolean   @default(false)
+  tagline    String?
+  story      String?
+  launchDate DateTime?
+
+  products Product[]
+
+  @@map("stores")
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  brand         String
+  name          String
+  price         Int
+  originalPrice Int?
+  rating        Float    @default(0)
+  soldCount     Int      @default(0)
+  category      Category
+  halal         Boolean  @default(false)
+  umkm          Boolean  @default(false)
+  description   String
+  hashtags      String[]
+  shades        String[]
+  color         String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  storeId String
+  store   Store  @relation(fields: [storeId], references: [id])
+
+  wishlists            Wishlist[]
+  cartItems            CartItem[]
+  orderItems           OrderItem[]
+  personalizedKitItems PersonalizedKitItem[]
+  reviews              Review[]
+
+  @@index([category])
+  @@map("products")
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("wishlists")
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("cart_items")
+}
+
+model Address {
+  id           String  @id @default(cuid())
+  label        String
+  recipient    String
+  phone        String
+  fullAddress  String
+  isDefault    Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  orders Order[]
+
+  @@map("addresses")
+}
+
+model ShippingOption {
+  id    String @id @default(cuid())
+  name  String
+  eta   String
+  price Int
+
+  orders Order[]
+
+  @@map("shipping_options")
+}
+
+model PaymentMethod {
+  id        String @id @default(cuid())
+  name      String
+  groupName String
+
+  orders Order[]
+
+  @@map("payment_methods")
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  orderNumber String      @unique
+  subtotal    Int
+  shippingFee Int
+  total       Int
+  status      OrderStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  addressId String
+  address   Address @relation(fields: [addressId], references: [id])
+
+  shippingOptionId String
+  shippingOption   ShippingOption @relation(fields: [shippingOptionId], references: [id])
+
+  paymentMethodId String
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+
+  items OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String @id @default(cuid())
+  brand     String
+  name      String
+  unitPrice Int
+  quantity  Int
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@map("order_items")
+}
+
+model ScanResult {
+  id        String   @id @default(cuid())
+  mode      ScanMode
+  headline  String
+  detail    String
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("scan_results")
+}
+
+model SubscriptionPlan {
+  id             String @id @default(cuid())
+  name           String
+  price          Int
+  billingPeriod  String @default("MONTHLY")
+  benefits       String[]
+
+  subscriptions Subscription[]
+
+  @@map("subscription_plans")
+}
+
+model Subscription {
+  id               String             @id @default(cuid())
+  status           SubscriptionStatus @default(ACTIVE)
+  startedAt        DateTime           @default(now())
+  currentPeriodEnd DateTime
+  cancelledAt      DateTime?
+  createdAt        DateTime           @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  planId String
+  plan   SubscriptionPlan @relation(fields: [planId], references: [id])
+
+  trialKits TrialKit[]
+
+  @@map("subscriptions")
+}
+
+model TrialKit {
+  id          String         @id @default(cuid())
+  periodLabel String
+  status      TrialKitStatus @default(PROCESSING)
+  shippedAt   DateTime?
+  createdAt   DateTime       @default(now())
+
+  subscriptionId String
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  items TrialKitItem[]
+
+  @@map("trial_kits")
+}
+
+model TrialKitItem {
+  id     String @id @default(cuid())
+  brand  String
+  name   String
+  note   String
+  color  String
+
+  trialKitId String
+  trialKit   TrialKit @relation(fields: [trialKitId], references: [id], onDelete: Cascade)
+
+  @@map("trial_kit_items")
+}
+
+model QuizQuestion {
+  id          String  @id @default(cuid())
+  order       Int
+  question    String
+  multiSelect Boolean @default(false)
+
+  options QuizOption[]
+
+  @@map("quiz_questions")
+}
+
+model QuizOption {
+  id    String   @id @default(cuid())
+  label String
+  tags  String[]
+
+  questionId String
+  question   QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@map("quiz_options")
+}
+
+model QuizResult {
+  id         String   @id @default(cuid())
+  skinType   String
+  concerns   String[]
+  newBrandOk Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  kit PersonalizedKit?
+
+  @@map("quiz_results")
+}
+
+model PersonalizedKit {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  quizResultId String     @unique
+  quizResult   QuizResult @relation(fields: [quizResultId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  items PersonalizedKitItem[]
+
+  @@map("personalized_kits")
+}
+
+model PersonalizedKitItem {
+  id     String @id @default(cuid())
+  reason String
+
+  kitId String
+  kit   PersonalizedKit @relation(fields: [kitId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("personalized_kit_items")
+}
+
+model Review {
+  id           String   @id @default(cuid())
+  rating       Int
+  text         String
+  helpfulCount Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  helpfulVotes ReviewHelpful[]
+
+  @@unique([userId, productId])
+  @@map("reviews")
+}
+
+model ReviewHelpful {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  reviewId String
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, reviewId])
+  @@map("review_helpful_votes")
+}
