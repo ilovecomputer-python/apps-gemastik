@@ -131,6 +131,48 @@ export async function toggleHelpful(req: Request, res: Response) {
   });
 }
 
+/**
+ * Community review feed.
+ *
+ * Reviews previously only existed on their own product page, so a shopper
+ * browsing had no way to come across a good one. That left the points-and-
+ * badges system with no stage: writing a helpful review was invisible to
+ * everyone. Ranking by helpful votes closes that loop, and it is also how a
+ * brand-new brand gets its first reviews seen.
+ */
+export async function reviewFeed(req: Request, res: Response) {
+  const reviews = await prisma.review.findMany({
+    include: {
+      user: true,
+      product: { include: { store: true } },
+      helpfulVotes: true,
+    },
+    orderBy: [{ helpfulCount: "desc" }, { createdAt: "desc" }],
+    take: 20,
+  });
+
+  res.json({
+    reviews: reviews.map((r) => ({
+      id: r.id,
+      rating: r.rating,
+      text: r.text,
+      helpfulCount: r.helpfulCount,
+      createdAt: r.createdAt,
+      authorName: r.user.name,
+      isMine: r.userId === req.userId,
+      markedHelpfulByMe: req.userId
+        ? r.helpfulVotes.some((v) => v.userId === req.userId)
+        : false,
+      product: {
+        id: r.product.id,
+        brand: r.product.brand,
+        name: r.product.name,
+        color: r.product.color,
+      },
+    })),
+  });
+}
+
 export async function myReviewerStats(req: Request, res: Response) {
   const [reviewCount, helpfulAgg] = await Promise.all([
     prisma.review.count({ where: { userId: req.userId } }),

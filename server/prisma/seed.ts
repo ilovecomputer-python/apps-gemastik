@@ -405,6 +405,21 @@ async function main() {
     });
   }
 
+  // Stagger launch dates so the "new arrivals" channel has something to show.
+  // The four products with the lowest sales are the realistic new arrivals.
+  console.log("Seeding launch dates...");
+  const newest = [...seedProducts]
+    .sort((a, b) => a.soldCount - b.soldCount)
+    .slice(0, 4);
+  for (const [i, p] of newest.entries()) {
+    await prisma.product.update({
+      where: { slug: p.slug },
+      data: {
+        launchedAt: new Date(Date.now() - (i * 5 + 2) * 24 * 60 * 60 * 1000),
+      },
+    });
+  }
+
   console.log("Seeding shipping options & payment methods...");
   for (const s of shippingOptions) {
     const existing = await prisma.shippingOption.findFirst({

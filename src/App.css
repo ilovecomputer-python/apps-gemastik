@@ -469,6 +469,138 @@
   font-size: 11px;
 }
 
+/* New arrivals (home section) */
+.new-arrivals-row {
+  display: flex;
+  gap: 12px;
+  padding: 0 20px 4px;
+  overflow-x: auto;
+}
+
+.new-arrival-card {
+  flex: 0 0 132px;
+  border: none;
+  background: none;
+  padding: 0;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.new-arrival-image {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.new-arrival-badge {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(10, 51, 35, 0.85);
+  color: var(--paper);
+  font-size: 9.5px;
+  font-weight: 700;
+}
+
+.new-arrival-card .name {
+  min-height: 2.6em;
+  font-size: 12.5px;
+}
+
+/* Community reviews (home section) */
+.community-row {
+  display: flex;
+  gap: 12px;
+  padding: 0 20px 4px;
+  overflow-x: auto;
+}
+
+.community-card {
+  flex: 0 0 78%;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--card);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.community-product {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: none;
+  padding: 0;
+  text-align: left;
+}
+
+.community-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.community-product-name {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.community-text {
+  font-size: 13px;
+  line-height: 1.5;
+  /* Keep cards the same height regardless of review length */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.community-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.community-foot .helpful-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Brand on-boarding */
+.onboarding-intro {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.onboarding-intro h2 {
+  font-size: 20px;
+}
+
+.onboarding-intro p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.onboarding-form {
+  padding: 0 20px 24px;
+}
+
 /* Scan pages */
 .scan-intro {
   padding: 0 20px;

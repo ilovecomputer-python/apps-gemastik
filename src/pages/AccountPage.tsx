@@ -11,6 +11,7 @@ interface AccountPageProps {
   onLogin: () => void;
   onLogout: () => void;
   onOpenSubscription: () => void;
+  onOpenBrandOnboarding: () => void;
 }
 
 const MENU_ITEMS: { title: string; desc: string; icon: IconName }[] = [
@@ -30,6 +31,7 @@ export default function AccountPage({
   onLogin,
   onLogout,
   onOpenSubscription,
+  onOpenBrandOnboarding,
 }: AccountPageProps) {
   const [reviewerStats, setReviewerStats] = useState<ReviewerStats | null>(null);
 
@@ -138,13 +140,13 @@ export default function AccountPage({
       </div>
 
       <div className="menu-list">
-        <button className="menu-item">
+        <button className="menu-item" onClick={onOpenBrandOnboarding}>
           <span className="menu-icon">
             <Icon name="store" size={17} />
           </span>
           <div>
             <div className="menu-title">Untuk penjual</div>
-            <p className="menu-desc">Buka Seller Center</p>
+            <p className="menu-desc">Daftarkan brand UMKM-mu di AURA</p>
           </div>
           <Icon name="chevron-right" size={15} className="menu-chevron" />
         </button>

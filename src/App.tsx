@@ -19,6 +19,7 @@ import CheckoutPage from "./pages/CheckoutPage";
 import PaymentPage from "./pages/PaymentPage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import SubscriptionPage from "./pages/SubscriptionPage";
+import BrandOnboardingPage from "./pages/BrandOnboardingPage";
 import QuizPage from "./pages/QuizPage";
 import QuizResultPage from "./pages/QuizResultPage";
 
@@ -159,6 +160,8 @@ function App() {
             onOpenWishlist={() => requireAuth({ name: "wishlist" })}
             onOpenCart={() => requireAuth({ name: "cart" })}
             onOpenSettings={() => requireAuth({ name: "account" })}
+            onRequireLogin={() => setView({ name: "login" })}
+            isLoggedIn={Boolean(user)}
           />
         );
       case "scan":
@@ -234,10 +237,17 @@ function App() {
               setView({ name: "landing" });
             }}
             onOpenSubscription={() => requireAuth({ name: "subscription" })}
+            onOpenBrandOnboarding={() =>
+              setView({ name: "brand-onboarding" })
+            }
           />
         );
       case "subscription":
         return <SubscriptionPage onBack={() => setView({ name: "account" })} />;
+      case "brand-onboarding":
+        return (
+          <BrandOnboardingPage onBack={() => setView({ name: "account" })} />
+        );
       case "cart":
         return (
           <CartPage

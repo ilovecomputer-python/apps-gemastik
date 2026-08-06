@@ -5,10 +5,13 @@ import {
   createProductReview,
   listProductReviews,
   myReviewerStats,
+  reviewFeed,
   toggleHelpful,
 } from "./reviews.controller.js";
 
 export const reviewsRouter = Router();
+
+reviewsRouter.get("/reviews/feed", optionalAuth, asyncHandler(reviewFeed));
 
 reviewsRouter.get(
   "/products/:productId/reviews",

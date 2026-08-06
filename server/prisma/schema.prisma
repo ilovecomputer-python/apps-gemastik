@@ -76,6 +76,16 @@ model Store {
   story      String?
   launchDate DateTime?
 
+  /**
+   * Brands that applied through on-boarding start as PENDING and are invisible
+   * to shoppers until reviewed. Seeded brands are APPROVED.
+   */
+  status       String   @default("APPROVED")
+  contactName  String?
+  contactEmail String?
+  city         String?
+  createdAt    DateTime @default(now())
+
   products Product[]
 
   @@map("stores")
@@ -100,6 +110,12 @@ model Product {
   color         String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  /**
+   * When the product went on sale. Separate from createdAt because seeding or
+   * a data migration would otherwise make every product look brand new.
+   */
+  launchedAt DateTime?
 
   storeId String
   store   Store  @relation(fields: [storeId], references: [id])

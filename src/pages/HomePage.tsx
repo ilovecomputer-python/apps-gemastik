@@ -5,6 +5,8 @@ import ProductCard from "../components/ProductCard";
 import Icon from "../components/Icon";
 import FilterSheet, { type SortKey } from "../components/FilterSheet";
 import BrandSpotlightSection from "../components/BrandSpotlightSection";
+import NewArrivalsSection from "../components/NewArrivalsSection";
+import CommunityReviewsSection from "../components/CommunityReviewsSection";
 
 interface HomePageProps {
   wishlist: Set<string>;
@@ -15,6 +17,8 @@ interface HomePageProps {
   onOpenWishlist: () => void;
   onOpenCart: () => void;
   onOpenSettings: () => void;
+  onRequireLogin: () => void;
+  isLoggedIn: boolean;
 }
 
 const CATEGORIES: ("Semua" | Category)[] = [
@@ -33,6 +37,8 @@ export default function HomePage({
   onOpenWishlist,
   onOpenCart,
   onOpenSettings,
+  onRequireLogin,
+  isLoggedIn,
 }: HomePageProps) {
   const [category, setCategory] = useState<"Semua" | Category>("Semua");
   const [query, setQuery] = useState("");
@@ -170,7 +176,15 @@ export default function HomePage({
         </div>
       </section>
 
+      <NewArrivalsSection onOpenProduct={onOpenProduct} />
+
       <BrandSpotlightSection onOpenProduct={onOpenProduct} />
+
+      <CommunityReviewsSection
+        onOpenProduct={onOpenProduct}
+        onRequireLogin={onRequireLogin}
+        isLoggedIn={isLoggedIn}
+      />
 
       <div className="section-heading-row">
         <h3>Untukmu</h3>

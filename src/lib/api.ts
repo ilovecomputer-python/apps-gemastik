@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   Address,
   CartLine,
   Order,
@@ -7,6 +7,8 @@ import type {
   PersonalizedKit,
   Product,
   QuizQuestion,
+  FeedReview,
+  NewProduct,
   Review,
   ReviewerStats,
   ScanAnalysis,
@@ -108,6 +110,9 @@ export const productsApi = {
     return request<{ products: Product[] }>(`/products${qs ? `?${qs}` : ""}`);
   },
   get: (id: string) => request<{ product: Product }>(`/products/${id}`),
+  /** Newly launched products, newest first. */
+  newArrivals: () =>
+    request<{ products: NewProduct[] }>("/products/new"),
 };
 
 // --- Wishlist ---
@@ -221,10 +226,22 @@ export const quizApi = {
     }),
 };
 
-// --- Brand Spotlight ---
+// --- Brand Spotlight & on-boarding ---
 export const brandsApi = {
   spotlight: () =>
     request<{ brands: SpotlightBrand[] }>("/brands/spotlight"),
+  apply: (data: {
+    name: string;
+    tagline: string;
+    story: string;
+    city: string;
+    contactName: string;
+    contactEmail: string;
+  }) =>
+    request<{
+      application: { id: string; name: string; status: string };
+      message: string;
+    }>("/brands/apply", { method: "POST", body: data }),
 };
 
 // --- Reviews ---
@@ -244,6 +261,8 @@ export const reviewsApi = {
       { method: "POST", auth: true },
     ),
   myStats: () => request<ReviewerStats>("/users/me/reviewer-stats", { auth: true }),
+  /** Most-helpful reviews across every product. */
+  feed: () => request<{ reviews: FeedReview[] }>("/reviews/feed", { auth: true }),
 };
 
 // --- AI Scan (Gemini vision) ---

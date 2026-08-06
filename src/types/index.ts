@@ -212,6 +212,22 @@ export interface Review {
   markedHelpfulByMe: boolean;
 }
 
+/** A product in the new-arrivals channel. */
+export interface NewProduct extends Product {
+  launchedAt: string | null;
+  daysSinceLaunch: number | null;
+}
+
+/** A review in the community feed, carrying the product it belongs to. */
+export interface FeedReview extends Review {
+  product: {
+    id: string;
+    brand: string;
+    name: string;
+    color: string;
+  };
+}
+
 export interface ReviewerStats {
   reviewCount: number;
   totalHelpful: number;
@@ -235,6 +251,7 @@ export type View =
   | { name: "checkout" }
   | { name: "payment"; session: PaymentSession }
   | { name: "order-success"; orderId: string; total: number }
-  | { name: "subscription" };
+  | { name: "subscription" }
+  | { name: "brand-onboarding" };
 
 export type BottomTab = "home" | "scan" | "wishlist" | "account";
