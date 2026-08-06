@@ -30,14 +30,16 @@ export default function ScanResultPage({
         <h2>{result.headline}</h2>
         <p className="scan-result-detail">{result.detail}</p>
 
-        {result.mode === "shade" && result.depthLabel && (
-          <p className="scan-result-detail">
-            Kedalaman warna kulit: <strong>{result.depthLabel}</strong>
-          </p>
-        )}
-        {result.mode === "face-shape" && result.tips && (
-          <p className="scan-result-detail">{result.tips}</p>
-        )}
+      </div>
+
+      <div className="checkout-section">
+        <div className="undertone-card">
+          <div className="undertone-head">
+            <span className="option-row-title">{result.undertoneLabel}</span>
+            <span className="undertone-depth">Kulit {result.depthLabel}</span>
+          </div>
+          <p className="condition-advice">{result.undertoneAdvice}</p>
+        </div>
       </div>
 
       {result.warning && (

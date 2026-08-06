@@ -1,74 +1,41 @@
 import type { Request, Response } from "express";
-import type { Prisma, ScanMode } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 import { HttpError } from "../../lib/http-error.js";
 import { isGeminiConfigured } from "../../lib/gemini.js";
 import { toPublicProduct } from "../products/products.serializer.js";
 import { analyzeScanSchema } from "./scan.schema.js";
-import {
-  analyseFaceShape,
-  analyseShade,
-  analyseSkin,
-  type ImageInput,
-  type VisionSubject,
-} from "./scan.vision.js";
+import { analyseSkin, type ImageInput } from "./scan.vision.js";
 import {
   CONCERN_ADVICE,
   CONCERN_LABEL,
   DEPTH_LABEL,
-  FACE_SHAPE_LABEL,
   NOTICEABLE_THRESHOLD,
   SKIN_CONCERNS,
   SKIN_TYPE_LABEL,
+  UNDERTONE_ADVICE,
   UNDERTONE_LABEL,
   severityLabel,
   type SkinConcern,
 } from "./scan.taxonomy.js";
-
-const MODE_PARAM_TO_ENUM: Record<string, ScanMode> = {
-  shade: "SHADE",
-  skin: "SKIN",
-  "face-shape": "FACE_SHAPE",
-};
 
 const DISCLAIMER =
   "Hasil ini analisis kosmetik berbasis AI, bukan diagnosis medis. Untuk keluhan kulit yang menetap, konsultasikan ke dokter kulit.";
 
 const productInclude = { store: true } as const;
 
-/** Face-shape specific makeup tips, keyed by the taxonomy value. */
-const FACE_SHAPE_TIPS: Record<string, string> = {
-  oval: "Hampir semua teknik contour cocok. Tekankan blush di apple cheeks untuk kesan segar.",
-  round:
-    "Contour di sisi pipi dan pelipis untuk memberi dimensi, aplikasikan blush sedikit menyerong ke atas.",
-  square:
-    "Lembutkan sudut rahang dengan contour membulat, blush membulat di tulang pipi.",
-  heart:
-    "Seimbangkan dahi yang lebih lebar dengan contour tipis di garis rambut, blush di bagian tengah pipi.",
-  oblong:
-    "Contour di dahi atas dan dagu untuk memberi kesan lebih pendek, blush horizontal di tulang pipi.",
-  diamond:
-    "Lembutkan tulang pipi yang menonjol, tambahkan highlight di dahi dan dagu.",
-};
+/** "a", "a dan b", "a, b, dan c" */
+function joinIndonesian(items: string[]): string {
+  if (items.length <= 1) return items[0] ?? "";
+  if (items.length === 2) return `${items[0]} dan ${items[1]}`;
+  return `${items.slice(0, -1).join(", ")}, dan ${items[items.length - 1]}`;
+}
 
-/**
- * @param requireFullFace shade and face-shape analysis genuinely need the whole
- * face; skin analysis still works on a close-up of one area.
- */
-function ensureUsableSubject(
-  vision: { subject: VisionSubject; imageQuality: string },
-  requireFullFace: boolean,
-) {
+function ensureUsableSubject(vision: { subject: string }) {
   if (vision.subject === "other") {
     throw HttpError.badRequest(
       "Foto tidak menampilkan kulit wajah. Coba unggah selfie yang jelas.",
       "NO_FACE_DETECTED",
-    );
-  }
-  if (requireFullFace && vision.subject !== "face") {
-    throw HttpError.badRequest(
-      "Analisa ini butuh wajah utuh. Pastikan seluruh wajah terlihat dan menghadap kamera.",
-      "FULL_FACE_REQUIRED",
     );
   }
 }
@@ -84,18 +51,11 @@ function qualityWarning(imageQuality: string): string | null {
 }
 
 /**
- * Rank catalogue products against the detected concerns. A product scores the
- * sum of the severities of every concern it targets, so the most relevant
- * items for the user's dominant problem float to the top.
+ * Rank skincare against the detected concerns. A product scores the sum of the
+ * severities of every concern it targets, so the most relevant items for the
+ * user's dominant problem float to the top.
  */
-/** "a", "a dan b", "a, b, dan c" */
-function joinIndonesian(items: string[]): string {
-  if (items.length <= 1) return items[0] ?? "";
-  if (items.length === 2) return `${items[0]} dan ${items[1]}`;
-  return `${items.slice(0, -1).join(", ")}, dan ${items[items.length - 1]}`;
-}
-
-async function recommendForConcerns(
+async function recommendSkincare(
   scores: Record<SkinConcern, number>,
   detected: SkinConcern[],
 ) {
@@ -131,144 +91,93 @@ async function recommendForConcerns(
       };
     })
     .sort((a, b) => b.score - a.score)
-    .slice(0, 6)
+    .slice(0, 5)
     .map(({ product, reason }) => ({ product, reason }));
 }
 
-async function recommendMakeup(reason: string, where: Prisma.ProductWhereInput) {
+/** Makeup picks to go with the detected undertone. */
+async function recommendMakeup(undertoneLabel: string) {
   const products = await prisma.product.findMany({
-    where,
+    where: { category: "MAKEUP" },
     include: productInclude,
     orderBy: { rating: "desc" },
-    take: 4,
+    take: 3,
   });
   return products.map((product) => ({
     product: toPublicProduct(product),
-    reason,
+    reason: `Cocok dipadukan dengan ${undertoneLabel.toLowerCase()}.`,
   }));
 }
 
 export async function analyzeScan(req: Request, res: Response) {
-  const mode = MODE_PARAM_TO_ENUM[req.params.mode];
-  if (!mode) {
-    throw HttpError.badRequest("Mode scan tidak valid", "INVALID_SCAN_MODE");
-  }
-
   const { base64, mimeType } = analyzeScanSchema.parse(req.body);
   const image: ImageInput = { base64, mimeType };
 
-  let headline: string;
-  let detail: string;
-  let warning: string | null;
-  let payload: Record<string, unknown>;
-  let recommendations: { product: unknown; reason: string }[];
-  let persisted: {
-    skinType?: string;
-    undertone?: string;
-    faceShape?: string;
-    conditions?: Prisma.InputJsonValue;
-  } = {};
+  const vision = await analyseSkin(image);
+  ensureUsableSubject(vision);
 
-  if (mode === "SKIN") {
-    const vision = await analyseSkin(image);
-    ensureUsableSubject(vision, false);
-    warning = qualityWarning(vision.imageQuality);
+  const scores = SKIN_CONCERNS.reduce(
+    (acc, concern) => {
+      const raw = Number(vision.conditions?.[concern] ?? 0);
+      acc[concern] = Math.max(0, Math.min(100, Math.round(raw)));
+      return acc;
+    },
+    {} as Record<SkinConcern, number>,
+  );
 
-    const scores = SKIN_CONCERNS.reduce(
-      (acc, concern) => {
-        const raw = Number(vision.conditions?.[concern] ?? 0);
-        acc[concern] = Math.max(0, Math.min(100, Math.round(raw)));
-        return acc;
-      },
-      {} as Record<SkinConcern, number>,
-    );
+  const ranked = [...SKIN_CONCERNS].sort((a, b) => scores[b] - scores[a]);
+  const detected = ranked.filter((c) => scores[c] >= NOTICEABLE_THRESHOLD);
 
-    const ranked = [...SKIN_CONCERNS].sort((a, b) => scores[b] - scores[a]);
-    const detected = ranked.filter((c) => scores[c] >= NOTICEABLE_THRESHOLD);
+  const conditions = ranked.map((concern) => ({
+    key: concern,
+    label: CONCERN_LABEL[concern],
+    score: scores[concern],
+    severity: severityLabel(scores[concern]),
+    advice: CONCERN_ADVICE[concern],
+    noticeable: scores[concern] >= NOTICEABLE_THRESHOLD,
+  }));
 
-    const conditions = ranked.map((concern) => ({
-      key: concern,
-      label: CONCERN_LABEL[concern],
-      score: scores[concern],
-      severity: severityLabel(scores[concern]),
-      advice: CONCERN_ADVICE[concern],
-      noticeable: scores[concern] >= NOTICEABLE_THRESHOLD,
-    }));
+  const skinTypeLabel = SKIN_TYPE_LABEL[vision.skinType] ?? vision.skinType;
+  const undertoneLabel = UNDERTONE_LABEL[vision.undertone] ?? vision.undertone;
 
-    const skinTypeLabel = SKIN_TYPE_LABEL[vision.skinType] ?? vision.skinType;
-    headline =
-      detected.length > 0
-        ? `Kulit ${skinTypeLabel}, fokus ${CONCERN_LABEL[detected[0]].toLowerCase()}`
-        : `Kulit ${skinTypeLabel}, kondisi terjaga`;
-    detail = vision.notes;
+  const headline =
+    detected.length > 0
+      ? `Kulit ${skinTypeLabel}, fokus ${CONCERN_LABEL[detected[0]].toLowerCase()}`
+      : `Kulit ${skinTypeLabel}, kondisi terjaga`;
 
-    recommendations = await recommendForConcerns(scores, detected);
-    payload = {
-      skinType: vision.skinType,
-      skinTypeLabel,
-      conditions,
-      topConcerns: detected,
-    };
-    persisted = {
-      skinType: vision.skinType,
-      conditions: scores as unknown as Prisma.InputJsonValue,
-    };
-  } else if (mode === "SHADE") {
-    const vision = await analyseShade(image);
-    ensureUsableSubject(vision, true);
-    warning = qualityWarning(vision.imageQuality);
-
-    headline = UNDERTONE_LABEL[vision.undertone] ?? vision.undertone;
-    detail = vision.notes;
-    recommendations = await recommendMakeup(
-      "Cocok dipadukan dengan undertone kulitmu.",
-      { category: "MAKEUP" },
-    );
-    payload = {
-      undertone: vision.undertone,
-      depth: vision.depth,
-      depthLabel: DEPTH_LABEL[vision.depth] ?? vision.depth,
-    };
-    persisted = { undertone: vision.undertone };
-  } else {
-    const vision = await analyseFaceShape(image);
-    ensureUsableSubject(vision, true);
-    warning = qualityWarning(vision.imageQuality);
-
-    const shapeLabel = FACE_SHAPE_LABEL[vision.faceShape] ?? vision.faceShape;
-    headline = `Bentuk Wajah ${shapeLabel}`;
-    detail = vision.notes;
-    recommendations = await recommendMakeup(
-      "Pilihan makeup untuk mempertegas bentuk wajahmu.",
-      { category: "MAKEUP" },
-    );
-    payload = {
-      faceShape: vision.faceShape,
-      faceShapeLabel: shapeLabel,
-      tips: FACE_SHAPE_TIPS[vision.faceShape] ?? "",
-    };
-    persisted = { faceShape: vision.faceShape };
-  }
+  const [skincare, makeup] = await Promise.all([
+    recommendSkincare(scores, detected),
+    recommendMakeup(undertoneLabel),
+  ]);
 
   if (req.userId) {
     await prisma.scanResult.create({
       data: {
         userId: req.userId,
-        mode,
+        mode: "SKIN",
         headline,
-        detail,
-        ...persisted,
+        detail: vision.notes,
+        skinType: vision.skinType,
+        undertone: vision.undertone,
+        conditions: scores as unknown as Prisma.InputJsonValue,
       },
     });
   }
 
   res.json({
-    mode: req.params.mode,
     headline,
-    detail,
-    warning,
-    ...payload,
-    recommendations,
+    detail: vision.notes,
+    warning: qualityWarning(vision.imageQuality),
+    skinType: vision.skinType,
+    skinTypeLabel,
+    conditions,
+    topConcerns: detected,
+    undertone: vision.undertone,
+    undertoneLabel,
+    undertoneAdvice: UNDERTONE_ADVICE[vision.undertone] ?? "",
+    depth: vision.depth,
+    depthLabel: DEPTH_LABEL[vision.depth] ?? vision.depth,
+    recommendations: [...skincare, ...makeup],
     disclaimer: DISCLAIMER,
   });
 }

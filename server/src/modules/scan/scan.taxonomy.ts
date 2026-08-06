@@ -76,23 +76,10 @@ export const DEPTH_LABEL: Record<Depth, string> = {
   deep: "gelap",
 };
 
-export const FACE_SHAPES = [
-  "oval",
-  "round",
-  "square",
-  "heart",
-  "oblong",
-  "diamond",
-] as const;
-export type FaceShape = (typeof FACE_SHAPES)[number];
-
-export const FACE_SHAPE_LABEL: Record<FaceShape, string> = {
-  oval: "Oval",
-  round: "Bulat",
-  square: "Persegi",
-  heart: "Hati",
-  oblong: "Lonjong",
-  diamond: "Diamond",
+export const UNDERTONE_ADVICE: Record<Undertone, string> = {
+  warm: "Pilih foundation dan lipstik berdasar kuning, peach, atau coral.",
+  neutral: "Hampir semua shade cocok. Pilih yang paling mendekati warna leher.",
+  cool: "Pilih shade berdasar pink, mauve, atau berry untuk hasil paling menyatu.",
 };
 
 /** Severity at or above this is surfaced to the user as a real finding. */

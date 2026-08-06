@@ -36,26 +36,22 @@ export interface ScanRecommendation {
   reason: string;
 }
 
+/** Result of the single unified skin scan. */
 export interface ScanAnalysis {
-  mode: ScanMode;
   headline: string;
   detail: string;
   warning: string | null;
   disclaimer: string;
   recommendations: ScanRecommendation[];
-  // skin mode
-  skinType?: string;
-  skinTypeLabel?: string;
-  conditions?: ScanCondition[];
-  topConcerns?: string[];
-  // shade mode
-  undertone?: string;
-  depth?: string;
-  depthLabel?: string;
-  // face-shape mode
-  faceShape?: string;
-  faceShapeLabel?: string;
-  tips?: string;
+  skinType: string;
+  skinTypeLabel: string;
+  conditions: ScanCondition[];
+  topConcerns: string[];
+  undertone: string;
+  undertoneLabel: string;
+  undertoneAdvice: string;
+  depth: string;
+  depthLabel: string;
 }
 
 export interface CartLine {
@@ -216,8 +212,8 @@ export type View =
   | { name: "register" }
   | { name: "home" }
   | { name: "scan" }
-  | { name: "scan-flow"; mode: ScanMode }
-  | { name: "scan-result"; mode: ScanMode; result: ScanAnalysis }
+  | { name: "scan-flow" }
+  | { name: "scan-result"; result: ScanAnalysis }
   | { name: "quiz" }
   | { name: "quiz-result"; profile: SkinProfile; kit: PersonalizedKit }
   | { name: "product"; id: string }
@@ -227,7 +223,5 @@ export type View =
   | { name: "checkout" }
   | { name: "order-success"; orderId: string; total: number }
   | { name: "subscription" };
-
-export type ScanMode = "shade" | "skin" | "face-shape";
 
 export type BottomTab = "home" | "scan" | "wishlist" | "account";

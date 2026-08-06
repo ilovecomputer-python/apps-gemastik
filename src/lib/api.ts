@@ -9,7 +9,6 @@ import type {
   Review,
   ReviewerStats,
   ScanAnalysis,
-  ScanMode,
   ShippingOption,
   SkinProfile,
   SpotlightBrand,
@@ -228,8 +227,8 @@ export const scanApi = {
   /**
    * @param image data URL from the camera/file picker, e.g. "data:image/jpeg;base64,..."
    */
-  analyze: (mode: ScanMode, image: string) =>
-    request<ScanAnalysis>(`/scan/${mode}`, {
+  analyze: (image: string) =>
+    request<ScanAnalysis>("/scan", {
       method: "POST",
       body: { image },
       auth: true,

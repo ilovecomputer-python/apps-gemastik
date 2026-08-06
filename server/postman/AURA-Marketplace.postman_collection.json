@@ -1428,16 +1428,16 @@
           }
         },
         {
-          "name": "POST /api/scan/bad-mode -> 400",
+          "name": "POST /api/scan/skin (removed route) -> 404",
           "event": [
             {
               "listen": "test",
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
-                  "pm.test('rejects unknown scan mode', () => {",
-                  "    pm.expect(pm.response.json().error.code).to.be.oneOf(['INVALID_SCAN_MODE','VALIDATION_ERROR']);",
+                  "pm.test('404 Not Found', () => pm.response.to.have.status(404));",
+                  "pm.test('per-mode routes are gone; the scan is unified', () => {",
+                  "    pm.expect(pm.response.json().error.code).to.eql('NOT_FOUND');",
                   "});"
                 ]
               }
@@ -1451,14 +1451,14 @@
               "raw": "{\n  \"image\": \"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAACf/EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AKp//2Q==\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/scan/not-a-mode",
+              "raw": "{{baseUrl}}/api/scan/skin",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "scan", "not-a-mode"]
+              "path": ["api", "scan", "skin"]
             }
           }
         },
         {
-          "name": "POST /api/scan/skin with junk image -> 400",
+          "name": "POST /api/scan with junk image -> 400",
           "event": [
             {
               "listen": "test",
@@ -1481,9 +1481,9 @@
               "raw": "{\n  \"image\": \"this-is-definitely-not-base64-image-data-!!!!!!!!!!!!\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/scan/skin",
+              "raw": "{{baseUrl}}/api/scan",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "scan", "skin"]
+              "path": ["api", "scan"]
             }
           }
         },

@@ -3,7 +3,6 @@ import { GEMINI_MODEL, getGemini } from "../../lib/gemini.js";
 import { HttpError } from "../../lib/http-error.js";
 import {
   DEPTHS,
-  FACE_SHAPES,
   SKIN_CONCERNS,
   SKIN_TYPES,
   UNDERTONES,
@@ -21,24 +20,20 @@ export interface ImageInput {
  */
 export type VisionSubject = "face" | "skin_closeup" | "other";
 
-interface BaseVision {
+/**
+ * One vision call covers everything the app needs about a face: the five
+ * dataset conditions, the skin type, and the undertone used for shade
+ * matching. Splitting these into separate calls would triple both the latency
+ * and the API quota for no extra signal.
+ */
+export interface SkinVision {
   subject: VisionSubject;
   imageQuality: "good" | "fair" | "poor";
   notes: string;
-}
-
-export interface SkinVision extends BaseVision {
   skinType: (typeof SKIN_TYPES)[number];
-  conditions: Record<(typeof SKIN_CONCERNS)[number], number>;
-}
-
-export interface ShadeVision extends BaseVision {
   undertone: (typeof UNDERTONES)[number];
   depth: (typeof DEPTHS)[number];
-}
-
-export interface FaceShapeVision extends BaseVision {
-  faceShape: (typeof FACE_SHAPES)[number];
+  conditions: Record<(typeof SKIN_CONCERNS)[number], number>;
 }
 
 const SYSTEM_INSTRUCTION = [
@@ -52,22 +47,23 @@ const SYSTEM_INSTRUCTION = [
   "Tulis field notes dalam Bahasa Indonesia yang ramah, maksimal 2 kalimat.",
 ].join(" ");
 
-const BASE_PROPS = {
-  subject: {
-    type: Type.STRING,
-    enum: ["face", "skin_closeup", "other"],
-    description: "apa yang terlihat pada foto",
-  },
-  imageQuality: {
-    type: Type.STRING,
-    enum: ["good", "fair", "poor"],
-    description: "kualitas foto untuk analisis (pencahayaan, fokus, sudut)",
-  },
-  notes: {
-    type: Type.STRING,
-    description: "ringkasan singkat kondisi dalam Bahasa Indonesia",
-  },
-} as const;
+const PROMPT = [
+  "Analisis kondisi kulit wajah pada foto ini.",
+  "Beri skor 0-100 untuk setiap kondisi berikut berdasarkan seberapa terlihat pada wajah:",
+  "- acne: jerawat aktif, bruntusan, kemerahan meradang",
+  "- blackheads: komedo hitam/putih, terutama area hidung dan dagu",
+  "- dark_spots: noda hitam, bekas jerawat, hiperpigmentasi tidak merata",
+  "- pores: pori-pori yang terlihat membesar",
+  "- wrinkles: garis halus dan kerutan",
+  "Skor 0 berarti tidak terlihat sama sekali, 100 berarti sangat dominan.",
+  "Tentukan juga tipe kulit dari tampilan minyak dan teksturnya.",
+  "Terakhir tentukan undertone kulit untuk pencocokan shade makeup",
+  "(warm = dasar kuning/keemasan, cool = dasar pink/kebiruan, neutral = campuran)",
+  "beserta kedalaman warna kulitnya. Perhatikan area pipi dan rahang,",
+  "abaikan pengaruh makeup jika terlihat.",
+  "Jika foto hanya makro kulit tanpa wajah utuh, tetap perkirakan undertone",
+  "sebaik mungkin dari warna kulit yang terlihat.",
+].join("\n");
 
 const MAX_ATTEMPTS = 3;
 /** Cap a single vision call so a stalled upstream can't hang the request. */
@@ -94,12 +90,55 @@ function isTransient(message: string): boolean {
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function callVision<T>(
-  image: ImageInput,
-  prompt: string,
-  responseSchema: Record<string, unknown>,
-): Promise<T> {
+export async function analyseSkin(image: ImageInput): Promise<SkinVision> {
   const ai = getGemini();
+
+  const conditionProps = Object.fromEntries(
+    SKIN_CONCERNS.map((concern) => [
+      concern,
+      {
+        type: Type.INTEGER,
+        description: `tingkat keparahan ${concern} pada skala 0-100`,
+      },
+    ]),
+  );
+
+  const responseSchema = {
+    type: Type.OBJECT,
+    properties: {
+      subject: {
+        type: Type.STRING,
+        enum: ["face", "skin_closeup", "other"],
+        description: "apa yang terlihat pada foto",
+      },
+      imageQuality: {
+        type: Type.STRING,
+        enum: ["good", "fair", "poor"],
+        description: "kualitas foto untuk analisis (pencahayaan, fokus, sudut)",
+      },
+      notes: {
+        type: Type.STRING,
+        description: "ringkasan singkat kondisi dalam Bahasa Indonesia",
+      },
+      skinType: { type: Type.STRING, enum: [...SKIN_TYPES] },
+      undertone: { type: Type.STRING, enum: [...UNDERTONES] },
+      depth: { type: Type.STRING, enum: [...DEPTHS] },
+      conditions: {
+        type: Type.OBJECT,
+        properties: conditionProps,
+        required: [...SKIN_CONCERNS],
+      },
+    },
+    required: [
+      "subject",
+      "imageQuality",
+      "notes",
+      "skinType",
+      "undertone",
+      "depth",
+      "conditions",
+    ],
+  };
 
   let response;
   let lastError = "";
@@ -112,7 +151,7 @@ async function callVision<T>(
           {
             role: "user",
             parts: [
-              { text: prompt },
+              { text: PROMPT },
               { inlineData: { mimeType: image.mimeType, data: image.base64 } },
             ],
           },
@@ -166,7 +205,7 @@ async function callVision<T>(
   }
 
   try {
-    return JSON.parse(text) as T;
+    return JSON.parse(text) as SkinVision;
   } catch {
     console.error("Gemini returned non-JSON output:", text.slice(0, 300));
     throw new HttpError(
@@ -175,86 +214,4 @@ async function callVision<T>(
       "Hasil AI tidak terbaca. Coba lagi.",
     );
   }
-}
-
-export async function analyseSkin(image: ImageInput): Promise<SkinVision> {
-  const conditionProps = Object.fromEntries(
-    SKIN_CONCERNS.map((concern) => [
-      concern,
-      {
-        type: Type.INTEGER,
-        description: `tingkat keparahan ${concern} pada skala 0-100`,
-      },
-    ]),
-  );
-
-  return callVision<SkinVision>(
-    image,
-    [
-      "Analisis kondisi kulit wajah pada foto ini.",
-      "Beri skor 0-100 untuk setiap kondisi berikut berdasarkan seberapa terlihat pada wajah:",
-      "- acne: jerawat aktif, bruntusan, kemerahan meradang",
-      "- blackheads: komedo hitam/putih, terutama area hidung dan dagu",
-      "- dark_spots: noda hitam, bekas jerawat, hiperpigmentasi tidak merata",
-      "- pores: pori-pori yang terlihat membesar",
-      "- wrinkles: garis halus dan kerutan",
-      "Skor 0 berarti tidak terlihat sama sekali, 100 berarti sangat dominan.",
-      "Tentukan juga tipe kulit dari tampilan minyak dan teksturnya.",
-    ].join("\n"),
-    {
-      type: Type.OBJECT,
-      properties: {
-        ...BASE_PROPS,
-        skinType: { type: Type.STRING, enum: [...SKIN_TYPES] },
-        conditions: {
-          type: Type.OBJECT,
-          properties: conditionProps,
-          required: [...SKIN_CONCERNS],
-        },
-      },
-      required: ["subject", "imageQuality", "notes", "skinType", "conditions"],
-    },
-  );
-}
-
-export async function analyseShade(image: ImageInput): Promise<ShadeVision> {
-  return callVision<ShadeVision>(
-    image,
-    [
-      "Analisis warna kulit wajah pada foto ini untuk mencocokkan shade makeup.",
-      "Tentukan undertone (warm = dasar kuning/keemasan, cool = dasar pink/kebiruan,",
-      "neutral = campuran keduanya) dan kedalaman warna kulit.",
-      "Perhatikan area pipi dan rahang, abaikan pengaruh makeup jika terlihat.",
-    ].join("\n"),
-    {
-      type: Type.OBJECT,
-      properties: {
-        ...BASE_PROPS,
-        undertone: { type: Type.STRING, enum: [...UNDERTONES] },
-        depth: { type: Type.STRING, enum: [...DEPTHS] },
-      },
-      required: ["subject", "imageQuality", "notes", "undertone", "depth"],
-    },
-  );
-}
-
-export async function analyseFaceShape(
-  image: ImageInput,
-): Promise<FaceShapeVision> {
-  return callVision<FaceShapeVision>(
-    image,
-    [
-      "Analisis bentuk wajah pada foto ini.",
-      "Perhatikan perbandingan lebar dahi, tulang pipi, rahang, dan panjang wajah.",
-      "Pilih satu bentuk yang paling mendekati.",
-    ].join("\n"),
-    {
-      type: Type.OBJECT,
-      properties: {
-        ...BASE_PROPS,
-        faceShape: { type: Type.STRING, enum: [...FACE_SHAPES] },
-      },
-      required: ["subject", "imageQuality", "notes", "faceShape"],
-    },
-  );
 }

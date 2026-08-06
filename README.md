@@ -17,7 +17,7 @@ apps aura/
 - Landing page, login/register (JWT auth)
 - Beranda: pencarian, filter kategori, sort & filter (Halal/UMKM), grid produk
 - **Brand Baru**: section di Beranda yang menonjolkan brand UMKM yang baru gabung, biar dapat exposure & review pertama
-- **AI Scan Studio**: unggah selfie / buka kamera → foto dianalisa **Gemini VLM**. Mode kulit memberi skor 0-100 untuk 5 kondisi sesuai taksonomi dataset berlabel (jerawat, komedo, noda hitam, pori besar, garis halus), lalu dipetakan ke produk di katalog. Plus mode shade (undertone) & bentuk wajah
+- **AI Scan Studio**: unggah selfie / buka kamera → foto dianalisa **Gemini VLM** dalam satu kali panggilan. Memberi skor 0-100 untuk 5 kondisi sesuai taksonomi dataset berlabel (jerawat, komedo, noda hitam, pori besar, garis halus) plus tipe kulit dan undertone, lalu dipetakan ke produk di katalog — skincare sesuai keluhan, makeup sesuai undertone
 - **Beauty Quiz**: jawab beberapa pertanyaan, AI (rule-based scoring) menyusun trial kit personal termasuk produk dari brand baru
 - Detail produk, wishlist, keranjang
 - **Ulasan produk**: tulis ulasan (+10 poin), tandai ulasan orang lain "membantu" (+2 poin ke penulis), badge reviewer (Pemula/Aktif/Terpercaya) berdasar jumlah & kualitas ulasan

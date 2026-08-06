@@ -2,22 +2,22 @@ import Icon from "../components/Icon";
 
 interface LandingPageProps {
   onEnter: () => void;
-  onOpenSettings: () => void;
+  onOpenProfile: () => void;
 }
 
 export default function LandingPage({
   onEnter,
-  onOpenSettings,
+  onOpenProfile,
 }: LandingPageProps) {
   return (
     <div className="landing">
       <button
         className="landing-settings"
-        onClick={onOpenSettings}
-        aria-label="Pengaturan"
+        onClick={onOpenProfile}
+        aria-label="Profil"
       >
-        <Icon name="settings" size={18} />
-        Pengaturan
+        <Icon name="user" size={18} />
+        Profil
       </button>
 
       <div className="landing-body">

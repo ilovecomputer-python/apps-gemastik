@@ -22,9 +22,4 @@ export const scanRouter = Router();
 
 scanRouter.get("/status", asyncHandler(scanStatus));
 scanRouter.get("/history", requireAuth, asyncHandler(scanHistory));
-scanRouter.post(
-  "/:mode",
-  analyzeLimiter,
-  optionalAuth,
-  asyncHandler(analyzeScan),
-);
+scanRouter.post("/", analyzeLimiter, optionalAuth, asyncHandler(analyzeScan));

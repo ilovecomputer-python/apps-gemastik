@@ -1,33 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { ScanAnalysis, ScanMode } from "../types";
+import type { ScanAnalysis } from "../types";
 import { ApiError, scanApi } from "../lib/api";
 import { fileToDataUrl, videoFrameToDataUrl } from "../utils/image";
 import TopBar from "../components/TopBar";
 import Icon from "../components/Icon";
 
 interface ScanFlowPageProps {
-  mode: ScanMode;
   onBack: () => void;
   onAnalyzed: (result: ScanAnalysis) => void;
 }
 
-const MODE_COPY: Record<ScanMode, { title: string; hint: string }> = {
-  shade: {
-    title: "Analisis Shade",
-    hint: "Cahaya merata, tanpa makeup berat",
-  },
-  skin: {
-    title: "Analisis Kulit",
-    hint: "Wajah bersih, cahaya natural dari depan",
-  },
-  "face-shape": {
-    title: "Analisis Bentuk Wajah",
-    hint: "Rambut disisir ke belakang, ambil dari depan",
-  },
-};
+const PHOTO_HINT = "Wajah bersih, cahaya natural dari depan, tanpa makeup berat";
 
 export default function ScanFlowPage({
-  mode,
   onBack,
   onAnalyzed,
 }: ScanFlowPageProps) {
@@ -40,7 +25,6 @@ export default function ScanFlowPage({
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
-  const copy = MODE_COPY[mode];
 
   const stopCamera = useCallback(() => {
     streamRef.current?.getTracks().forEach((track) => track.stop());
@@ -101,7 +85,7 @@ export default function ScanFlowPage({
     setAnalyzing(true);
     setError(null);
     try {
-      onAnalyzed(await scanApi.analyze(mode, photo));
+      onAnalyzed(await scanApi.analyze(photo));
     } catch (err) {
       setError(
         err instanceof ApiError
@@ -115,7 +99,7 @@ export default function ScanFlowPage({
 
   return (
     <div className="screen">
-      <TopBar title={copy.title} onBack={onBack} />
+      <TopBar title="Analisis Kulit" onBack={onBack} />
       <div className="scan-flow">
         <div className={`scan-preview${photo || cameraOn ? " has-photo" : ""}`}>
           {cameraOn ? (
@@ -128,7 +112,7 @@ export default function ScanFlowPage({
               <span className="scan-preview-title">
                 Unggah selfie atau buka kamera
               </span>
-              <span className="scan-preview-hint">{copy.hint}</span>
+              <span className="scan-preview-hint">{PHOTO_HINT}</span>
             </>
           )}
         </div>

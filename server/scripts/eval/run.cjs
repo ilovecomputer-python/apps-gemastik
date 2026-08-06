@@ -43,6 +43,12 @@ const PROMPT = [
   "- wrinkles: garis halus dan kerutan",
   "Skor 0 berarti tidak terlihat sama sekali, 100 berarti sangat dominan.",
   "Tentukan juga tipe kulit dari tampilan minyak dan teksturnya.",
+  "Terakhir tentukan undertone kulit untuk pencocokan shade makeup",
+  "(warm = dasar kuning/keemasan, cool = dasar pink/kebiruan, neutral = campuran)",
+  "beserta kedalaman warna kulitnya. Perhatikan area pipi dan rahang,",
+  "abaikan pengaruh makeup jika terlihat.",
+  "Jika foto hanya makro kulit tanpa wajah utuh, tetap perkirakan undertone",
+  "sebaik mungkin dari warna kulit yang terlihat.",
 ].join("\n");
 
 const responseSchema = {
@@ -55,6 +61,11 @@ const responseSchema = {
       type: "STRING",
       enum: ["oily", "dry", "combination", "normal", "sensitive"],
     },
+    undertone: { type: "STRING", enum: ["warm", "neutral", "cool"] },
+    depth: {
+      type: "STRING",
+      enum: ["fair", "light", "medium", "tan", "deep"],
+    },
     conditions: {
       type: "OBJECT",
       properties: Object.fromEntries(
@@ -63,7 +74,15 @@ const responseSchema = {
       required: CONCERNS,
     },
   },
-  required: ["subject", "imageQuality", "notes", "skinType", "conditions"],
+  required: [
+    "subject",
+    "imageQuality",
+    "notes",
+    "skinType",
+    "undertone",
+    "depth",
+    "conditions",
+  ],
 };
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

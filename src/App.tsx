@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import "./App.css";
-import type { BottomTab, ScanMode, View } from "./types";
+import type { BottomTab, View } from "./types";
 import { useAuth } from "./context/AuthContext";
 import { cartApi, wishlistApi } from "./lib/api";
 import BottomNav from "./components/BottomNav";
@@ -129,7 +129,7 @@ function App() {
         return (
           <LandingPage
             onEnter={() => setView(user ? { name: "home" } : { name: "login" })}
-            onOpenSettings={() => requireAuth({ name: "account" })}
+            onOpenProfile={() => requireAuth({ name: "account" })}
           />
         );
       case "login":
@@ -164,9 +164,7 @@ function App() {
         return (
           <ScanPage
             onBack={() => setView({ name: "home" })}
-            onSelectMode={(mode: ScanMode) =>
-              setView({ name: "scan-flow", mode })
-            }
+            onStartScan={() => setView({ name: "scan-flow" })}
             onOpenQuiz={() => requireAuth({ name: "quiz" })}
           />
         );
@@ -191,11 +189,8 @@ function App() {
       case "scan-flow":
         return (
           <ScanFlowPage
-            mode={view.mode}
             onBack={() => setView({ name: "scan" })}
-            onAnalyzed={(result) =>
-              setView({ name: "scan-result", mode: view.mode, result })
-            }
+            onAnalyzed={(result) => setView({ name: "scan-result", result })}
           />
         );
       case "scan-result":

@@ -82,8 +82,13 @@ See `.env.example`. All are validated at startup (`src/lib/env.ts`) — the proc
 
 ## AI Scan (Gemini vision)
 
-`POST /api/scan/:mode` takes a face photo and returns an analysis plus product
+`POST /api/scan` takes a face photo and returns an analysis plus product
 recommendations drawn from the local catalogue.
+
+One vision call covers everything: the five dataset conditions, the skin type,
+and the undertone used for shade matching. Splitting these into separate
+per-mode calls would triple both the latency and the API quota for no extra
+signal.
 
 **Skin condition taxonomy.** The model is constrained to score exactly the five
 classes of the labelled training dataset ("Skin v2", one folder per class):
@@ -101,7 +106,7 @@ Request body accepts a data URL or raw base64:
 Guards:
 
 - `subject: "other"` (not human skin) → `400 NO_FACE_DETECTED`
-- shade / face-shape modes need a full face → `400 FULL_FACE_REQUIRED`
+- macro close-ups of one area are accepted, not just full faces
 - poor-quality photos still return a result, with a `warning` field
 - quota exhausted → `429 AI_QUOTA_EXCEEDED`; transient overload is retried
   three times with backoff before `502 AI_REQUEST_FAILED`
@@ -137,7 +142,7 @@ Authenticated routes require `Authorization: Bearer <token>`.
 - `POST /api/orders` (auth) `{ addressId, shippingOptionId, paymentMethodId }` → checkout from current cart, clears cart
 - `GET /api/orders` (auth) → order history
 - `GET /api/orders/:id` (auth) → order detail
-- `POST /api/scan/:mode` where mode is `shade`/`skin`/`face-shape` → Gemini vision analysis + recommended products (see [AI Scan](#ai-scan-gemini-vision))
+- `POST /api/scan` → Gemini vision analysis + recommended products (see [AI Scan](#ai-scan-gemini-vision))
 - `GET /api/scan/status` → whether the AI scan is configured
 - `GET /api/scan/history` (auth)
 - `GET /api/subscription/plans` → AURA+ plans available
