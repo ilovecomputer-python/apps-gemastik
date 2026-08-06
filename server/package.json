@@ -16,7 +16,10 @@
     "prisma:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
     "seed": "tsx prisma/seed.ts",
-    "lint": "tsc -p tsconfig.json --noEmit"
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test:api": "newman run postman/AURA-Marketplace.postman_collection.json -e postman/local.postman_environment.json",
+    "test:api:prod": "newman run postman/AURA-Marketplace.postman_collection.json -e postman/production.postman_environment.json",
+    "test:api:report": "newman run postman/AURA-Marketplace.postman_collection.json -e postman/local.postman_environment.json --reporters cli,htmlextra --reporter-htmlextra-export postman/report.html"
   },
   "dependencies": {
     "@google/genai": "^2.15.0",
@@ -38,6 +41,8 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.10.5",
+    "newman": "^6.2.2",
+    "newman-reporter-htmlextra": "^1.23.1",
     "prisma": "^6.2.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"

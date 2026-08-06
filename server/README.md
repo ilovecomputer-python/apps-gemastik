@@ -62,6 +62,8 @@ Backend for AURA Marketplace: Express + TypeScript + Prisma + PostgreSQL.
 | `npm run prisma:deploy` | Apply migrations in production (no prompts) |
 | `npm run prisma:studio` | Open Prisma Studio (DB GUI) |
 | `npm run seed` | Seed reference/demo data |
+| `npm run test:api` | Run the Postman/Newman suite against localhost |
+| `npm run test:api:prod` | Run it against the deployed API |
 
 ## Environment variables
 

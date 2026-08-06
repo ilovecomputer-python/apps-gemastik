@@ -5,3 +5,7 @@ dist
 
 .vercel
 .env*
+
+# Newman test outputs
+postman/report.html
+postman/newman-*.json
