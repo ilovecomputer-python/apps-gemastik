@@ -48,6 +48,18 @@
     {
       "key": "codMethodId",
       "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "applyBrandName",
+      "value": ""
+    },
+    {
+      "key": "brandApplicationId",
+      "value": ""
     }
   ],
   "event": [
@@ -718,6 +730,43 @@
                 "api",
                 "products",
                 "does-not-exist"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/products/new",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const p = pm.response.json().products;",
+                  "pm.test('returns launched products', () => pm.expect(p).to.be.an('array').that.is.not.empty);",
+                  "pm.test('newest first', () => {",
+                  "    for (let i = 1; i < p.length; i++)",
+                  "        pm.expect(new Date(p[i-1].launchedAt).getTime()).to.be.at.least(new Date(p[i].launchedAt).getTime());",
+                  "});",
+                  "pm.test('carries days since launch', () => {",
+                  "    p.forEach(x => pm.expect(x.daysSinceLaunch, x.name).to.be.a('number'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/products/new",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "new"
               ]
             }
           }
@@ -1671,6 +1720,52 @@
               ]
             }
           }
+        },
+        {
+          "name": "GET /api/reviews/feed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json().reviews;",
+                  "pm.test('returns an array', () => pm.expect(r).to.be.an('array'));",
+                  "pm.test('each review carries its product', () => {",
+                  "    r.forEach(x => {",
+                  "        pm.expect(x.product.id).to.be.a('string');",
+                  "        pm.expect(x.product.brand).to.be.a('string');",
+                  "    });",
+                  "});",
+                  "pm.test('most helpful first', () => {",
+                  "    for (let i = 1; i < r.length; i++)",
+                  "        pm.expect(r[i-1].helpfulCount).to.be.at.least(r[i].helpfulCount);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reviews/feed",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reviews",
+                "feed"
+              ]
+            }
+          }
         }
       ]
     },
@@ -1784,6 +1879,129 @@
                   "        pm.expect(b.tagline).to.be.a('string');",
                   "        pm.expect(b.products).to.be.an('array');",
                   "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/brands/spotlight",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "brands",
+                "spotlight"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/brands/apply",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('applyBrandName', `Newman Brand ${Date.now()}`);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "const b = pm.response.json();",
+                  "pm.test('lands as PENDING, not published', () => {",
+                  "    pm.expect(b.application.status).to.eql('PENDING');",
+                  "});",
+                  "pm.collectionVariables.set('brandApplicationId', b.application.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{applyBrandName}}\",\n  \"tagline\": \"Brand uji otomatis dari Newman untuk memeriksa alur pendaftaran\",\n  \"story\": \"Dibuat oleh test suite untuk memastikan pendaftaran brand masuk sebagai PENDING dan tidak langsung tampil ke pembeli sebelum ditinjau admin.\",\n  \"city\": \"Bandung\",\n  \"contactName\": \"Newman Tester\",\n  \"contactEmail\": \"newman@aura.id\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/brands/apply",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "brands",
+                "apply"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/brands/apply duplicate name -> 409",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('409 Conflict', () => pm.response.to.have.status(409));",
+                  "pm.test('BRAND_NAME_TAKEN', () => pm.expect(pm.response.json().error.code).to.eql('BRAND_NAME_TAKEN'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{applyBrandName}}\",\n  \"tagline\": \"Brand uji otomatis dari Newman untuk memeriksa alur pendaftaran\",\n  \"story\": \"Dibuat oleh test suite untuk memastikan pendaftaran brand masuk sebagai PENDING dan tidak langsung tampil ke pembeli sebelum ditinjau admin.\",\n  \"city\": \"Bandung\",\n  \"contactName\": \"Newman Tester\",\n  \"contactEmail\": \"newman@aura.id\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/brands/apply",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "brands",
+                "apply"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/brands/spotlight hides the pending brand",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('an unreviewed application is not visible to shoppers', () => {",
+                  "    const names = pm.response.json().brands.map(b => b.name);",
+                  "    pm.expect(names).to.not.include(pm.collectionVariables.get('applyBrandName'));",
                   "});"
                 ]
               }
@@ -2267,7 +2485,383 @@
       ]
     },
     {
-      "name": "12 Security headers",
+      "name": "12 Admin",
+      "item": [
+        {
+          "name": "POST /api/auth/login as admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('role is ADMIN', () => pm.expect(b.user.role).to.eql('ADMIN'));",
+                  "pm.collectionVariables.set('adminToken', b.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@aura.id\",\n  \"password\": \"admin12345\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/summary without token -> 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "summary"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/summary as a normal user -> 403",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('403 Forbidden', () => pm.response.to.have.status(403));",
+                  "pm.test('ADMIN_ONLY', () => pm.expect(pm.response.json().error.code).to.eql('ADMIN_ONLY'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "summary"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/summary as admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const s = pm.response.json();",
+                  "pm.test('returns queue counts', () => {",
+                  "    ['pending','approved','rejected'].forEach(k => pm.expect(s[k], k).to.be.a('number'));",
+                  "});",
+                  "pm.test('the new application is queued', () => pm.expect(s.pending).to.be.at.least(1));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "summary"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/brands?status=BOGUS -> 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('INVALID_STATUS', () => pm.expect(pm.response.json().error.code).to.eql('INVALID_STATUS'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/brands?status=BOGUS",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "brands"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "BOGUS"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/brands pending queue",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const apps = pm.response.json().applications;",
+                  "pm.test('contains the brand just submitted', () => {",
+                  "    pm.expect(apps.map(a => a.id)).to.include(pm.collectionVariables.get('brandApplicationId'));",
+                  "});",
+                  "pm.test('every row is PENDING', () => apps.forEach(a => pm.expect(a.status).to.eql('PENDING')));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/brands?status=PENDING",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "brands"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PENDING"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST approve as a normal user -> 403",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('403 Forbidden', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/brands/{{brandApplicationId}}/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "brands",
+                "{{brandApplicationId}}",
+                "approve"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/admin/brands/:id/approve",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('brand is approved', () => pm.expect(pm.response.json().brand.status).to.eql('APPROVED'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/brands/{{brandApplicationId}}/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "brands",
+                "{{brandApplicationId}}",
+                "approve"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST approve again -> 409",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('409 Conflict', () => pm.response.to.have.status(409));",
+                  "pm.test('ALREADY_REVIEWED', () => pm.expect(pm.response.json().error.code).to.eql('ALREADY_REVIEWED'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/brands/{{brandApplicationId}}/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "brands",
+                "{{brandApplicationId}}",
+                "approve"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/brands/spotlight now shows it",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('approval is what publishes a brand', () => {",
+                  "    const names = pm.response.json().brands.map(b => b.name);",
+                  "    pm.expect(names).to.include(pm.collectionVariables.get('applyBrandName'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/brands/spotlight",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "brands",
+                "spotlight"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "13 Security headers",
       "item": [
         {
           "name": "helmet + CORS headers present",
