@@ -93,10 +93,11 @@ export default function HomePage({
           <div className="header-actions">
             <button
               className="icon-btn"
-              onClick={onOpenSettings}
-              aria-label="Pengaturan"
+              onClick={onOpenCart}
+              aria-label="Keranjang"
             >
-              <Icon name="settings" size={17} />
+              <Icon name="cart" size={17} />
+              {cartCount > 0 && <span className="icon-badge">{cartCount}</span>}
             </button>
             <button
               className="icon-btn"
@@ -110,11 +111,10 @@ export default function HomePage({
             </button>
             <button
               className="icon-btn"
-              onClick={onOpenCart}
-              aria-label="Keranjang"
+              onClick={onOpenSettings}
+              aria-label="Profil"
             >
-              <Icon name="cart" size={17} />
-              {cartCount > 0 && <span className="icon-badge">{cartCount}</span>}
+              <Icon name="user" size={17} />
             </button>
           </div>
         </div>
