@@ -1,0 +1,2 @@
+{"file":"Skin v2/acne/pigmentation_0_9828_jpeg.rf.523620c2d00f71675d17bcd6560a1aa2.jpg","truth":"acne","subject":"face","imageQuality":"good","skinType":"combination","scores":{"acne":75,"blackheads":30,"dark_spots":60,"pores":35,"wrinkles":10}}
+{"file":"Skin v2/blackheades/levle0_394_jpg.rf.b1789fad75d06253f06dd49f2a8f91c8.jpg","truth":"blackheads","subject":"skin_closeup","imageQuality":"fair","skinType":"sensitive","scores":{"acne":65,"blackheads":15,"dark_spots":30,"pores":40,"wrinkles":10}}

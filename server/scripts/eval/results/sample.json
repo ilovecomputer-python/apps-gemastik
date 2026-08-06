@@ -1,0 +1,602 @@
+[
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_9828_jpeg.rf.523620c2d00f71675d17bcd6560a1aa2.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/levle0_394_jpg.rf.b1789fad75d06253f06dd49f2a8f91c8.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/5f292e0e-5fcb-4ddb-a380-c4834263bc4f_jpg.rf.c7edf717ad7244ac7d92b48caacd163f.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/83_PNG_jpg.rf.fc3e1edbcd8882999d44f153e515c172.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/02382_png_jpg.rf.89d2e55d258e56ee4b355218b0f279b4.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_9281_jpeg.rf.0477c93e359e5eff1018326b3da8fd29.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/blackhead1_jpg.rf.4725dcb3e87f1f7657e93cfb9b017c27.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma29_jpg.rf.e4e9b09e9320f3cc1d46bd6ed4d155d8.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/23_PNG_jpg.rf.07ffbc0908113f4299b9f1eb13b94e64.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/18907_png_jpg.rf.e3bb50c963d2910410f024180a7debd2.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_7827_jpeg.rf.66cce3f963c9d64dc2286858c4c5f1f2.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/360_F_1059834495_MhWikobO5tpwOCaAlEMSebgSoHeqKa3t_jpg.rf.024db4d339126e5cf76fb3f174137a2e.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma7_jpg.rf.74689f0502bb7210d0513ba2083a6889.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/24_PNG_jpg.rf.db8175be3812b08dc61925977184c9bd.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/692_jpg.rf.002fcf03fc1b08a9473ce80d941aac82.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/acne-closed-comedo-11-Copy_jpg.rf.37a7ddc623fed6c3ddf92790307a2049.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/r4_jpeg_jpg.rf.19c6df9de18b4f14f24edbc65949b5e0.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma45_jpg.rf.e98a426b979bb2d55c5052b07be5070f.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/-9_PNG_jpg.rf.9f8bc3c05a6a90fe5963b96936df3e73.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/99_jpg.rf.de67a5022387bb966c906bc9a7016287.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_858_jpeg.rf.37a612b4c89cf39682ea15d40f43f454.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/GettyImages-1196886522-7735f5a2e27349688d90d71008ef9275-1-_jpg.rf.967f6815630d77cfe6eb03a0f5a37560.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/37_jpg.rf.0bf40ac3a7c84e02453b73aaf6988a44.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/29_PNG_jpg.rf.c3050d1e6dc460c44c9418cfe7b42cb4.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/62_jpg.rf.769a3eeb6de5ec8e057f8fbb7a2e18a9.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_5062_jpeg.rf.38683e0c24573d1ed6bd52f7a2630bf8.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/blackhead_168_jpg.rf.206ebcb3fad324c21026af8ea901ddda.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma11_jpg.rf.476e0909b713d3bb321d6ae33fd21ea1.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/35_PNG_jpg.rf.2bf767c7b1e89cba7af02925bbc3a16c.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/66_jpg.rf.c3c779b624a966b7215ce3611899c575.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/Screenshot-2020-12-10-at-12-00-01-PM_png.rf.72719bf30dc386bc602090c9181bddab.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/5_jpg.rf.562dfc853582606b50d34cd75dd3174b.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma40_jpg.rf.28e1de42ab1813f10672858116b8eb86.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/54_PNG_jpg.rf.ced9de125a27663d18343b1d7816297a.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/6_jpg.rf.33280e96d781664cb7e6461d774bb5a5.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/M1080367-Acne_vulgaris_on_cheek_of_14_year-old_boy_jpg.rf.c7aac10cc4da89c6ac022f02e3fd627e.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/blackheads-on-nose-closeup-260nw-1123444064_webp_jpg.rf.35cafc865fe20f58fdc5c122e48ea2e4.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma52_png_jpg.rf.459d3fb2b9cf1017b85592dca8d6c67a.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/40_PNG_jpg.rf.e0eab58eab3c6896f79be51336b1896b.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/26_jpg.rf.7e196108161342c0fedf4c34e8526cb8.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_9821_jpeg.rf.35eb2e07982f02490f477d2ad2fac4c8.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/blackhead_108_jpg.rf.5e8ed8f55289661a1a8508f200c50e1d.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/88_jpg.rf.43c5ab37234fd9c628889d0ab8d10328.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/95_PNG_jpg.rf.50013acffa1e9bb3b340b3b981f7c0c7.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/12_jpg.rf.c7effe6d74d4eef3df0e3ac21193536e.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/evolv_gallery-zoskin-patient4-before-2_png.rf.01ef03194fbf31fdd6d842842f997f5a.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/1_113_jpg.rf.6a0f221d57f64cfdd18353095ab2a208.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma37_jpg.rf.6a54b840f99d05c9bb022c375945bd6f.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/72_PNG_jpg.rf.e64c12ad8d4f3fd88d45436330a95cfd.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/24229_png_jpg.rf.a8deca618fbc81a66393482061408bbd.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/acne-closed-comedo-12_jpg.rf.533a6479a72174f5b26aec9436f6d66f.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/34_jpg.rf.808e46c120933f2df7b30d20d0e9a7c6.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/d1b665ea-ea41-43c9-b1d5-afc7531603f0_jpg.rf.9d109340929b2005818395c0944ee05e.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/35_PNG_jpg.rf.a688e29d7bd43d58eaad3a93436dd152.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/69_jpg.rf.abb892cd6ea2751d574b395b7943dfe9.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/how-to-get-rid-of-acne_png.rf.2f338485984eeabf383c14c6b16b0f48.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/q_jpg.rf.fb4d6b895220588af7c8759e45a5c218.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma42_jpg.rf.023ef98ac00c23d5bac9a418e6320330.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/13_PNG_jpg.rf.f3a6422c5d362c9cef56e363e74baf61.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/23503_png_jpg.rf.0203c4c9bc0889194e6f829d88a36ed9.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_1080_jpeg.rf.cebc45766fcaee520b24c4a437a2497b.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/blackhead_140_jpg.rf.6c4434fec32396ae6bf74811716c40a7.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma8_jpg.rf.4d2f4ed92abe1fdae410ddbfe969730b.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/89_PNG_jpg.rf.d45bc970e044ee53659c7c4feba9f96c.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/05727_png_jpg.rf.f620855bc775924d8d326b5506c36073.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_2996_jpeg.rf.0914c2f1eed75a2a8282e3dc3426e51a.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/levle1_214_jpg.rf.ac6fe018e748f80e386daffd2e93b846.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma50_png_jpg.rf.3811dbae331537a52b5b1086c51ab035.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/-8_PNG_jpg.rf.ff5ae6c1e7235f505ea04d45bbc4fc01.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/98_jpg.rf.8377efd873be993a6bfc7b39cd9d1cfb.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/29_png.rf.d787a620bd928fa3eb56e1e44b694d1d.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/levle1_220_jpg.rf.4e283b87a6bc3d22ccf1fe5da04e0b68.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma44_jpg.rf.1cc48fc8797788f5e85e3e9c911b5a91.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/86_PNG_jpg.rf.554c9eb77ad9d7cb0c1f9ffc6e147a41.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/359_jpg.rf.d511b3380dff55132b69c039c2741409.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_9245_jpeg.rf.7881cdbe2a1914effc8348ba1d9de37b.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/blackhead_09_jpeg_jpg.rf.87350803279526e2164a8c7fbc7eebb3.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma53_png_jpg.rf.9990b5bb3ab9066cb2767488c222f82a.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/-5_PNG_jpg.rf.eb77bcbf7830b21bd295e19d1024b66a.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/250_jpg.rf.6ce30554246d1d56c6bcbdf90fdc2c0a.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/acne-cystic-118_jpg.rf.d5d72d8d1395b6e9b2823a3eaef5fe4a.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/rotated_acne-open-comedo-29_jpg.rf.f5db20fbd69ef51a1f60805fd16ec26f.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasm73_png_jpg.rf.d10dd830fb4abd02a95968661b9a5d46.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/38_PNG_jpg.rf.9a4a364ffef82e433c0a51bf0d8092b0.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/26183_png_jpg.rf.329c2b66e4b340bb7a23db5181300cee.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/acne-open-comedo-32_jpg.rf.4edd74cf65008ac68e7f338d3b41577f.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/rotated_4_jpg.rf.2d30e43a8af0163eaa86125ed61ab3bd.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma40_jpg.rf.9b7731b633131861d70be7d6ef94b07e.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/49_PNG_jpg.rf.299d7bbc49d51f9065e53a4c6b1cfeb2.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/12807_png_jpg.rf.a3eaa25a210d7e18d41ce259b79ac797.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_5057_jpeg.rf.68291d6d7fca524e1e7fc0416e52c8c5.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/blackhead_128_jpg.rf.538f55a4adabd72d119393742eea7f51.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma29_jpg.rf.2b40a62e4f8efaf366968e60fd142711.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/17_PNG_jpg.rf.630c4f6967de0f80dbeea86e7b791d5c.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/00142_png_jpg.rf.ebd5b71925f31d0d9691f29c8d3135e3.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_7325_jpeg.rf.67ffc4ae2b9c87228ebcc0445354e755.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/acne-open-comedo-19_jpg.rf.2cde6adcd25e6f2a64bae05bc26e2687.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma52_png_jpg.rf.fdd3150594c48d345e8bdf416b700039.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/63_PNG_jpg.rf.c833f5d9d5182b456c722b976c965bf9.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/AdobeStock_70737195-814x1024_jpeg_jpg.rf.2a2ac233ea9072c69a5956a44402be40.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_909_jpeg.rf.4363ce4ac25f32f8b2b37c563ce2be22.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/levle1_566_jpg.rf.a49a028ead804b544953995dbdfe0b55.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma65_png_jpg.rf.c551712435d09a318087962ff8452a3a.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/14_PNG_jpg.rf.37bda65a25a202dacef2ab7a4981a54c.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/343_jpg.rf.98591d6cbd7ad2eb88d5c965a4944c84.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/acne-excoriated-22_jpg.rf.11e8cac22f729d9ca54b95c80d4a1118.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/blackhead_07_jpeg_jpg.rf.a0140014f7606c82ffbcb03434cf53a4.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma15_jpg.rf.b5a405cb773610b9868850950675a0a2.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/49_PNG_jpg.rf.50c6a5c55795b49e8281717934d27102.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/394_jpg.rf.cce729ad4a906d4c3d869d5ba4fe3226.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/08PerioralDerm11_jpg.rf.004e21761c248827c5d826f8964994a5.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/blackhead_79_jpg.rf.ebaa9e288ef7b956dc627fd751048d30.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/a336ac0c-d1d0-4b5b-a152-9c5dd60ccd9c_jpg.rf.924b72fbb502f7f7a420d485f1940296.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/68_PNG_jpg.rf.113979320364f27367b60bfc536f3cd3.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/17250_png_jpg.rf.0933f0a769b5f38029f80954a49c1d94.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_8233_jpeg.rf.df21208b59be278f8dd6efc9b099d5a5.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/levle0_270_jpg.rf.5702371d0e579082da5e647a72e42096.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma35_jpg.rf.9a2382554a3a1da637a844a9866d10ac.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/95_PNG_jpg.rf.db8d0f2b21ffe875854b864b0ff27036.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/339_jpg.rf.97c26dfd4e62d418511b4eded4101e44.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/07Acne081101_jpg.rf.78aec21a5f31ef6ece56e374fe449f32.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/levle1_103_jpg.rf.5801207fecf03e9d2222c96d5d0f2dfd.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma2_jpg.rf.ce5918264704c4b2969a303b2cd501fd.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/39_PNG_jpg.rf.7ec261150fb5a76adda1b4fbaec9b706.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/45_jpg.rf.c18f479ee9f508ffde133bb33eab1c75.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_888_jpeg.rf.9c963c95ed650a942b08f5b584f7a91e.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/levle0_270_jpg.rf.63d3ec0a99efde8a5abaac72cc02c160.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma53_png_jpg.rf.2234b3b044f7838400843b6f132f3dba.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/26_PNG_jpg.rf.e69277be88317980c2d6356dca9dad86.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/66_jpg.rf.ce0593be22fa856880e80ccf7cfd8e45.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/R-2-_jpg.rf.091e78db55f4f514c4e3aabde54841d3.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/levle1_174_jpg.rf.a4a78b3af6830488dae77c5019f03eb7.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma18_jpg.rf.99a2f8fbb038531fe1eed0b9a64ed74c.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/201a5f6f17c216db7800faef8836e125_jpg.rf.1a9564e4c07504d6e216d3789803c7c1.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/2019_04_12_69887_1555057451-_large_jpg.rf.49a695123a028ccddf758b2bebb0c368.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_9273_jpeg.rf.4afc686ebddd28d07182ddd47534216e.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/levle1_180_jpg.rf.70580ab0db84c31220fe12f2db56c042.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma48_png_jpg.rf.36bddc32c899bd2ac4b32a03bb435fb5.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/-7_PNG_jpg.rf.c109f8ecf178890b775417b5c879e18b.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/11_jpeg_jpg.rf.f4d265e1be00f33eb93e99928d813078.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/pigmentation_0_7053_jpeg.rf.2dd050d52a091ad81b6d0e36a40f1915.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/blackhead_100_jpg.rf.2f99caa76d97afb6eea321cde019ef28.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma65_png_jpg.rf.dbd8f7822c1fe6b94f52b481a133007c.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/40_PNG_jpg.rf.6ab8866644d611f8e792abe172dfbad9.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/07717_png_jpg.rf.4300c1bc82194ab9c23d5795afdec14b.jpg"
+  },
+  {
+    "cls": "acne",
+    "file": "Skin v2/acne/4869DD4600000578-0-image-a-8_1516564527722_jpg.rf.eb4cc3c37daf0602a528a1a264d96a3c.jpg"
+  },
+  {
+    "cls": "blackheads",
+    "file": "Skin v2/blackheades/rotated_acne-open-comedo-66_jpg.rf.0a0ad934806c120750d17fe6cfb7a37b.jpg"
+  },
+  {
+    "cls": "dark_spots",
+    "file": "Skin v2/dark spots/melasma37_jpg.rf.874102f7ab719f727e69ea23eb0cfe5d.jpg"
+  },
+  {
+    "cls": "pores",
+    "file": "Skin v2/pores/57_PNG_jpg.rf.c2450392873ab7dcc51c238e5ab9dcb3.jpg"
+  },
+  {
+    "cls": "wrinkles",
+    "file": "Skin v2/wrinkles/EUCERIN-AS-Skin-types-00header_jpg.rf.71c899ca1b877f742c5813aded325aaa.jpg"
+  }
+]

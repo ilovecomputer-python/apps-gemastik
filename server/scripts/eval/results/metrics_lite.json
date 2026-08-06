@@ -1,0 +1,112 @@
+{
+  "samples": 16,
+  "confusionMatrix": {
+    "acne": {
+      "acne": 4,
+      "blackheads": 0,
+      "dark_spots": 0,
+      "pores": 0,
+      "wrinkles": 0
+    },
+    "blackheads": {
+      "acne": 1,
+      "blackheads": 1,
+      "dark_spots": 0,
+      "pores": 1,
+      "wrinkles": 0
+    },
+    "dark_spots": {
+      "acne": 0,
+      "blackheads": 0,
+      "dark_spots": 3,
+      "pores": 0,
+      "wrinkles": 0
+    },
+    "pores": {
+      "acne": 0,
+      "blackheads": 0,
+      "dark_spots": 0,
+      "pores": 3,
+      "wrinkles": 0
+    },
+    "wrinkles": {
+      "acne": 0,
+      "blackheads": 0,
+      "dark_spots": 0,
+      "pores": 0,
+      "wrinkles": 3
+    }
+  },
+  "perClass": {
+    "acne": {
+      "tp": 4,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.8,
+      "recall": 1,
+      "f1": 0.888888888888889,
+      "support": 4
+    },
+    "blackheads": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 2,
+      "precision": 1,
+      "recall": 0.3333333333333333,
+      "f1": 0.5,
+      "support": 3
+    },
+    "dark_spots": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 3
+    },
+    "pores": {
+      "tp": 3,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.75,
+      "recall": 1,
+      "f1": 0.8571428571428571,
+      "support": 3
+    },
+    "wrinkles": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "support": 3
+    }
+  },
+  "averagePrecision": {
+    "acne": 1,
+    "blackheads": 0.7916666666666666,
+    "dark_spots": 1,
+    "pores": 0.425,
+    "wrinkles": 0.9166666666666666
+  },
+  "overall": {
+    "accuracy": 0.875,
+    "top2Accuracy": 0.9375,
+    "macroPrecision": 0.9099999999999999,
+    "macroRecall": 0.8666666666666666,
+    "macroF1": 0.8492063492063492,
+    "mAP": 0.8266666666666665
+  },
+  "diagnostics": {
+    "subjects": {
+      "face": 8,
+      "skin_closeup": 8
+    },
+    "qualities": {
+      "good": 14,
+      "fair": 2
+    }
+  }
+}
