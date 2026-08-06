@@ -237,11 +237,23 @@ model ScanResult {
   mode       ScanMode
   headline   String
   detail     String
-  skinType   String?
-  undertone  String?
-  faceShape  String?
   conditions Json?
   createdAt  DateTime @default(now())
+
+  // Skin condition analysis
+  skinType String?
+
+  // Personal colour analysis: the rated axes plus the season derived from them.
+  // Axes are stored alongside the season so a result stays explainable even if
+  // the derivation table changes later.
+  undertone    String?
+  colourValue  String?
+  colourChroma String?
+  season       String?
+
+  // Skin shade analysis
+  fitzpatrick  Int?
+  matchedShade String?
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

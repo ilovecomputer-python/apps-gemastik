@@ -1,12 +1,15 @@
 import { Type } from "@google/genai";
 import { GEMINI_MODEL, getGemini } from "../../lib/gemini.js";
 import { HttpError } from "../../lib/http-error.js";
+import { SKIN_CONCERNS, SKIN_TYPES } from "./scan.taxonomy.js";
 import {
-  DEPTHS,
-  SKIN_CONCERNS,
-  SKIN_TYPES,
-  UNDERTONES,
-} from "./scan.taxonomy.js";
+  CHROMAS,
+  HUES,
+  VALUES,
+  type Chroma,
+  type Hue,
+  type Value,
+} from "./scan.colour.js";
 
 export interface ImageInput {
   mimeType: string;
@@ -31,9 +34,17 @@ export interface SkinVision {
   imageQuality: "good" | "fair" | "poor";
   notes: string;
   skinType: (typeof SKIN_TYPES)[number];
-  undertone: (typeof UNDERTONES)[number];
-  depth: (typeof DEPTHS)[number];
   conditions: Record<(typeof SKIN_CONCERNS)[number], number>;
+  /**
+   * Perceptual axes for personal colour. The model rates these; the season is
+   * derived from them in scan.colour.ts, so the classification stays
+   * auditable. `hue` doubles as the undertone used for shade matching.
+   */
+  hue: Hue;
+  value: Value;
+  chroma: Chroma;
+  /** Fitzpatrick phototype I-VI, carried as 1-6. */
+  fitzpatrick: number;
 }
 
 const SYSTEM_INSTRUCTION = [
@@ -57,12 +68,20 @@ const PROMPT = [
   "- wrinkles: garis halus dan kerutan",
   "Skor 0 berarti tidak terlihat sama sekali, 100 berarti sangat dominan.",
   "Tentukan juga tipe kulit dari tampilan minyak dan teksturnya.",
-  "Terakhir tentukan undertone kulit untuk pencocokan shade makeup",
-  "(warm = dasar kuning/keemasan, cool = dasar pink/kebiruan, neutral = campuran)",
-  "beserta kedalaman warna kulitnya. Perhatikan area pipi dan rahang,",
-  "abaikan pengaruh makeup jika terlihat.",
-  "Jika foto hanya makro kulit tanpa wajah utuh, tetap perkirakan undertone",
-  "sebaik mungkin dari warna kulit yang terlihat.",
+  "",
+  "Lalu nilai empat atribut warna berikut. JANGAN menyebut nama musim apa pun —",
+  "cukup nilai apa yang terlihat, penentuan musim dilakukan di sistem kami.",
+  "- hue: dasar warna kulit. warm = kuning/keemasan/peach,",
+  "  cool = pink/kebiruan/kemerahan, neutral = campuran keduanya.",
+  "  Perhatikan area pipi dan rahang, abaikan pengaruh makeup.",
+  "- value: terang-gelapnya keseluruhan penampilan (kulit, rambut, alis, mata).",
+  "  light = didominasi terang, deep = didominasi gelap.",
+  "- chroma: pekat atau lembutnya warna alami serta kontras antar fitur.",
+  "  soft = berdebu/menyatu/kontras rendah, clear = jernih/pekat/kontras tinggi.",
+  "- fitzpatrick: fototipe kulit skala 1-6 (1 sangat terang dan mudah terbakar",
+  "  matahari, 6 sangat gelap dan jarang terbakar).",
+  "Jika foto hanya makro kulit tanpa wajah utuh, nilai atribut warna sebaik",
+  "mungkin dari warna kulit yang terlihat.",
 ].join("\n");
 
 const MAX_ATTEMPTS = 3;
@@ -121,8 +140,13 @@ export async function analyseSkin(image: ImageInput): Promise<SkinVision> {
         description: "ringkasan singkat kondisi dalam Bahasa Indonesia",
       },
       skinType: { type: Type.STRING, enum: [...SKIN_TYPES] },
-      undertone: { type: Type.STRING, enum: [...UNDERTONES] },
-      depth: { type: Type.STRING, enum: [...DEPTHS] },
+      hue: { type: Type.STRING, enum: [...HUES] },
+      value: { type: Type.STRING, enum: [...VALUES] },
+      chroma: { type: Type.STRING, enum: [...CHROMAS] },
+      fitzpatrick: {
+        type: Type.INTEGER,
+        description: "fototipe kulit Fitzpatrick, 1 sampai 6",
+      },
       conditions: {
         type: Type.OBJECT,
         properties: conditionProps,
@@ -134,8 +158,10 @@ export async function analyseSkin(image: ImageInput): Promise<SkinVision> {
       "imageQuality",
       "notes",
       "skinType",
-      "undertone",
-      "depth",
+      "hue",
+      "value",
+      "chroma",
+      "fitzpatrick",
       "conditions",
     ],
   };

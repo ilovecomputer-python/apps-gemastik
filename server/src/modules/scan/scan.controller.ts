@@ -9,7 +9,6 @@ import { analyseSkin, type ImageInput } from "./scan.vision.js";
 import {
   CONCERN_ADVICE,
   CONCERN_LABEL,
-  DEPTH_LABEL,
   NOTICEABLE_THRESHOLD,
   SKIN_CONCERNS,
   SKIN_TYPE_LABEL,
@@ -18,6 +17,13 @@ import {
   severityLabel,
   type SkinConcern,
 } from "./scan.taxonomy.js";
+import {
+  FITZPATRICK_LABEL,
+  SEASON_PROFILE,
+  deriveSeason,
+  matchShadeCode,
+  type Hue,
+} from "./scan.colour.js";
 
 const DISCLAIMER =
   "Hasil ini analisis kosmetik berbasis AI, bukan diagnosis medis. Untuk keluhan kulit yang menetap, konsultasikan ke dokter kulit.";
@@ -95,18 +101,40 @@ async function recommendSkincare(
     .map(({ product, reason }) => ({ product, reason }));
 }
 
-/** Makeup picks to go with the detected undertone. */
-async function recommendMakeup(undertoneLabel: string) {
+/**
+ * Makeup picks for the colour analysis. Products whose shades follow the
+ * catalogue's N/W/C depth convention get a concrete shade recommendation;
+ * the rest are matched through the seasonal palette instead.
+ */
+async function recommendMakeup(
+  hue: Hue,
+  fitzpatrick: number,
+  seasonLabel: string,
+) {
   const products = await prisma.product.findMany({
     where: { category: "MAKEUP" },
     include: productInclude,
     orderBy: { rating: "desc" },
-    take: 3,
+    take: 4,
   });
-  return products.map((product) => ({
-    product: toPublicProduct(product),
-    reason: `Cocok dipadukan dengan ${undertoneLabel.toLowerCase()}.`,
-  }));
+
+  return products.map((product) => {
+    const match = matchShadeCode(product.shades, hue, fitzpatrick);
+    if (match) {
+      return {
+        product: toPublicProduct(product),
+        reason: match.exactUndertone
+          ? `Shade ${match.shade} paling mendekati undertone dan kedalaman kulitmu.`
+          : `Shade ${match.shade} paling mendekati kedalaman kulitmu (undertone persis belum tersedia).`,
+        matchedShade: match.shade,
+      };
+    }
+    return {
+      product: toPublicProduct(product),
+      reason: `Masuk ke palet ${seasonLabel}.`,
+      matchedShade: null,
+    };
+  });
 }
 
 export async function analyzeScan(req: Request, res: Response) {
@@ -138,7 +166,14 @@ export async function analyzeScan(req: Request, res: Response) {
   }));
 
   const skinTypeLabel = SKIN_TYPE_LABEL[vision.skinType] ?? vision.skinType;
-  const undertoneLabel = UNDERTONE_LABEL[vision.undertone] ?? vision.undertone;
+  const undertoneLabel = UNDERTONE_LABEL[vision.hue] ?? vision.hue;
+
+  // Personal colour: the model rated the axes, we derive the season.
+  const season = deriveSeason(vision.hue, vision.value, vision.chroma);
+  const seasonProfile = SEASON_PROFILE[season];
+
+  // Skin shade: Fitzpatrick depth, clamped to the scale's real range.
+  const fitzpatrick = Math.max(1, Math.min(6, Math.round(vision.fitzpatrick)));
 
   const headline =
     detected.length > 0
@@ -147,7 +182,7 @@ export async function analyzeScan(req: Request, res: Response) {
 
   const [skincare, makeup] = await Promise.all([
     recommendSkincare(scores, detected),
-    recommendMakeup(undertoneLabel),
+    recommendMakeup(vision.hue, fitzpatrick, seasonProfile.label),
   ]);
 
   if (req.userId) {
@@ -158,8 +193,16 @@ export async function analyzeScan(req: Request, res: Response) {
         headline,
         detail: vision.notes,
         skinType: vision.skinType,
-        undertone: vision.undertone,
+        undertone: vision.hue,
         conditions: scores as unknown as Prisma.InputJsonValue,
+        // Personal colour + shade, stored so later sessions can personalise
+        // without asking the user to scan again.
+        season,
+        colourValue: vision.value,
+        colourChroma: vision.chroma,
+        fitzpatrick,
+        matchedShade:
+          makeup.find((m) => m.matchedShade)?.matchedShade ?? null,
       },
     });
   }
@@ -168,15 +211,37 @@ export async function analyzeScan(req: Request, res: Response) {
     headline,
     detail: vision.notes,
     warning: qualityWarning(vision.imageQuality),
+
+    // 1. Skin condition — the dataset-backed analysis
     skinType: vision.skinType,
     skinTypeLabel,
     conditions,
     topConcerns: detected,
-    undertone: vision.undertone,
-    undertoneLabel,
-    undertoneAdvice: UNDERTONE_ADVICE[vision.undertone] ?? "",
-    depth: vision.depth,
-    depthLabel: DEPTH_LABEL[vision.depth] ?? vision.depth,
+
+    // 2. Personal colour — derived from the rated axes
+    personalColour: {
+      season,
+      label: seasonProfile.label,
+      summary: seasonProfile.summary,
+      palette: seasonProfile.palette,
+      avoid: seasonProfile.avoid,
+      axes: {
+        hue: vision.hue,
+        value: vision.value,
+        chroma: vision.chroma,
+      },
+    },
+
+    // 3. Skin shade — Fitzpatrick depth + undertone, matched to real codes
+    skinShade: {
+      fitzpatrick,
+      fitzpatrickLabel: FITZPATRICK_LABEL[fitzpatrick],
+      undertone: vision.hue,
+      undertoneLabel,
+      undertoneAdvice: UNDERTONE_ADVICE[vision.hue] ?? "",
+      matchedShade: makeup.find((m) => m.matchedShade)?.matchedShade ?? null,
+    },
+
     recommendations: [...skincare, ...makeup],
     disclaimer: DISCLAIMER,
   });
