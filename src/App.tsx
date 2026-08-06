@@ -20,6 +20,8 @@ import PaymentPage from "./pages/PaymentPage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import SubscriptionPage from "./pages/SubscriptionPage";
 import BrandOnboardingPage from "./pages/BrandOnboardingPage";
+import NewArrivalsPage from "./pages/NewArrivalsPage";
+import AdminPage from "./pages/AdminPage";
 import QuizPage from "./pages/QuizPage";
 import QuizResultPage from "./pages/QuizResultPage";
 
@@ -161,7 +163,17 @@ function App() {
             onOpenCart={() => requireAuth({ name: "cart" })}
             onOpenSettings={() => requireAuth({ name: "account" })}
             onRequireLogin={() => setView({ name: "login" })}
+            onOpenNewArrivals={() => setView({ name: "new-arrivals" })}
             isLoggedIn={Boolean(user)}
+          />
+        );
+      case "new-arrivals":
+        return (
+          <NewArrivalsPage
+            wishlist={wishlistIds}
+            onBack={() => setView({ name: "home" })}
+            onOpenProduct={(id) => setView({ name: "product", id })}
+            onToggleWishlist={toggleWishlist}
           />
         );
       case "scan":
@@ -240,8 +252,11 @@ function App() {
             onOpenBrandOnboarding={() =>
               setView({ name: "brand-onboarding" })
             }
+            onOpenAdmin={() => requireAuth({ name: "admin" })}
           />
         );
+      case "admin":
+        return <AdminPage onBack={() => setView({ name: "account" })} />;
       case "subscription":
         return <SubscriptionPage onBack={() => setView({ name: "account" })} />;
       case "brand-onboarding":

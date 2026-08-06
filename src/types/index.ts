@@ -64,7 +64,23 @@ export interface User {
   email: string;
   name: string;
   points: number;
+  /** "ADMIN" unlocks the review queue; the server re-checks on every call. */
+  role: string;
   createdAt: string;
+}
+
+/** A brand application in the admin review queue. */
+export interface BrandApplication {
+  id: string;
+  name: string;
+  tagline: string | null;
+  story: string | null;
+  city: string | null;
+  contactName: string | null;
+  contactEmail: string | null;
+  status: string;
+  createdAt: string;
+  productCount: number;
 }
 
 export interface Address {
@@ -252,6 +268,8 @@ export type View =
   | { name: "payment"; session: PaymentSession }
   | { name: "order-success"; orderId: string; total: number }
   | { name: "subscription" }
-  | { name: "brand-onboarding" };
+  | { name: "brand-onboarding" }
+  | { name: "new-arrivals" }
+  | { name: "admin" };
 
 export type BottomTab = "home" | "scan" | "wishlist" | "account";

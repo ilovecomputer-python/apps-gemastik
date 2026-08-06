@@ -585,6 +585,87 @@
   gap: 4px;
 }
 
+/* Admin review queue */
+.admin-intro {
+  padding: 0 20px;
+}
+
+.admin-intro p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.admin-tabs {
+  padding: 0 20px;
+}
+
+.admin-notice,
+.admin-error {
+  margin: 0 20px;
+}
+
+.admin-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(131, 153, 88, 0.15);
+  border: 1px solid var(--moss);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 20px 24px;
+}
+
+.admin-card {
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: var(--card);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.admin-tagline {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.badge-status-pending {
+  background: rgba(211, 150, 140, 0.25);
+  color: #a8635a;
+}
+
+.badge-status-approved {
+  background: rgba(131, 153, 88, 0.22);
+  color: var(--moss);
+}
+
+.badge-status-rejected {
+  background: rgba(179, 65, 58, 0.12);
+  color: #b3413a;
+}
+
+.badge-new {
+  background: var(--midnight);
+  color: var(--paper);
+}
+
 /* Brand on-boarding */
 .onboarding-intro {
   padding: 0 20px;

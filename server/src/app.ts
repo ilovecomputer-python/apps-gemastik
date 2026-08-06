@@ -18,6 +18,7 @@ import { quizRouter } from "./modules/quiz/quiz.routes.js";
 import { brandsRouter } from "./modules/brands/brands.routes.js";
 import { reviewsRouter } from "./modules/reviews/reviews.routes.js";
 import { paymentsRouter } from "./modules/payments/payments.routes.js";
+import { adminRouter } from "./modules/admin/admin.routes.js";
 import { stripeWebhook } from "./modules/payments/payments.controller.js";
 import { asyncHandler } from "./middleware/async-handler.js";
 
@@ -66,6 +67,7 @@ export function createApp() {
   app.use("/api/orders", ordersRouter);
   app.use("/api/scan", scanRouter);
   app.use("/api/subscription", subscriptionRouter);
+  app.use("/api/admin", adminRouter);
   app.use("/api/payments", paymentsRouter);
   app.use("/api/quiz", quizRouter);
   app.use("/api/brands", brandsRouter);

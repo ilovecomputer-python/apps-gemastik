@@ -6,6 +6,7 @@ import ProductImage from "./ProductImage";
 
 interface NewArrivalsSectionProps {
   onOpenProduct: (id: string) => void;
+  onSeeAll: () => void;
 }
 
 function launchLabel(days: number | null): string {
@@ -19,6 +20,7 @@ function launchLabel(days: number | null): string {
 
 export default function NewArrivalsSection({
   onOpenProduct,
+  onSeeAll,
 }: NewArrivalsSectionProps) {
   const [products, setProducts] = useState<NewProduct[]>([]);
 
@@ -35,7 +37,9 @@ export default function NewArrivalsSection({
     <>
       <div className="section-heading-row">
         <h3>Baru Rilis</h3>
-        <span className="link-btn muted-label">Belum banyak terjual</span>
+        <button className="link-btn" onClick={onSeeAll}>
+          Lihat semua →
+        </button>
       </div>
       <section className="new-arrivals-row">
         {products.map((product) => (

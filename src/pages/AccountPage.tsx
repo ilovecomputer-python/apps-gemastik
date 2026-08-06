@@ -12,6 +12,7 @@ interface AccountPageProps {
   onLogout: () => void;
   onOpenSubscription: () => void;
   onOpenBrandOnboarding: () => void;
+  onOpenAdmin: () => void;
 }
 
 const MENU_ITEMS: { title: string; desc: string; icon: IconName }[] = [
@@ -32,6 +33,7 @@ export default function AccountPage({
   onLogout,
   onOpenSubscription,
   onOpenBrandOnboarding,
+  onOpenAdmin,
 }: AccountPageProps) {
   const [reviewerStats, setReviewerStats] = useState<ReviewerStats | null>(null);
 
@@ -150,6 +152,20 @@ export default function AccountPage({
           </div>
           <Icon name="chevron-right" size={15} className="menu-chevron" />
         </button>
+
+        {/* Only admins see this; the server re-checks on every admin call. */}
+        {user.role === "ADMIN" && (
+          <button className="menu-item" onClick={onOpenAdmin}>
+            <span className="menu-icon">
+              <Icon name="shield" size={17} />
+            </span>
+            <div>
+              <div className="menu-title">Admin</div>
+              <p className="menu-desc">Tinjau pendaftaran brand UMKM</p>
+            </div>
+            <Icon name="chevron-right" size={15} className="menu-chevron" />
+          </button>
+        )}
       </div>
 
       <button className="menu-item logout-item" onClick={onLogout}>

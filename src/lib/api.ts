@@ -1,5 +1,6 @@
 ﻿import type {
   Address,
+  BrandApplication,
   CartLine,
   Order,
   PaymentMethod,
@@ -242,6 +243,30 @@ export const brandsApi = {
       application: { id: string; name: string; status: string };
       message: string;
     }>("/brands/apply", { method: "POST", body: data }),
+};
+
+// --- Admin ---
+export const adminApi = {
+  summary: () =>
+    request<{ pending: number; approved: number; rejected: number }>(
+      "/admin/summary",
+      { auth: true },
+    ),
+  brands: (status: "PENDING" | "APPROVED" | "REJECTED" = "PENDING") =>
+    request<{ applications: BrandApplication[] }>(
+      `/admin/brands?status=${status}`,
+      { auth: true },
+    ),
+  approve: (id: string) =>
+    request<{ message: string }>(`/admin/brands/${id}/approve`, {
+      method: "POST",
+      auth: true,
+    }),
+  reject: (id: string) =>
+    request<{ message: string }>(`/admin/brands/${id}/reject`, {
+      method: "POST",
+      auth: true,
+    }),
 };
 
 // --- Reviews ---

@@ -18,6 +18,7 @@ interface HomePageProps {
   onOpenCart: () => void;
   onOpenSettings: () => void;
   onRequireLogin: () => void;
+  onOpenNewArrivals: () => void;
   isLoggedIn: boolean;
 }
 
@@ -38,6 +39,7 @@ export default function HomePage({
   onOpenCart,
   onOpenSettings,
   onRequireLogin,
+  onOpenNewArrivals,
   isLoggedIn,
 }: HomePageProps) {
   const [category, setCategory] = useState<"Semua" | Category>("Semua");
@@ -176,7 +178,10 @@ export default function HomePage({
         </div>
       </section>
 
-      <NewArrivalsSection onOpenProduct={onOpenProduct} />
+      <NewArrivalsSection
+        onOpenProduct={onOpenProduct}
+        onSeeAll={onOpenNewArrivals}
+      />
 
       <BrandSpotlightSection onOpenProduct={onOpenProduct} />
 

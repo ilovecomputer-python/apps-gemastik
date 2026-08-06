@@ -463,6 +463,29 @@ async function main() {
     console.log("Quiz questions already exist, skipping");
   }
 
+  console.log("Seeding admin user...");
+  const adminEmail = "admin@aura.id";
+  const existingAdmin = await prisma.user.findUnique({
+    where: { email: adminEmail },
+  });
+  if (!existingAdmin) {
+    await prisma.user.create({
+      data: {
+        email: adminEmail,
+        name: "Admin AURA",
+        passwordHash: await bcrypt.hash("admin12345", 12),
+        role: "ADMIN",
+      },
+    });
+    console.log(`Admin created: ${adminEmail} / admin12345`);
+  } else if (existingAdmin.role !== "ADMIN") {
+    // Keep the role correct if the row predates the role column.
+    await prisma.user.update({
+      where: { id: existingAdmin.id },
+      data: { role: "ADMIN" },
+    });
+  }
+
   console.log("Seeding demo user...");
   const demoEmail = "demo@aura.id";
   const existingUser = await prisma.user.findUnique({
