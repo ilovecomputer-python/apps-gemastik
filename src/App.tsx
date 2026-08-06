@@ -16,6 +16,7 @@ import WishlistPage from "./pages/WishlistPage";
 import AccountPage from "./pages/AccountPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
+import PaymentPage from "./pages/PaymentPage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import SubscriptionPage from "./pages/SubscriptionPage";
 import QuizPage from "./pages/QuizPage";
@@ -254,6 +255,18 @@ function App() {
               refreshCart();
               setView({ name: "order-success", orderId, total });
             }}
+            onPayOnline={(session) => setView({ name: "payment", session })}
+          />
+        );
+      case "payment":
+        return (
+          <PaymentPage
+            session={view.session}
+            onBack={() => setView({ name: "checkout" })}
+            onPaid={(orderNumber, total) => {
+              refreshCart();
+              setView({ name: "order-success", orderId: orderNumber, total });
+            }}
           />
         );
       case "order-success":
@@ -273,7 +286,10 @@ function App() {
     return <div className="app-shell app-shell-landing">{renderView()}</div>;
   }
 
-  const hideNav = view.name === "checkout" || view.name === "order-success";
+  const hideNav =
+    view.name === "checkout" ||
+    view.name === "payment" ||
+    view.name === "order-success";
 
   return (
     <div className="app-shell">

@@ -22,6 +22,7 @@ apps aura/
 - Detail produk, wishlist, keranjang
 - **Ulasan produk**: tulis ulasan (+10 poin), tandai ulasan orang lain "membantu" (+2 poin ke penulis), badge reviewer (Pemula/Aktif/Terpercaya) berdasar jumlah & kualitas ulasan
 - Checkout penuh: alamat, metode pengiriman, metode pembayaran, ringkasan, riwayat pesanan
+- **Pembayaran Stripe**: pilih "Kartu / E-Wallet" di checkout → halaman pembayaran dengan Stripe Payment Element (kartu + wallet sesuai perangkat). Data kartu diproses langsung oleh Stripe, tidak pernah menyentuh server (PCI-compliant). Metode lain tetap settle offline
 - Akun: profil, poin, reviewer stats, dark mode
 - **AURA+**: langganan bulanan yang mengirim trial kit (sample produk dari brand partner) tiap bulan
 
@@ -62,6 +63,11 @@ Login demo setelah seeding: **demo@aura.id** / **password123**
 Untuk mengaktifkan AI Scan, isi `GEMINI_API_KEY` di `server/.env` — ambil gratis
 di [Google AI Studio](https://aistudio.google.com/apikey). Tanpa key, aplikasi
 tetap jalan penuh kecuali endpoint `/api/scan/*`.
+
+Untuk pembayaran, isi `STRIPE_SECRET_KEY` di `server/.env` dan
+`VITE_STRIPE_PUBLISHABLE_KEY` di `.env` root — ambil test key di
+[Stripe Dashboard](https://dashboard.stripe.com/test/apikeys). Kartu uji:
+`4242 4242 4242 4242`, expiry apa saja di masa depan, CVC apa saja.
 
 ### 3. Frontend
 

@@ -1,6 +1,19 @@
 import { useEffect, useState, type FormEvent } from "react";
-import type { Address, CartLine, PaymentMethod, ShippingOption } from "../types";
-import { addressesApi, cartApi, metaApi, ordersApi } from "../lib/api";
+import type {
+  Address,
+  CartLine,
+  PaymentMethod,
+  PaymentSession,
+  ShippingOption,
+} from "../types";
+import {
+  ApiError,
+  addressesApi,
+  cartApi,
+  metaApi,
+  ordersApi,
+  paymentsApi,
+} from "../lib/api";
 import { formatPrice } from "../utils/format";
 import TopBar from "../components/TopBar";
 import ProductImage from "../components/ProductImage";
@@ -9,9 +22,14 @@ import Icon from "../components/Icon";
 interface CheckoutPageProps {
   onBack: () => void;
   onPlaceOrder: (orderId: string, total: number) => void;
+  onPayOnline: (session: PaymentSession) => void;
 }
 
-export default function CheckoutPage({ onBack, onPlaceOrder }: CheckoutPageProps) {
+export default function CheckoutPage({
+  onBack,
+  onPlaceOrder,
+  onPayOnline,
+}: CheckoutPageProps) {
   const [items, setItems] = useState<CartLine[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [shippingOptions, setShippingOptions] = useState<ShippingOption[]>([]);
@@ -53,19 +71,39 @@ export default function CheckoutPage({ onBack, onPlaceOrder }: CheckoutPageProps
   const total = subtotal + (shipping?.price ?? 0);
   const address = addresses.find((a) => a.id === addressId) ?? null;
 
+  const selectedPayment =
+    paymentMethods.find((p) => p.id === paymentId) ?? null;
+  const paysOnline = selectedPayment?.provider === "stripe";
+
   const handlePlaceOrder = async () => {
     if (!addressId || !shippingId || !paymentId) return;
     setPlacing(true);
     setError(null);
     try {
+      if (paysOnline) {
+        // Gateway orders stay PENDING until Stripe confirms, so hand off to
+        // the payment page instead of creating a finished order here.
+        onPayOnline(
+          await paymentsApi.createIntent({
+            addressId,
+            shippingOptionId: shippingId,
+            paymentMethodId: paymentId,
+          }),
+        );
+        return;
+      }
       const { order } = await ordersApi.create({
         addressId,
         shippingOptionId: shippingId,
         paymentMethodId: paymentId,
       });
       onPlaceOrder(order.orderNumber, order.total);
-    } catch {
-      setError("Gagal membuat pesanan. Coba lagi.");
+    } catch (err) {
+      setError(
+        err instanceof ApiError
+          ? err.message
+          : "Gagal membuat pesanan. Coba lagi.",
+      );
       setPlacing(false);
     }
   };
@@ -224,7 +262,11 @@ export default function CheckoutPage({ onBack, onPlaceOrder }: CheckoutPageProps
           onClick={handlePlaceOrder}
           disabled={placing || items.length === 0 || !addressId}
         >
-          {placing ? "Memproses…" : "Buat Pesanan"}
+          {placing
+            ? "Memproses…"
+            : paysOnline
+              ? "Lanjut ke Pembayaran"
+              : "Buat Pesanan"}
         </button>
       </div>
 

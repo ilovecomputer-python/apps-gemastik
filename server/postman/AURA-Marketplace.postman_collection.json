@@ -5,15 +5,50 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "baseUrl", "value": "http://localhost:4000" },
-    { "key": "authToken", "value": "" },
-    { "key": "productId", "value": "" },
-    { "key": "addressId", "value": "" },
-    { "key": "shippingOptionId", "value": "" },
-    { "key": "paymentMethodId", "value": "" },
-    { "key": "orderId", "value": "" },
-    { "key": "planId", "value": "" },
-    { "key": "registerEmail", "value": "" }
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000"
+    },
+    {
+      "key": "authToken",
+      "value": ""
+    },
+    {
+      "key": "productId",
+      "value": ""
+    },
+    {
+      "key": "addressId",
+      "value": ""
+    },
+    {
+      "key": "shippingOptionId",
+      "value": ""
+    },
+    {
+      "key": "paymentMethodId",
+      "value": ""
+    },
+    {
+      "key": "orderId",
+      "value": ""
+    },
+    {
+      "key": "planId",
+      "value": ""
+    },
+    {
+      "key": "registerEmail",
+      "value": ""
+    },
+    {
+      "key": "stripeMethodId",
+      "value": ""
+    },
+    {
+      "key": "codMethodId",
+      "value": ""
+    }
   ],
   "event": [
     {
@@ -46,7 +81,15 @@
           "name": "GET /health",
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] }
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
           },
           "event": [
             {
@@ -69,8 +112,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/does-not-exist",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "does-not-exist"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "does-not-exist"
+              ]
             }
           },
           "event": [
@@ -129,15 +177,26 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Newman Tester\",\n  \"email\": \"{{registerEmail}}\",\n  \"password\": \"password123\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
             }
           }
         },
@@ -157,15 +216,26 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Newman Tester\",\n  \"email\": \"{{registerEmail}}\",\n  \"password\": \"password123\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
             }
           }
         },
@@ -185,15 +255,26 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"X\",\n  \"email\": \"not-an-email\",\n  \"password\": \"123\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
             }
           }
         },
@@ -216,15 +297,26 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"demo@aura.id\",\n  \"password\": \"password123\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             }
           }
         },
@@ -247,15 +339,26 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"demo@aura.id\",\n  \"password\": \"wrong-password\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             }
           }
         },
@@ -277,11 +380,22 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/auth/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "me"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
             }
           }
         },
@@ -303,8 +417,14 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/auth/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "me"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
             }
           }
         },
@@ -324,12 +444,21 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer not.a.real.token" }
+              {
+                "key": "Authorization",
+                "value": "Bearer not.a.real.token"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/auth/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "me"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
             }
           }
         }
@@ -366,8 +495,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/products",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "products"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
             }
           }
         },
@@ -393,9 +527,19 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/products?category=Skincare",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "products"],
-              "query": [{ "key": "category", "value": "Skincare" }]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "Skincare"
+                }
+              ]
             }
           }
         },
@@ -420,9 +564,19 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/products?sort=price-asc",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "products"],
-              "query": [{ "key": "sort", "value": "price-asc" }]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "price-asc"
+                }
+              ]
             }
           }
         },
@@ -449,9 +603,19 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/products?search=serum",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "products"],
-              "query": [{ "key": "search", "value": "serum" }]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "serum"
+                }
+              ]
             }
           }
         },
@@ -478,11 +642,22 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/products?halal=true&umkm=true",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "products"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
               "query": [
-                { "key": "halal", "value": "true" },
-                { "key": "umkm", "value": "true" }
+                {
+                  "key": "halal",
+                  "value": "true"
+                },
+                {
+                  "key": "umkm",
+                  "value": "true"
+                }
               ]
             }
           }
@@ -507,8 +682,14 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/products/{{productId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "products", "{{productId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{productId}}"
+              ]
             }
           }
         },
@@ -530,8 +711,14 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/products/does-not-exist",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "products", "does-not-exist"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "does-not-exist"
+              ]
             }
           }
         }
@@ -547,7 +734,9 @@
               "listen": "test",
               "script": {
                 "type": "text/javascript",
-                "exec": ["pm.test('401', () => pm.response.to.have.status(401));"]
+                "exec": [
+                  "pm.test('401', () => pm.response.to.have.status(401));"
+                ]
               }
             }
           ],
@@ -555,8 +744,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/wishlist",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "wishlist"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wishlist"
+              ]
             }
           }
         },
@@ -576,11 +770,22 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/wishlist/{{productId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "wishlist", "{{productId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wishlist",
+                "{{productId}}"
+              ]
             }
           }
         },
@@ -599,11 +804,22 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/wishlist/{{productId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "wishlist", "{{productId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wishlist",
+                "{{productId}}"
+              ]
             }
           }
         },
@@ -627,11 +843,21 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/wishlist",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "wishlist"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wishlist"
+              ]
             }
           }
         },
@@ -651,11 +877,22 @@
           ],
           "request": {
             "method": "DELETE",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/wishlist/{{productId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "wishlist", "{{productId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wishlist",
+                "{{productId}}"
+              ]
             }
           }
         },
@@ -678,11 +915,21 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/wishlist",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "wishlist"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wishlist"
+              ]
             }
           }
         }
@@ -698,17 +945,29 @@
               "listen": "test",
               "script": {
                 "type": "text/javascript",
-                "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"]
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
               }
             }
           ],
           "request": {
             "method": "DELETE",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/cart",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "cart"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cart"
+              ]
             }
           }
         },
@@ -728,11 +987,22 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/cart/{{productId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "cart", "{{productId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cart",
+                "{{productId}}"
+              ]
             }
           }
         },
@@ -752,11 +1022,22 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/cart/{{productId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "cart", "{{productId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cart",
+                "{{productId}}"
+              ]
             }
           }
         },
@@ -776,11 +1057,23 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/cart/{{productId}}/decrement",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "cart", "{{productId}}", "decrement"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cart",
+                "{{productId}}",
+                "decrement"
+              ]
             }
           }
         },
@@ -805,11 +1098,21 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/cart",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "cart"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cart"
+              ]
             }
           }
         },
@@ -828,11 +1131,22 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/cart/no-such-product",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "cart", "no-such-product"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cart",
+                "no-such-product"
+              ]
             }
           }
         }
@@ -860,11 +1174,21 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/addresses",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "addresses"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "addresses"
+              ]
             }
           }
         },
@@ -885,8 +1209,14 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -894,8 +1224,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/addresses",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "addresses"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "addresses"
+              ]
             }
           }
         },
@@ -922,8 +1257,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/shipping-options",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "shipping-options"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "shipping-options"
+              ]
             }
           }
         },
@@ -948,8 +1288,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/payment-methods",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "payment-methods"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payment-methods"
+              ]
             }
           }
         }
@@ -975,8 +1320,14 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -984,8 +1335,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/orders",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "orders"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
             }
           }
         },
@@ -1015,8 +1371,14 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -1024,8 +1386,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/orders",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "orders"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
             }
           }
         },
@@ -1045,11 +1412,21 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/cart",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "cart"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cart"
+              ]
             }
           }
         },
@@ -1070,8 +1447,14 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -1079,8 +1462,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/orders",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "orders"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
             }
           }
         },
@@ -1107,11 +1495,21 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/orders",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "orders"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
             }
           }
         },
@@ -1136,11 +1534,22 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/orders/{{orderId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "orders", "{{orderId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "{{orderId}}"
+              ]
             }
           }
         }
@@ -1167,8 +1576,15 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/products/{{productId}}/reviews",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "products", "{{productId}}", "reviews"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{productId}}",
+                "reviews"
+              ]
             }
           }
         },
@@ -1188,8 +1604,14 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -1197,8 +1619,15 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/products/{{productId}}/reviews",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "products", "{{productId}}", "reviews"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{productId}}",
+                "reviews"
+              ]
             }
           }
         },
@@ -1223,11 +1652,23 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/users/me/reviewer-stats",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "users", "me", "reviewer-stats"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "me",
+                "reviewer-stats"
+              ]
             }
           }
         }
@@ -1263,8 +1704,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/quiz",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "quiz"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "quiz"
+              ]
             }
           }
         },
@@ -1296,14 +1742,29 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
             ],
-            "body": { "mode": "raw", "raw": "{{quizAnswers}}" },
+            "body": {
+              "mode": "raw",
+              "raw": "{{quizAnswers}}"
+            },
             "url": {
               "raw": "{{baseUrl}}/api/quiz/submit",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "quiz", "submit"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "quiz",
+                "submit"
+              ]
             }
           }
         },
@@ -1332,8 +1793,14 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/brands/spotlight",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "brands", "spotlight"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "brands",
+                "spotlight"
+              ]
             }
           }
         }
@@ -1365,8 +1832,14 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/subscription/plans",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "subscription", "plans"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "subscription",
+                "plans"
+              ]
             }
           }
         },
@@ -1389,11 +1862,21 @@
           ],
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/subscription",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "subscription"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "subscription"
+              ]
             }
           }
         }
@@ -1422,8 +1905,14 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/scan/status",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "scan", "status"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "scan",
+                "status"
+              ]
             }
           }
         },
@@ -1445,15 +1934,26 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"image\": \"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAACf/EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AKp//2Q==\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/scan/skin",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "scan", "skin"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "scan",
+                "skin"
+              ]
             }
           }
         },
@@ -1475,15 +1975,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"image\": \"this-is-definitely-not-base64-image-data-!!!!!!!!!!!!\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/scan",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "scan"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "scan"
+              ]
             }
           }
         },
@@ -1494,7 +2004,9 @@
               "listen": "test",
               "script": {
                 "type": "text/javascript",
-                "exec": ["pm.test('401', () => pm.response.to.have.status(401));"]
+                "exec": [
+                  "pm.test('401', () => pm.response.to.have.status(401));"
+                ]
               }
             }
           ],
@@ -1502,15 +2014,260 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/scan/history",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "scan", "history"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "scan",
+                "history"
+              ]
             }
           }
         }
       ]
     },
     {
-      "name": "11 Security headers",
+      "name": "11 Payments (Stripe)",
+      "item": [
+        {
+          "name": "GET /api/payments/status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('reports whether the gateway is configured', () => {",
+                  "    pm.expect(pm.response.json().enabled).to.be.a('boolean');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/payment-methods exposes provider",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const methods = pm.response.json().paymentMethods;",
+                  "pm.test('every method declares how it settles', () => {",
+                  "    methods.forEach(m => pm.expect(m.provider, m.name).to.be.a('string'));",
+                  "});",
+                  "const stripeMethod = methods.find(m => m.provider === 'stripe');",
+                  "pm.test('a gateway-backed method exists', () => pm.expect(stripeMethod).to.exist);",
+                  "pm.collectionVariables.set('stripeMethodId', stripeMethod ? stripeMethod.id : '');",
+                  "const cod = methods.find(m => m.provider !== 'stripe');",
+                  "pm.collectionVariables.set('codMethodId', cod ? cod.id : '');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/payment-methods",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payment-methods"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/payments/intent without token -> 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"addressId\": \"{{addressId}}\",\n  \"shippingOptionId\": \"{{shippingOptionId}}\",\n  \"paymentMethodId\": \"{{stripeMethodId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/intent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "intent"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/payments/intent with a COD method -> 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('offline methods cannot open a gateway session', () => {",
+                  "    pm.expect(pm.response.json().error.code).to.eql('NOT_A_STRIPE_METHOD');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"addressId\": \"{{addressId}}\",\n  \"shippingOptionId\": \"{{shippingOptionId}}\",\n  \"paymentMethodId\": \"{{codMethodId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/intent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "intent"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/payments/intent with empty cart -> 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('EMPTY_CART', () => pm.expect(pm.response.json().error.code).to.eql('EMPTY_CART'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"addressId\": \"{{addressId}}\",\n  \"shippingOptionId\": \"{{shippingOptionId}}\",\n  \"paymentMethodId\": \"{{stripeMethodId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/intent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "intent"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/payments/webhook unsigned -> 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('unsigned webhooks are refused', () => {",
+                  "    pm.expect(pm.response.json().error.code).to.eql('INVALID_WEBHOOK');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"payment_intent.succeeded\",\n  \"data\": { \"object\": { \"id\": \"pi_forged\" } }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/webhook",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "webhook"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 Security headers",
       "item": [
         {
           "name": "helmet + CORS headers present",
@@ -1533,8 +2290,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/products",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "products"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
             }
           }
         }

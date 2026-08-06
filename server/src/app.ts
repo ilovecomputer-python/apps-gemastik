@@ -17,6 +17,9 @@ import { subscriptionRouter } from "./modules/subscription/subscription.routes.j
 import { quizRouter } from "./modules/quiz/quiz.routes.js";
 import { brandsRouter } from "./modules/brands/brands.routes.js";
 import { reviewsRouter } from "./modules/reviews/reviews.routes.js";
+import { paymentsRouter } from "./modules/payments/payments.routes.js";
+import { stripeWebhook } from "./modules/payments/payments.controller.js";
+import { asyncHandler } from "./middleware/async-handler.js";
 
 export function createApp() {
   const app = express();
@@ -31,6 +34,14 @@ export function createApp() {
       credentials: true,
     }),
   );
+  // Stripe signs the exact request bytes, so this route must see the raw body
+  // and therefore has to be mounted ahead of the JSON parser.
+  app.post(
+    "/api/payments/webhook",
+    express.raw({ type: "application/json" }),
+    asyncHandler(stripeWebhook),
+  );
+
   // Generous enough for a base64 selfie sent to the AI scan endpoint.
   app.use(express.json({ limit: "10mb" }));
   app.use(morgan(env.NODE_ENV === "development" ? "dev" : "combined"));
@@ -55,6 +66,7 @@ export function createApp() {
   app.use("/api/orders", ordersRouter);
   app.use("/api/scan", scanRouter);
   app.use("/api/subscription", subscriptionRouter);
+  app.use("/api/payments", paymentsRouter);
   app.use("/api/quiz", quizRouter);
   app.use("/api/brands", brandsRouter);
   app.use("/api", reviewsRouter);

@@ -87,6 +87,18 @@ export interface PaymentMethod {
   id: string;
   name: string;
   group: string;
+  /** "stripe" goes through the gateway; anything else settles offline. */
+  provider: string;
+}
+
+/** Everything the payment page needs to mount Stripe Elements. */
+export interface PaymentSession {
+  clientSecret: string;
+  orderId: string;
+  orderNumber: string;
+  amount: number;
+  currency: string;
+  returnUrl: string;
 }
 
 export interface OrderItem {
@@ -221,6 +233,7 @@ export type View =
   | { name: "account" }
   | { name: "cart" }
   | { name: "checkout" }
+  | { name: "payment"; session: PaymentSession }
   | { name: "order-success"; orderId: string; total: number }
   | { name: "subscription" };
 

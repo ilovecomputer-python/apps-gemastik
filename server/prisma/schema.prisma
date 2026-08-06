@@ -7,8 +7,8 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
   // Migrations need a session-mode connection; the transaction pooler
-  // (pgbouncer) cannot hold the advisory locks Prisma takes. Falls back to
-  // DATABASE_URL when DIRECT_URL is unset (e.g. plain local Postgres).
+  // (pgbouncer) cannot hold the advisory locks Prisma takes. Must always be
+  // set — on plain local Postgres just point it at the same URL.
   directUrl = env("DIRECT_URL")
 }
 
@@ -177,6 +177,8 @@ model PaymentMethod {
   id        String @id @default(cuid())
   name      String
   groupName String
+  /** "stripe" settles through the payment gateway; "cod" settles on delivery. */
+  provider  String @default("cod")
 
   orders Order[]
 
@@ -192,6 +194,10 @@ model Order {
   status      OrderStatus @default(PENDING)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+
+  /** Set for gateway-settled orders; unique so a webhook replay can't double-apply. */
+  stripePaymentIntentId String? @unique
+  paidAt                DateTime?
 
   userId String
   user   User   @relation(fields: [userId], references: [id])

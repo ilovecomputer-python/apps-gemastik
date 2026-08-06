@@ -14,6 +14,14 @@ const envSchema = z.object({
   CORS_ORIGIN: z.string().default("http://localhost:5173"),
   GEMINI_API_KEY: z.string().min(1).optional(),
   GEMINI_MODEL: z.string().default("gemini-3.5-flash"),
+  STRIPE_SECRET_KEY: z.string().min(1).optional(),
+  /**
+   * From `stripe listen` locally or the dashboard endpoint in production.
+   * Without it webhooks are rejected, so payments would never settle.
+   */
+  STRIPE_WEBHOOK_SECRET: z.string().min(1).optional(),
+  /** Where Stripe sends the customer back after an offsite redirect. */
+  APP_URL: z.string().url().default("http://localhost:5173"),
 });
 
 const parsed = envSchema.safeParse(process.env);

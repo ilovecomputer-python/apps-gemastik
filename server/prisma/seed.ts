@@ -242,12 +242,17 @@ const shippingOptions = [
 ];
 
 const paymentMethods = [
-  { name: "QRIS", groupName: "E-Wallet & QRIS" },
-  { name: "GoPay", groupName: "E-Wallet & QRIS" },
-  { name: "OVO", groupName: "E-Wallet & QRIS" },
-  { name: "BCA Virtual Account", groupName: "Transfer Bank" },
-  { name: "BNI Virtual Account", groupName: "Transfer Bank" },
-  { name: "Bayar di Tempat (COD)", groupName: "Lainnya" },
+  {
+    name: "Kartu / E-Wallet",
+    groupName: "Bayar online (Stripe)",
+    provider: "stripe",
+  },
+  { name: "QRIS", groupName: "E-Wallet & QRIS", provider: "cod" },
+  { name: "GoPay", groupName: "E-Wallet & QRIS", provider: "cod" },
+  { name: "OVO", groupName: "E-Wallet & QRIS", provider: "cod" },
+  { name: "BCA Virtual Account", groupName: "Transfer Bank", provider: "cod" },
+  { name: "BNI Virtual Account", groupName: "Transfer Bank", provider: "cod" },
+  { name: "Bayar di Tempat (COD)", groupName: "Lainnya", provider: "cod" },
 ];
 
 const newBrandInfo: Record<
@@ -411,7 +416,11 @@ async function main() {
     const existing = await prisma.paymentMethod.findFirst({
       where: { name: pm.name },
     });
-    if (!existing) await prisma.paymentMethod.create({ data: pm });
+    if (existing) {
+      await prisma.paymentMethod.update({ where: { id: existing.id }, data: pm });
+    } else {
+      await prisma.paymentMethod.create({ data: pm });
+    }
   }
 
   console.log("Seeding subscription plans...");

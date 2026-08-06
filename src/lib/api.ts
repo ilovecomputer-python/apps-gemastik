@@ -3,6 +3,7 @@ import type {
   CartLine,
   Order,
   PaymentMethod,
+  PaymentSession,
   PersonalizedKit,
   Product,
   QuizQuestion,
@@ -155,6 +156,30 @@ export const metaApi = {
     request<{ shippingOptions: ShippingOption[] }>("/shipping-options"),
   paymentMethods: () =>
     request<{ paymentMethods: PaymentMethod[] }>("/payment-methods"),
+};
+
+// --- Payments (Stripe) ---
+export const paymentsApi = {
+  status: () => request<{ enabled: boolean }>("/payments/status"),
+  createIntent: (data: {
+    addressId: string;
+    shippingOptionId: string;
+    paymentMethodId: string;
+  }) =>
+    request<PaymentSession>("/payments/intent", {
+      method: "POST",
+      body: data,
+      auth: true,
+    }),
+  orderStatus: (orderId: string) =>
+    request<{
+      order: {
+        id: string;
+        orderNumber: string;
+        status: string;
+        total: number;
+      };
+    }>(`/payments/orders/${orderId}`, { auth: true }),
 };
 
 // --- Orders ---

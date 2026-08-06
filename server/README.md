@@ -79,6 +79,45 @@ See `.env.example`. All are validated at startup (`src/lib/env.ts`) — the proc
 | `CORS_ORIGIN` | no (default `http://localhost:5173`) | comma-separated list of allowed origins |
 | `GEMINI_API_KEY` | no | Enables the AI scan. Get one at [AI Studio](https://aistudio.google.com/apikey). Without it the server still runs; `/api/scan/*` returns 503 |
 | `GEMINI_MODEL` | no (default `gemini-3.5-flash`) | Any vision-capable Gemini model |
+| `DIRECT_URL` | yes | Session-mode DB connection for Prisma Migrate. Same as `DATABASE_URL` locally; on Supabase use port 5432, not the 6543 pooler |
+| `STRIPE_SECRET_KEY` | no | Enables payments. Without it `/api/payments/*` returns 503 |
+| `STRIPE_WEBHOOK_SECRET` | no | Required for webhooks to be accepted |
+| `APP_URL` | no (default `http://localhost:5173`) | Where Stripe returns the customer after an offsite redirect |
+
+## Payments (Stripe)
+
+`POST /api/payments/intent` creates a **PENDING** order and the matching
+PaymentIntent, returning a `clientSecret` for Stripe Elements on the client.
+
+Rules that matter:
+
+- **The amount is computed server-side** from the user's own cart rows. A
+  client that posts its own total could otherwise pay Rp1 for anything.
+- **IDR is not a zero-decimal currency in Stripe** — rupiah is multiplied by
+  100. Passing the raw figure makes Stripe read Rp107.000 as Rp1.070.
+- Stripe rejects charges under roughly $0.50, so totals below
+  `STRIPE_MINIMUM_RUPIAH` are refused with a clear message instead of a raw
+  gateway error.
+- **The cart is only cleared once payment is confirmed**, so an abandoned
+  checkout leaves it intact.
+- `POST /api/payments/webhook` is mounted *before* `express.json()` and reads
+  the raw body, because signature verification needs the exact bytes Stripe
+  signed. Unsigned requests are rejected.
+- Settlement is idempotent: the PaymentIntent id is unique on the order and the
+  update is filtered on `status = PENDING`, so a replayed webhook is a no-op.
+- `GET /api/payments/orders/:orderId` reconciles straight from Stripe if the
+  webhook hasn't landed yet, so the success screen is never stuck waiting.
+
+Payment methods carry a `provider`: `stripe` goes through the gateway,
+anything else settles offline via the existing `POST /api/orders`.
+
+Local webhook testing:
+
+```bash
+stripe listen --forward-to localhost:4000/api/payments/webhook
+```
+
+Copy the printed `whsec_...` into `STRIPE_WEBHOOK_SECRET`.
 
 ## AI Scan (Gemini vision)
 

@@ -17,6 +17,8 @@ export async function listPaymentMethods(_req: Request, res: Response) {
       id: m.id,
       name: m.name,
       group: m.groupName,
+      // The client needs this to know which methods go through the gateway.
+      provider: m.provider,
     })),
   });
 }
