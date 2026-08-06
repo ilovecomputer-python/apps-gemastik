@@ -1,4 +1,5 @@
 import Icon from "../components/Icon";
+import Logo from "../components/Logo";
 
 interface LandingPageProps {
   onEnter: () => void;
@@ -21,9 +22,7 @@ export default function LandingPage({
       </button>
 
       <div className="landing-body">
-        <div className="landing-mark">
-          <Icon name="sparkle" size={26} />
-        </div>
+        <Logo size={96} className="landing-mark" />
         <span className="landing-eyebrow">
           ADAPTIVE UNIFIED RECOGNITION FOR AESTHETICS
         </span>

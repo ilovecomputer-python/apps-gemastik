@@ -51,6 +51,12 @@
   font-weight: 600;
 }
 
+.brand-lockup-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .brand-lockup {
   display: flex;
   flex-direction: column;
@@ -1907,17 +1913,6 @@
   gap: 8px;
 }
 
-.pay-brand-mark {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--dark);
-  color: var(--paper);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .pay-brand-name {
   font-family: var(--font-display);
   font-size: 17px;
@@ -2168,14 +2163,6 @@
 }
 
 .landing-mark {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--dark);
-  color: var(--paper);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin-bottom: 4px;
 }
 

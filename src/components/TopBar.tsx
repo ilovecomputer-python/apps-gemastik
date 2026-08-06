@@ -1,4 +1,5 @@
 import Icon from "./Icon";
+import Logo from "./Logo";
 
 interface TopBarProps {
   title?: string;
@@ -17,9 +18,12 @@ export default function TopBar({ title, onBack }: TopBarProps) {
         {title ? (
           <h1 className="top-bar-title">{title}</h1>
         ) : (
-          <div className="brand-lockup">
-            <span className="brand-name">AURA</span>
-            <span className="brand-sub">MARKETPLACE</span>
+          <div className="brand-lockup-row">
+            <Logo size={30} />
+            <div className="brand-lockup">
+              <span className="brand-name">AURA</span>
+              <span className="brand-sub">MARKETPLACE</span>
+            </div>
           </div>
         )}
       </div>

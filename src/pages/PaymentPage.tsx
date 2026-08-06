@@ -11,6 +11,7 @@ import { getStripe, isStripeConfigured } from "../lib/stripe";
 import { formatPrice } from "../utils/format";
 import TopBar from "../components/TopBar";
 import Icon from "../components/Icon";
+import Logo from "../components/Logo";
 
 interface PaymentPageProps {
   session: PaymentSession;
@@ -160,9 +161,7 @@ export default function PaymentPage({
 
       <div className="pay-header">
         <div className="pay-brand">
-          <span className="pay-brand-mark">
-            <Icon name="sparkle" size={15} />
-          </span>
+          <Logo size={30} />
           <span className="pay-brand-name">
             AURA<span className="pay-brand-thin">pay</span>
           </span>
