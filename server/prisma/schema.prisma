@@ -65,8 +65,53 @@ model User {
   personalizedKits  PersonalizedKit[]
   reviews           Review[]
   reviewHelpfulVotes ReviewHelpful[]
+  stores            Store[]         @relation("StoreOwner")
+  vouchers          UserVoucher[]
 
   @@map("users")
+}
+
+/**
+ * What points can be spent on. Without this the reviewer rewards were a
+ * scoreboard with nothing behind it.
+ */
+model Voucher {
+  id             String  @id @default(cuid())
+  code           String  @unique
+  title          String
+  description    String
+  pointsCost     Int
+  /** Flat rupiah taken off the order total. */
+  discountAmount Int
+  /** Order subtotal required before the voucher may be used. */
+  minSpend       Int     @default(0)
+  /** Days the voucher stays valid once redeemed. */
+  validForDays   Int     @default(30)
+  active         Boolean @default(true)
+
+  redemptions UserVoucher[]
+
+  @@map("vouchers")
+}
+
+model UserVoucher {
+  id         String    @id @default(cuid())
+  redeemedAt DateTime  @default(now())
+  expiresAt  DateTime
+  usedAt     DateTime?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  voucherId String
+  voucher   Voucher @relation(fields: [voucherId], references: [id])
+
+  /** Set when spent, so a voucher can never be applied to two orders. */
+  orderId String? @unique
+  order   Order?  @relation(fields: [orderId], references: [id])
+
+  @@index([userId])
+  @@map("user_vouchers")
 }
 
 model Store {
@@ -87,6 +132,10 @@ model Store {
   contactEmail String?
   city         String?
   createdAt    DateTime @default(now())
+
+  /** Who runs this brand. Null for the seeded stores nobody signed up for. */
+  ownerId String?
+  owner   User?   @relation("StoreOwner", fields: [ownerId], references: [id])
 
   products Product[]
 
@@ -216,6 +265,10 @@ model Order {
   /** Set for gateway-settled orders; unique so a webhook replay can't double-apply. */
   stripePaymentIntentId String? @unique
   paidAt                DateTime?
+
+  /** Rupiah taken off by a redeemed voucher, if one was applied. */
+  discount    Int          @default(0)
+  userVoucher UserVoucher?
 
   userId String
   user   User   @relation(fields: [userId], references: [id])

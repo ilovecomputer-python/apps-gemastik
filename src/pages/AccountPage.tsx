@@ -13,6 +13,8 @@ interface AccountPageProps {
   onOpenSubscription: () => void;
   onOpenBrandOnboarding: () => void;
   onOpenAdmin: () => void;
+  onOpenVouchers: () => void;
+  onOpenCommunity: () => void;
 }
 
 const MENU_ITEMS: { title: string; desc: string; icon: IconName }[] = [
@@ -34,6 +36,8 @@ export default function AccountPage({
   onOpenSubscription,
   onOpenBrandOnboarding,
   onOpenAdmin,
+  onOpenVouchers,
+  onOpenCommunity,
 }: AccountPageProps) {
   const [reviewerStats, setReviewerStats] = useState<ReviewerStats | null>(null);
 
@@ -85,9 +89,9 @@ export default function AccountPage({
       </div>
 
       {reviewerStats && reviewerStats.reviewCount > 0 && (
-        <div className="reviewer-stats-card">
+        <button className="reviewer-stats-card" onClick={onOpenCommunity}>
           <span className="reviewer-badge-pill">{reviewerStats.badge}</span>
-          <div>
+          <div className="reviewer-stats-body">
             <div className="option-row-title">
               {reviewerStats.reviewCount} ulasan ditulis
             </div>
@@ -95,8 +99,22 @@ export default function AccountPage({
               👍 {reviewerStats.totalHelpful} orang terbantu
             </p>
           </div>
-        </div>
+          <Icon name="chevron-right" size={15} className="menu-chevron" />
+        </button>
       )}
+
+      <button className="menu-item points-item" onClick={onOpenVouchers}>
+        <span className="menu-icon">
+          <Icon name="star" size={17} />
+        </span>
+        <div>
+          <div className="menu-title">Tukar poin</div>
+          <p className="menu-desc">
+            {user.points} poin · tukar jadi voucher belanja
+          </p>
+        </div>
+        <Icon name="chevron-right" size={15} className="menu-chevron" />
+      </button>
 
       <button className="upgrade-banner" onClick={onOpenSubscription}>
         <span className="upgrade-badge">AURA+</span>
@@ -147,8 +165,8 @@ export default function AccountPage({
             <Icon name="store" size={17} />
           </span>
           <div>
-            <div className="menu-title">Untuk penjual</div>
-            <p className="menu-desc">Daftarkan brand UMKM-mu di AURA</p>
+            <div className="menu-title">Seller Center</div>
+            <p className="menu-desc">Kelola brand dan produkmu</p>
           </div>
           <Icon name="chevron-right" size={15} className="menu-chevron" />
         </button>

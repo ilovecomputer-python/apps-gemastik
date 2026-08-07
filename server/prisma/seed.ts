@@ -463,6 +463,47 @@ async function main() {
     console.log("Quiz questions already exist, skipping");
   }
 
+  console.log("Seeding vouchers...");
+  // Priced against the reward rates: a review earns 10 points and each helpful
+  // vote earns 2, so 50 points is roughly five decent reviews.
+  const vouchers = [
+    {
+      code: "REVIEW10K",
+      title: "Potongan Rp10.000",
+      description: "Untuk pembelian minimal Rp50.000. Hadiah menulis ulasan.",
+      pointsCost: 50,
+      discountAmount: 10000,
+      minSpend: 50000,
+      validForDays: 30,
+    },
+    {
+      code: "REVIEW25K",
+      title: "Potongan Rp25.000",
+      description: "Untuk pembelian minimal Rp120.000. Reviewer aktif.",
+      pointsCost: 120,
+      discountAmount: 25000,
+      minSpend: 120000,
+      validForDays: 30,
+    },
+    {
+      code: "REVIEW50K",
+      title: "Potongan Rp50.000",
+      description:
+        "Untuk pembelian minimal Rp250.000. Hadiah reviewer terpercaya.",
+      pointsCost: 250,
+      discountAmount: 50000,
+      minSpend: 250000,
+      validForDays: 60,
+    },
+  ];
+  for (const v of vouchers) {
+    await prisma.voucher.upsert({
+      where: { code: v.code },
+      create: v,
+      update: v,
+    });
+  }
+
   console.log("Seeding admin user...");
   const adminEmail = "admin@aura.id";
   const existingAdmin = await prisma.user.findUnique({

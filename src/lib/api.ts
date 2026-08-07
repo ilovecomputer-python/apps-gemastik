@@ -13,12 +13,16 @@
   Review,
   ReviewerStats,
   ScanAnalysis,
+  SellerProduct,
+  SellerStore,
   ShippingOption,
   SkinProfile,
   SpotlightBrand,
   Subscription,
   SubscriptionPlan,
   User,
+  UserVoucher,
+  Voucher,
 } from "../types";
 
 const API_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? "http://localhost:4000/api";
@@ -243,6 +247,43 @@ export const brandsApi = {
       application: { id: string; name: string; status: string };
       message: string;
     }>("/brands/apply", { method: "POST", body: data }),
+};
+
+// --- Seller Center ---
+export const sellerApi = {
+  store: () => request<{ store: SellerStore | null }>("/seller/store", { auth: true }),
+  products: () =>
+    request<{ products: SellerProduct[] }>("/seller/products", { auth: true }),
+  createProduct: (data: {
+    name: string;
+    price: number;
+    category: "SKINCARE" | "MAKEUP" | "BODYCARE";
+    description: string;
+    concerns: string[];
+    shades: string[];
+    halal: boolean;
+    color: string;
+  }) =>
+    request<{ product: Product }>("/seller/products", {
+      method: "POST",
+      body: data,
+      auth: true,
+    }),
+};
+
+// --- Vouchers ---
+export const vouchersApi = {
+  list: () =>
+    request<{ vouchers: Voucher[]; points: number | null }>("/vouchers", {
+      auth: true,
+    }),
+  mine: () => request<{ vouchers: UserVoucher[] }>("/vouchers/mine", { auth: true }),
+  redeem: (id: string) =>
+    request<{
+      userVoucher: { id: string; expiresAt: string; voucher: Voucher };
+      pointsRemaining: number;
+      message: string;
+    }>(`/vouchers/${id}/redeem`, { method: "POST", auth: true }),
 };
 
 // --- Admin ---

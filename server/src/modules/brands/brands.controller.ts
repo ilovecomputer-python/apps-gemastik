@@ -46,6 +46,18 @@ export async function applyAsBrand(req: Request, res: Response) {
     );
   }
 
+  // One brand per account keeps the Seller Center unambiguous about which
+  // store it is showing.
+  const alreadyOwns = await prisma.store.findFirst({
+    where: { ownerId: req.userId },
+  });
+  if (alreadyOwns) {
+    throw HttpError.conflict(
+      "Kamu sudah punya brand terdaftar di akun ini.",
+      "ALREADY_HAS_STORE",
+    );
+  }
+
   const store = await prisma.store.create({
     data: {
       name: input.name,
@@ -56,7 +68,8 @@ export async function applyAsBrand(req: Request, res: Response) {
       contactEmail: input.contactEmail,
       isNewBrand: true,
       status: "PENDING",
-      launchDate: new Date(),
+      // Ownership is what gives the applicant a Seller Center to come back to.
+      ownerId: req.userId,
     },
   });
 

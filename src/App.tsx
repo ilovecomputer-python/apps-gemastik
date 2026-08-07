@@ -22,6 +22,9 @@ import SubscriptionPage from "./pages/SubscriptionPage";
 import BrandOnboardingPage from "./pages/BrandOnboardingPage";
 import NewArrivalsPage from "./pages/NewArrivalsPage";
 import AdminPage from "./pages/AdminPage";
+import SellerCenterPage from "./pages/SellerCenterPage";
+import VouchersPage from "./pages/VouchersPage";
+import CommunityPage from "./pages/CommunityPage";
 import QuizPage from "./pages/QuizPage";
 import QuizResultPage from "./pages/QuizResultPage";
 
@@ -164,6 +167,7 @@ function App() {
             onOpenSettings={() => requireAuth({ name: "account" })}
             onRequireLogin={() => setView({ name: "login" })}
             onOpenNewArrivals={() => setView({ name: "new-arrivals" })}
+            onOpenCommunity={() => setView({ name: "community" })}
             isLoggedIn={Boolean(user)}
           />
         );
@@ -249,14 +253,33 @@ function App() {
               setView({ name: "landing" });
             }}
             onOpenSubscription={() => requireAuth({ name: "subscription" })}
-            onOpenBrandOnboarding={() =>
-              setView({ name: "brand-onboarding" })
-            }
+            onOpenBrandOnboarding={() => requireAuth({ name: "seller" })}
             onOpenAdmin={() => requireAuth({ name: "admin" })}
+            onOpenVouchers={() => requireAuth({ name: "vouchers" })}
+            onOpenCommunity={() => setView({ name: "community" })}
           />
         );
       case "admin":
         return <AdminPage onBack={() => setView({ name: "account" })} />;
+      case "seller":
+        return (
+          <SellerCenterPage
+            onBack={() => setView({ name: "account" })}
+            onApply={() => setView({ name: "brand-onboarding" })}
+            onOpenProduct={(id) => setView({ name: "product", id })}
+          />
+        );
+      case "vouchers":
+        return <VouchersPage onBack={() => setView({ name: "account" })} />;
+      case "community":
+        return (
+          <CommunityPage
+            onBack={() => setView({ name: "home" })}
+            onOpenProduct={(id) => setView({ name: "product", id })}
+            onOpenVouchers={() => requireAuth({ name: "vouchers" })}
+            onRequireLogin={() => setView({ name: "login" })}
+          />
+        );
       case "subscription":
         return <SubscriptionPage onBack={() => setView({ name: "account" })} />;
       case "brand-onboarding":

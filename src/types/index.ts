@@ -69,6 +69,47 @@ export interface User {
   createdAt: string;
 }
 
+/** The seller's own store, whatever its review state. */
+export interface SellerStore {
+  id: string;
+  name: string;
+  tagline: string | null;
+  story: string | null;
+  city: string | null;
+  status: string;
+  rating: number;
+  launchDate: string | null;
+  createdAt: string;
+  productCount: number;
+  unitsSold: number;
+}
+
+export interface SellerProduct extends Product {
+  reviewCount: number;
+  launchedAt: string | null;
+}
+
+export interface Voucher {
+  id: string;
+  code: string;
+  title: string;
+  description: string;
+  pointsCost: number;
+  discountAmount: number;
+  minSpend: number;
+  validForDays: number;
+}
+
+/** A voucher the user has redeemed with points. */
+export interface UserVoucher {
+  id: string;
+  redeemedAt: string;
+  expiresAt: string;
+  usedAt: string | null;
+  usable: boolean;
+  voucher: Voucher;
+}
+
 /** A brand application in the admin review queue. */
 export interface BrandApplication {
   id: string;
@@ -270,6 +311,9 @@ export type View =
   | { name: "subscription" }
   | { name: "brand-onboarding" }
   | { name: "new-arrivals" }
-  | { name: "admin" };
+  | { name: "admin" }
+  | { name: "seller" }
+  | { name: "vouchers" }
+  | { name: "community" };
 
 export type BottomTab = "home" | "scan" | "wishlist" | "account";

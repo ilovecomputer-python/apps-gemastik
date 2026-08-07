@@ -19,6 +19,7 @@ interface HomePageProps {
   onOpenSettings: () => void;
   onRequireLogin: () => void;
   onOpenNewArrivals: () => void;
+  onOpenCommunity: () => void;
   isLoggedIn: boolean;
 }
 
@@ -40,6 +41,7 @@ export default function HomePage({
   onOpenSettings,
   onRequireLogin,
   onOpenNewArrivals,
+  onOpenCommunity,
   isLoggedIn,
 }: HomePageProps) {
   const [category, setCategory] = useState<"Semua" | Category>("Semua");
@@ -188,6 +190,7 @@ export default function HomePage({
       <CommunityReviewsSection
         onOpenProduct={onOpenProduct}
         onRequireLogin={onRequireLogin}
+        onSeeAll={onOpenCommunity}
         isLoggedIn={isLoggedIn}
       />
 

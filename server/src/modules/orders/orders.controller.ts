@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { prisma } from "../../lib/prisma.js";
 import { HttpError } from "../../lib/http-error.js";
 import { createOrderSchema } from "./orders.schema.js";
+import { markVoucherUsed, resolveVoucher } from "./orders.voucher.js";
 
 function generateOrderNumber() {
   const random = Math.random().toString(36).slice(2, 8).toUpperCase();
@@ -41,7 +42,9 @@ export async function createOrder(req: Request, res: Response) {
     (sum, item) => sum + item.product.price * item.quantity,
     0,
   );
-  const total = subtotal + shippingOption.price;
+  const applied = await resolveVoucher(userId, input.userVoucherId, subtotal);
+  const discount = applied?.discount ?? 0;
+  const total = subtotal + shippingOption.price - discount;
 
   const order = await prisma.$transaction(async (tx) => {
     const created = await tx.order.create({
@@ -53,6 +56,7 @@ export async function createOrder(req: Request, res: Response) {
         paymentMethodId: paymentMethod.id,
         subtotal,
         shippingFee: shippingOption.price,
+        discount,
         total,
         status: "PAID",
         items: {
@@ -67,6 +71,17 @@ export async function createOrder(req: Request, res: Response) {
       },
       include: orderInclude,
     });
+
+    if (applied) {
+      const spent = await markVoucherUsed(tx, applied.userVoucherId, created.id);
+      // Another checkout claimed it between validation and here.
+      if (spent.count === 0) {
+        throw HttpError.conflict(
+          "Voucher ini baru saja dipakai di pesanan lain.",
+          "VOUCHER_USED",
+        );
+      }
+    }
 
     await tx.cartItem.deleteMany({ where: { userId } });
 

@@ -6,12 +6,14 @@ import Icon from "./Icon";
 interface CommunityReviewsSectionProps {
   onOpenProduct: (id: string) => void;
   onRequireLogin: () => void;
+  onSeeAll: () => void;
   isLoggedIn: boolean;
 }
 
 export default function CommunityReviewsSection({
   onOpenProduct,
   onRequireLogin,
+  onSeeAll,
   isLoggedIn,
 }: CommunityReviewsSectionProps) {
   const [reviews, setReviews] = useState<FeedReview[]>([]);
@@ -44,7 +46,9 @@ export default function CommunityReviewsSection({
     <>
       <div className="section-heading-row">
         <h3>Kata Komunitas</h3>
-        <span className="link-btn muted-label">Ulasan paling membantu</span>
+        <button className="link-btn" onClick={onSeeAll}>
+          Poin & badge →
+        </button>
       </div>
       <section className="community-row">
         {reviews.map((review) => (

@@ -585,6 +585,284 @@
   gap: 4px;
 }
 
+/* Seller Center */
+.seller-header {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.seller-head-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.seller-name {
+  font-size: 20px;
+}
+
+.seller-status-card {
+  margin: 0 20px;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  border: 1px solid var(--line);
+}
+
+.seller-stats {
+  display: flex;
+  gap: 10px;
+  padding: 0 20px;
+}
+
+.seller-stat {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--card);
+  border: 1px solid var(--line);
+  text-align: center;
+}
+
+.seller-stat-value {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.seller-form {
+  padding: 0 20px;
+}
+
+.seller-select,
+.seller-color {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.seller-color {
+  height: 46px;
+  padding: 6px;
+}
+
+.seller-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.seller-product {
+  border: 1px solid var(--line);
+  text-align: left;
+  width: 100%;
+}
+
+/* Points & vouchers */
+.points-banner {
+  margin: 0 20px;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(140deg, var(--rosy), var(--dark));
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.points-banner-value {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.points-banner .points-label {
+  opacity: 0.85;
+}
+
+.points-banner-hint {
+  flex-basis: 100%;
+  font-size: 11.5px;
+  opacity: 0.85;
+  line-height: 1.45;
+}
+
+.voucher-card,
+.voucher-owned {
+  padding: 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.voucher-owned {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-color: var(--moss);
+}
+
+.voucher-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.voucher-cost {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--beige2);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.voucher-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.voucher-btn {
+  flex: 0 0 auto;
+  padding: 9px 18px;
+}
+
+.points-item {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  margin: 0 20px;
+  background: var(--card);
+}
+
+.reviewer-stats-card {
+  text-align: left;
+  width: calc(100% - 40px);
+  cursor: pointer;
+}
+
+.reviewer-stats-body {
+  flex: 1;
+}
+
+/* Community rewards */
+.rewards-box {
+  margin: 0 20px;
+  padding: 18px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(150deg, var(--midnight), var(--dark));
+  color: var(--paper);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rewards-title {
+  font-size: 19px;
+}
+
+.rewards-grid {
+  display: flex;
+  gap: 10px;
+}
+
+.reward-item {
+  flex: 1;
+  padding: 10px 8px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.12);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.reward-value {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.reward-label {
+  font-size: 10px;
+  opacity: 0.85;
+  line-height: 1.3;
+}
+
+.rewards-copy {
+  font-size: 12.5px;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+.rewards-cta {
+  background: var(--paper);
+  color: var(--dark);
+}
+
+.badge-ladder {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.ladder-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line2);
+  color: var(--muted);
+}
+
+.ladder-row.current {
+  border-color: var(--rosy);
+  background: rgba(211, 150, 140, 0.12);
+  color: var(--ink);
+}
+
+.ladder-badge {
+  font-size: 12.5px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.community-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 20px 24px;
+}
+
+.community-card.wide {
+  flex: 1 1 auto;
+}
+
+.community-card.wide .community-text,
+.community-card.wide .review-text {
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
+}
+
 /* Admin review queue */
 .admin-intro {
   padding: 0 20px;
