@@ -19,6 +19,7 @@ interface HomePageProps {
   onOpenSettings: () => void;
   onRequireLogin: () => void;
   onOpenNewArrivals: () => void;
+  onOpenBrands: () => void;
   onOpenCommunity: () => void;
   isLoggedIn: boolean;
 }
@@ -41,6 +42,7 @@ export default function HomePage({
   onOpenSettings,
   onRequireLogin,
   onOpenNewArrivals,
+  onOpenBrands,
   onOpenCommunity,
   isLoggedIn,
 }: HomePageProps) {
@@ -190,7 +192,10 @@ export default function HomePage({
         onSeeAll={onOpenNewArrivals}
       />
 
-      <BrandSpotlightSection onOpenProduct={onOpenProduct} />
+      <BrandSpotlightSection
+        onOpenProduct={onOpenProduct}
+        onSeeAll={onOpenBrands}
+      />
 
       <CommunityReviewsSection
         onOpenProduct={onOpenProduct}

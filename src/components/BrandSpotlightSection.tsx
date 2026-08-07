@@ -5,10 +5,12 @@ import ProductImage from "./ProductImage";
 
 interface BrandSpotlightSectionProps {
   onOpenProduct: (id: string) => void;
+  onSeeAll: () => void;
 }
 
 export default function BrandSpotlightSection({
   onOpenProduct,
+  onSeeAll,
 }: BrandSpotlightSectionProps) {
   const [brands, setBrands] = useState<SpotlightBrand[]>([]);
 
@@ -25,7 +27,9 @@ export default function BrandSpotlightSection({
     <>
       <div className="section-heading-row">
         <h3>Brand Baru ✨</h3>
-        <span className="link-btn muted-label">Baru gabung di AURA</span>
+        <button className="link-btn" onClick={onSeeAll}>
+          Lihat semua →
+        </button>
       </div>
       <section className="brand-spotlight-row">
         {brands.map((brand) => (

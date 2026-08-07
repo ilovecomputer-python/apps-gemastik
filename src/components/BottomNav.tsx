@@ -4,21 +4,16 @@ import Icon, { type IconName } from "./Icon";
 interface BottomNavProps {
   active: BottomTab;
   onSelect: (tab: BottomTab) => void;
-  wishlistCount: number;
 }
 
 const TABS: { key: BottomTab; label: string; icon: IconName }[] = [
   { key: "home", label: "Beranda", icon: "home" },
   { key: "scan", label: "Scan AI", icon: "scan" },
-  { key: "wishlist", label: "Wishlist", icon: "heart" },
+  { key: "brands", label: "Brand Baru", icon: "store" },
   { key: "account", label: "Akun", icon: "user" },
 ];
 
-export default function BottomNav({
-  active,
-  onSelect,
-  wishlistCount,
-}: BottomNavProps) {
+export default function BottomNav({ active, onSelect }: BottomNavProps) {
   return (
     <nav className="bottom-nav">
       {TABS.map((tab) => (
@@ -28,17 +23,7 @@ export default function BottomNav({
           onClick={() => onSelect(tab.key)}
         >
           <span className="bottom-nav-icon">
-            <Icon
-              name={
-                tab.key === "wishlist" && active === "wishlist"
-                  ? "heart-filled"
-                  : tab.icon
-              }
-              size={20}
-            />
-            {tab.key === "wishlist" && wishlistCount > 0 && (
-              <span className="nav-badge">{wishlistCount}</span>
-            )}
+            <Icon name={tab.icon} size={20} />
           </span>
           {tab.label}
         </button>

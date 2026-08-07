@@ -21,6 +21,7 @@ import OrderSuccessPage from "./pages/OrderSuccessPage";
 import SubscriptionPage from "./pages/SubscriptionPage";
 import BrandOnboardingPage from "./pages/BrandOnboardingPage";
 import NewArrivalsPage from "./pages/NewArrivalsPage";
+import NewBrandsPage from "./pages/NewBrandsPage";
 import AdminPage from "./pages/AdminPage";
 import SellerCenterPage from "./pages/SellerCenterPage";
 import VouchersPage from "./pages/VouchersPage";
@@ -107,8 +108,8 @@ function App() {
       case "quiz":
       case "quiz-result":
         return "scan";
-      case "wishlist":
-        return "wishlist";
+      case "brands":
+        return "brands";
       case "account":
         return "account";
       default:
@@ -119,7 +120,9 @@ function App() {
   const goToTab = (tab: BottomTab) => {
     if (tab === "home") setView({ name: "home" });
     if (tab === "scan") setView({ name: "scan" });
-    if (tab === "wishlist") requireAuth({ name: "wishlist" });
+    // Public, like the spotlight section it replaces on the tab bar - no
+    // login needed to browse new brands.
+    if (tab === "brands") setView({ name: "brands" });
     if (tab === "account") setView({ name: "account" });
   };
 
@@ -177,6 +180,7 @@ function App() {
             onOpenSettings={() => requireAuth({ name: "account" })}
             onRequireLogin={() => setView({ name: "login" })}
             onOpenNewArrivals={() => setView({ name: "new-arrivals" })}
+            onOpenBrands={() => setView({ name: "brands" })}
             onOpenCommunity={() => setView({ name: "community" })}
             isLoggedIn={Boolean(user)}
           />
@@ -188,6 +192,14 @@ function App() {
             onBack={() => setView({ name: "home" })}
             onOpenProduct={(id) => setView({ name: "product", id })}
             onToggleWishlist={toggleWishlist}
+          />
+        );
+      case "brands":
+        return (
+          <NewBrandsPage
+            onBack={() => setView({ name: "home" })}
+            onOpenProduct={(id) => setView({ name: "product", id })}
+            onApply={() => requireAuth({ name: "brand-onboarding" })}
           />
         );
       case "scan":
@@ -356,11 +368,7 @@ function App() {
           content instead of walking the whole page. */}
       <main className="app-scroll">{renderView()}</main>
       {!hideNav && (
-        <BottomNav
-          active={activeTab}
-          onSelect={goToTab}
-          wishlistCount={wishlistIds.size}
-        />
+        <BottomNav active={activeTab} onSelect={goToTab} />
       )}
     </div>
   );

@@ -455,12 +455,6 @@
 }
 
 /* Brand spotlight (home section) */
-.muted-label {
-  font-size: 11.5px;
-  color: var(--muted);
-  font-weight: 500;
-}
-
 .brand-spotlight-row {
   display: flex;
   gap: 12px;
@@ -493,6 +487,7 @@
 
 .brand-card-products {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-top: 2px;
 }
@@ -1706,6 +1701,21 @@
   margin-top: 2px;
 }
 
+/* Closing CTA on the Brand Baru page - same shape as .upgrade-banner, moss
+   instead of rosy to match the UMKM banner on Home rather than AURA+. */
+.brand-apply-banner {
+  margin: 4px 20px 24px;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(140deg, var(--moss), var(--dark));
+  border: none;
+  color: var(--on-dark);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+}
+
 .menu-list {
   margin: 0 20px;
   border-radius: var(--radius-lg);
@@ -1806,23 +1816,6 @@
 .bottom-nav-icon {
   position: relative;
   display: flex;
-}
-
-.nav-badge {
-  position: absolute;
-  top: -4px;
-  right: -8px;
-  min-width: 14px;
-  height: 14px;
-  padding: 0 3px;
-  border-radius: var(--radius-pill);
-  background: var(--rosy);
-  color: var(--on-dark);
-  font-size: 8.5px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* Scan mode chevron / menu chevron */

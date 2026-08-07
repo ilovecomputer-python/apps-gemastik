@@ -315,9 +315,10 @@ export type View =
   | { name: "subscription" }
   | { name: "brand-onboarding" }
   | { name: "new-arrivals" }
+  | { name: "brands" }
   | { name: "admin" }
   | { name: "seller" }
   | { name: "vouchers" }
   | { name: "community" };
 
-export type BottomTab = "home" | "scan" | "wishlist" | "account";
+export type BottomTab = "home" | "scan" | "brands" | "account";
