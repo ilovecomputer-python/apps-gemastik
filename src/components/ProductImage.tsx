@@ -1,14 +1,21 @@
+import { useState } from "react";
+
 interface ProductImageProps {
   color: string;
   label: string;
   aspect?: string;
+  imageUrl?: string | null;
 }
 
 export default function ProductImage({
   color,
   label,
   aspect = "1 / 1",
+  imageUrl,
 }: ProductImageProps) {
+  const [failed, setFailed] = useState(false);
+  const showPhoto = Boolean(imageUrl) && !failed;
+
   const initials = label
     .split(" ")
     .slice(0, 2)
@@ -21,10 +28,21 @@ export default function ProductImage({
       className="product-image"
       style={{
         aspectRatio: aspect,
-        background: `linear-gradient(160deg, ${color}, ${color}cc)`,
+        background: showPhoto
+          ? undefined
+          : `linear-gradient(160deg, ${color}, ${color}cc)`,
       }}
     >
-      <span>{initials}</span>
+      {showPhoto ? (
+        <img
+          src={imageUrl!}
+          alt={label}
+          loading="lazy"
+          onError={() => setFailed(true)}
+        />
+      ) : (
+        <span>{initials}</span>
+      )}
     </div>
   );
 }

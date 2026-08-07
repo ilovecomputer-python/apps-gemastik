@@ -276,7 +276,7 @@ export default function SellerCenterPage({
                   className="cart-item seller-product"
                   onClick={() => onOpenProduct(p.id)}
                 >
-                  <ProductImage color={p.color} label={p.name} aspect="1 / 1" />
+                  <ProductImage color={p.color} label={p.name} aspect="1 / 1" imageUrl={p.imageUrl} />
                   <div className="cart-item-body">
                     <div className="name">{p.name}</div>
                     <span className="price">{formatPrice(p.price)}</span>

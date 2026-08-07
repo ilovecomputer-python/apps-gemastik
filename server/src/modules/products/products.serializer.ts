@@ -28,6 +28,7 @@ export function toPublicProduct(product: ProductWithStore) {
     shades: product.shades,
     concerns: product.concerns,
     color: product.color,
+    imageUrl: product.imageUrl,
   };
 }
 

@@ -46,6 +46,7 @@ export default function QuizResultPage({
                     color={item.product.color}
                     label={item.product.name}
                     aspect="1 / 1"
+                    imageUrl={item.product.imageUrl}
                   />
                   <div className="cart-item-body">
                     <span className="brand">{item.product.brand}</span>

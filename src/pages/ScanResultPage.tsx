@@ -91,6 +91,7 @@ export default function ScanResultPage({
                 color={product.color}
                 label={product.name}
                 aspect="1 / 1"
+                imageUrl={product.imageUrl}
               />
               <div className="cart-item-body">
                 <span className="brand">{product.brand}</span>

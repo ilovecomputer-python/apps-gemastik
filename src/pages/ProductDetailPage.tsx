@@ -152,7 +152,7 @@ export default function ProductDetailPage({
   return (
     <div className="screen">
       <TopBar onBack={onBack} />
-      <ProductImage color={product.color} label={product.name} aspect="4 / 3" />
+      <ProductImage color={product.color} label={product.name} aspect="4 / 3" imageUrl={product.imageUrl} />
 
       <div className="product-detail-body">
         <div className="detail-top-row">

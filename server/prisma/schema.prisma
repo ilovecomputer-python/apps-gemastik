@@ -138,6 +138,7 @@ model Store {
   owner   User?   @relation("StoreOwner", fields: [ownerId], references: [id])
 
   products Product[]
+  reviews  Review[]
 
   @@map("stores")
 }
@@ -159,6 +160,8 @@ model Product {
   shades        String[]
   concerns      String[]
   color         String
+  /** Hotlinked photo for the product card. Falls back to the `color` swatch when absent. */
+  imageUrl      String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -466,12 +469,17 @@ model Review {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  /** Exactly one of productId/storeId is set - a review is either about a product or about a brand. */
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  storeId String?
+  store   Store?  @relation(fields: [storeId], references: [id], onDelete: Cascade)
 
   helpfulVotes ReviewHelpful[]
 
   @@unique([userId, productId])
+  @@unique([userId, storeId])
   @@map("reviews")
 }
 

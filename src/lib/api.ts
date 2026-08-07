@@ -334,6 +334,13 @@ export const reviewsApi = {
   myStats: () => request<ReviewerStats>("/users/me/reviewer-stats", { auth: true }),
   /** Most-helpful reviews across every product. */
   feed: () => request<{ reviews: FeedReview[] }>("/reviews/feed", { auth: true }),
+  brandList: (storeId: string) =>
+    request<{ reviews: Review[] }>(`/brands/${storeId}/reviews`, { auth: true }),
+  brandCreate: (storeId: string, data: { rating: number; text: string }) =>
+    request<{ review: Review; pointsAwarded: number }>(
+      `/brands/${storeId}/reviews`,
+      { method: "POST", body: data, auth: true },
+    ),
 };
 
 // --- AI Scan (Gemini vision) ---

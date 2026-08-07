@@ -51,6 +51,7 @@ export default function BrandSpotlightSection({
                     color={product.color}
                     label={product.name}
                     aspect="1 / 1"
+                    imageUrl={product.imageUrl}
                   />
                 </button>
               ))}

@@ -19,6 +19,7 @@ export interface Product {
   shades: string[];
   concerns: string[];
   color: string;
+  imageUrl: string | null;
 }
 
 /** One of the five skin conditions from the labelled dataset taxonomy. */
@@ -279,14 +280,19 @@ export interface NewProduct extends Product {
   daysSinceLaunch: number | null;
 }
 
-/** A review in the community feed, carrying the product it belongs to. */
+/** A review in the community feed, about either a product or a brand - exactly one is set. */
 export interface FeedReview extends Review {
   product: {
     id: string;
     brand: string;
     name: string;
     color: string;
-  };
+    imageUrl: string | null;
+  } | null;
+  store: {
+    id: string;
+    name: string;
+  } | null;
 }
 
 export interface ReviewerStats {

@@ -84,6 +84,82 @@ export async function createProductReview(req: Request, res: Response) {
   });
 }
 
+export async function listStoreReviews(req: Request, res: Response) {
+  const reviews = await prisma.review.findMany({
+    where: { storeId: req.params.storeId },
+    include: { user: true, helpfulVotes: true },
+    orderBy: [{ helpfulCount: "desc" }, { createdAt: "desc" }],
+  });
+
+  res.json({
+    reviews: reviews.map((r) => ({
+      id: r.id,
+      rating: r.rating,
+      text: r.text,
+      helpfulCount: r.helpfulCount,
+      createdAt: r.createdAt,
+      authorName: r.user.name,
+      isMine: r.userId === req.userId,
+      markedHelpfulByMe: req.userId
+        ? r.helpfulVotes.some((v) => v.userId === req.userId)
+        : false,
+    })),
+  });
+}
+
+export async function createStoreReview(req: Request, res: Response) {
+  const input = createReviewSchema.parse(req.body);
+  const userId = req.userId!;
+  const storeId = req.params.storeId;
+
+  const store = await prisma.store.findUnique({ where: { id: storeId } });
+  if (!store) throw HttpError.notFound("Brand tidak ditemukan");
+
+  const existing = await prisma.review.findUnique({
+    where: { userId_storeId: { userId, storeId } },
+  });
+  if (existing) {
+    throw HttpError.conflict(
+      "Kamu sudah pernah mengulas brand ini",
+      "ALREADY_REVIEWED",
+    );
+  }
+
+  const review = await prisma.$transaction(async (tx) => {
+    const created = await tx.review.create({
+      data: { userId, storeId, rating: input.rating, text: input.text },
+      include: { user: true },
+    });
+    await tx.user.update({
+      where: { id: userId },
+      data: { points: { increment: POINTS_PER_REVIEW } },
+    });
+    const agg = await tx.review.aggregate({
+      where: { storeId },
+      _avg: { rating: true },
+    });
+    await tx.store.update({
+      where: { id: storeId },
+      data: { rating: Math.round((agg._avg.rating ?? input.rating) * 10) / 10 },
+    });
+    return created;
+  });
+
+  res.status(201).json({
+    review: {
+      id: review.id,
+      rating: review.rating,
+      text: review.text,
+      helpfulCount: review.helpfulCount,
+      createdAt: review.createdAt,
+      authorName: review.user.name,
+      isMine: true,
+      markedHelpfulByMe: false,
+    },
+    pointsAwarded: POINTS_PER_REVIEW,
+  });
+}
+
 export async function toggleHelpful(req: Request, res: Response) {
   const userId = req.userId!;
   const reviewId = req.params.reviewId;
@@ -144,7 +220,8 @@ export async function reviewFeed(req: Request, res: Response) {
   const reviews = await prisma.review.findMany({
     include: {
       user: true,
-      product: { include: { store: true } },
+      product: true,
+      store: true,
       helpfulVotes: true,
     },
     orderBy: [{ helpfulCount: "desc" }, { createdAt: "desc" }],
@@ -163,11 +240,17 @@ export async function reviewFeed(req: Request, res: Response) {
       markedHelpfulByMe: req.userId
         ? r.helpfulVotes.some((v) => v.userId === req.userId)
         : false,
-      product: {
+      // Exactly one of these is set, matching which one the review is about.
+      product: r.product && {
         id: r.product.id,
         brand: r.product.brand,
         name: r.product.name,
         color: r.product.color,
+        imageUrl: r.product.imageUrl,
+      },
+      store: r.store && {
+        id: r.store.id,
+        name: r.store.name,
       },
     })),
   });

@@ -8,6 +8,7 @@ import Icon from "../components/Icon";
 interface CommunityPageProps {
   onBack: () => void;
   onOpenProduct: (id: string) => void;
+  onOpenBrands: () => void;
   onOpenVouchers: () => void;
   onRequireLogin: () => void;
 }
@@ -21,6 +22,7 @@ const BADGE_LADDER = [
 export default function CommunityPage({
   onBack,
   onOpenProduct,
+  onOpenBrands,
   onOpenVouchers,
   onRequireLogin,
 }: CommunityPageProps) {
@@ -149,18 +151,38 @@ export default function CommunityPage({
         <div className="community-list">
           {reviews.map((review) => (
             <div key={review.id} className="community-card wide">
-              <button
-                className="community-product"
-                onClick={() => onOpenProduct(review.product.id)}
-              >
-                <span
-                  className="community-swatch"
-                  style={{ background: review.product.color }}
-                />
-                <span className="community-product-name">
-                  {review.product.brand} · {review.product.name}
-                </span>
-              </button>
+              {review.product ? (
+                <button
+                  className="community-product"
+                  onClick={() => onOpenProduct(review.product!.id)}
+                >
+                  {review.product.imageUrl ? (
+                    <img
+                      className="community-swatch"
+                      src={review.product.imageUrl}
+                      alt=""
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span
+                      className="community-swatch"
+                      style={{ background: review.product.color }}
+                    />
+                  )}
+                  <span className="community-product-name">
+                    {review.product.brand} · {review.product.name}
+                  </span>
+                </button>
+              ) : (
+                <button className="community-product" onClick={onOpenBrands}>
+                  <span className="community-swatch community-swatch-brand">
+                    <Icon name="store" size={13} />
+                  </span>
+                  <span className="community-product-name">
+                    Ulasan brand · {review.store!.name}
+                  </span>
+                </button>
+              )}
               <span className="review-stars">
                 {"★".repeat(review.rating)}
                 {"☆".repeat(5 - review.rating)}

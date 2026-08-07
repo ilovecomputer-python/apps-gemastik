@@ -200,6 +200,7 @@ function App() {
             onBack={() => setView({ name: "home" })}
             onOpenProduct={(id) => setView({ name: "product", id })}
             onApply={() => requireAuth({ name: "brand-onboarding" })}
+            onRequireLogin={() => setView({ name: "login" })}
           />
         );
       case "scan":
@@ -298,6 +299,7 @@ function App() {
           <CommunityPage
             onBack={() => setView({ name: "home" })}
             onOpenProduct={(id) => setView({ name: "product", id })}
+            onOpenBrands={() => setView({ name: "brands" })}
             onOpenVouchers={() => requireAuth({ name: "vouchers" })}
             onRequireLogin={() => setView({ name: "login" })}
           />

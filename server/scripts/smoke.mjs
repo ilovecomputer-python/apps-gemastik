@@ -621,6 +621,38 @@ async function main() {
     return "disetujui, approve kedua ditolak 409";
   });
 
+  await step("Reviewing a brand awards points and updates its rating", async () => {
+    const res = await api("POST", `/api/brands/${ctx.storeId}/reviews`, {
+      token: ctx.token,
+      body: { rating: 5, text: "Brand ini responsif dan produknya cepat sampai." },
+    });
+    expect([200, 201].includes(res.status), `brand review: ${res.status} ${JSON.stringify(res.body)?.slice(0, 160)}`);
+    expect(res.body.pointsAwarded === 10, `expected 10 points, got ${res.body.pointsAwarded}`);
+
+    const spotlight = await api("GET", "/api/brands/spotlight");
+    const store = spotlight.body.brands.find((b) => b.id === ctx.storeId);
+    expect(store?.rating === 5, `brand rating did not update to 5.0, got ${store?.rating}`);
+    return `+${res.body.pointsAwarded} poin, rating brand naik ke ${store.rating}`;
+  });
+
+  await step("Reviewing the same brand twice is refused", async () => {
+    const res = await api("POST", `/api/brands/${ctx.storeId}/reviews`, {
+      token: ctx.token,
+      body: { rating: 4, text: "Mencoba mengulas brand yang sama sekali lagi." },
+    });
+    expectStatus(res, 409, "double brand review");
+    return res.body.error?.code ?? "409";
+  });
+
+  await step("The brand review shows up in the community feed", async () => {
+    const res = await api("GET", "/api/reviews/feed", { token: ctx.token });
+    expectStatus(res, 200, "review feed");
+    const mine = res.body.reviews.find((r) => r.store?.id === ctx.storeId);
+    expect(mine, "the brand review is missing from the feed");
+    expect(!mine.product, "a brand review should not carry a product");
+    return `store=${mine.store.name}`;
+  });
+
   await step("Approved seller can list a product", async () => {
     const res = await api("POST", "/api/seller/products", {
       token: ctx.sellerToken,

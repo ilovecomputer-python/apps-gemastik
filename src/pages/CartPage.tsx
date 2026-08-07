@@ -89,7 +89,7 @@ export default function CartPage({
       <div className="cart-list">
         {items.map(({ product, quantity }) => (
           <div key={product.id} className="cart-item">
-            <ProductImage color={product.color} label={product.name} aspect="1 / 1" />
+            <ProductImage color={product.color} label={product.name} aspect="1 / 1" imageUrl={product.imageUrl} />
             <div className="cart-item-body">
               <span className="brand">{product.brand}</span>
               <div className="name">{product.name}</div>

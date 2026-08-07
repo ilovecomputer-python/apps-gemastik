@@ -199,6 +199,7 @@ export default function HomePage({
 
       <CommunityReviewsSection
         onOpenProduct={onOpenProduct}
+        onOpenBrands={onOpenBrands}
         onRequireLogin={onRequireLogin}
         onSeeAll={onOpenCommunity}
         isLoggedIn={isLoggedIn}

@@ -5,6 +5,7 @@ import Icon from "./Icon";
 
 interface CommunityReviewsSectionProps {
   onOpenProduct: (id: string) => void;
+  onOpenBrands: () => void;
   onRequireLogin: () => void;
   onSeeAll: () => void;
   isLoggedIn: boolean;
@@ -12,6 +13,7 @@ interface CommunityReviewsSectionProps {
 
 export default function CommunityReviewsSection({
   onOpenProduct,
+  onOpenBrands,
   onRequireLogin,
   onSeeAll,
   isLoggedIn,
@@ -53,18 +55,38 @@ export default function CommunityReviewsSection({
       <section className="community-row">
         {reviews.map((review) => (
           <div key={review.id} className="community-card">
-            <button
-              className="community-product"
-              onClick={() => onOpenProduct(review.product.id)}
-            >
-              <span
-                className="community-swatch"
-                style={{ background: review.product.color }}
-              />
-              <span className="community-product-name">
-                {review.product.brand} · {review.product.name}
-              </span>
-            </button>
+            {review.product ? (
+              <button
+                className="community-product"
+                onClick={() => onOpenProduct(review.product!.id)}
+              >
+                {review.product.imageUrl ? (
+                  <img
+                    className="community-swatch"
+                    src={review.product.imageUrl}
+                    alt=""
+                    loading="lazy"
+                  />
+                ) : (
+                  <span
+                    className="community-swatch"
+                    style={{ background: review.product.color }}
+                  />
+                )}
+                <span className="community-product-name">
+                  {review.product.brand} · {review.product.name}
+                </span>
+              </button>
+            ) : (
+              <button className="community-product" onClick={onOpenBrands}>
+                <span className="community-swatch community-swatch-brand">
+                  <Icon name="store" size={13} />
+                </span>
+                <span className="community-product-name">
+                  Ulasan brand · {review.store!.name}
+                </span>
+              </button>
+            )}
 
             <span className="review-stars">
               {"★".repeat(review.rating)}

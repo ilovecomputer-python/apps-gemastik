@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import type { SpotlightBrand } from "../types";
 import { brandsApi } from "../lib/api";
+import { useAuth } from "../context/AuthContext";
 import TopBar from "../components/TopBar";
 import ProductImage from "../components/ProductImage";
+import BrandReviewSection from "../components/BrandReviewSection";
 import Icon from "../components/Icon";
 
 interface NewBrandsPageProps {
   onBack: () => void;
   onOpenProduct: (id: string) => void;
   onApply: () => void;
+  onRequireLogin: () => void;
 }
 
 const formatJoinDate = (iso: string) =>
@@ -22,7 +25,9 @@ export default function NewBrandsPage({
   onBack,
   onOpenProduct,
   onApply,
+  onRequireLogin,
 }: NewBrandsPageProps) {
+  const { user } = useAuth();
   const [brands, setBrands] = useState<SpotlightBrand[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,6 +38,15 @@ export default function NewBrandsPage({
       .catch(() => setBrands([]))
       .finally(() => setLoading(false));
   }, []);
+
+  // Silent refresh after a review - picks up the brand's new average rating
+  // without the loading state flashing the whole list away.
+  const refreshRatings = () => {
+    brandsApi
+      .spotlight()
+      .then(({ brands }) => setBrands(brands))
+      .catch(() => {});
+  };
 
   return (
     <div className="screen">
@@ -90,11 +104,19 @@ export default function NewBrandsPage({
                         color={product.color}
                         label={product.name}
                         aspect="1 / 1"
+                        imageUrl={product.imageUrl}
                       />
                     </button>
                   ))}
                 </div>
               )}
+
+              <BrandReviewSection
+                storeId={brand.id}
+                isLoggedIn={Boolean(user)}
+                onRequireLogin={onRequireLogin}
+                onReviewed={refreshRatings}
+              />
             </div>
           ))}
         </div>

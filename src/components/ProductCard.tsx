@@ -22,7 +22,7 @@ export default function ProductCard({
   return (
     <div className="card" onClick={() => onOpen(product.id)}>
       <div className="card-image-wrap">
-        <ProductImage color={product.color} label={product.name} />
+        <ProductImage color={product.color} label={product.name} imageUrl={product.imageUrl} />
         <button
           className={`wishlist-dot${wishlisted ? " active" : ""}`}
           onClick={(e) => {

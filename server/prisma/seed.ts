@@ -26,7 +26,12 @@ interface SeedProduct {
    */
   concerns?: string[];
   color: string;
+  /** Hotlinked stock photo standing in for real product photography. */
+  imageUrl: string;
 }
+
+const unsplash = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?q=80&w=600&auto=format&fit=crop`;
 
 const seedProducts: SeedProduct[] = [
   {
@@ -46,6 +51,7 @@ const seedProducts: SeedProduct[] = [
     hashtags: ["#SkincareLokal", "#GlowAlami", "#Halal"],
     shades: ["Rosy Nude", "Chili Red", "Cocoa Brown", "Peach Bloom"],
     color: "#D3968C",
+    imageUrl: unsplash("1631214499500-2e34edcaccfe"),
   },
   {
     slug: "somethinc-niacinamide",
@@ -64,6 +70,7 @@ const seedProducts: SeedProduct[] = [
     hashtags: ["#SerumLokal", "#NiacinamideZinc", "#Halal"],
     concerns: ["acne", "pores", "dark_spots"],
     color: "#839958",
+    imageUrl: unsplash("1613803745799-ba6c10aace85"),
   },
   {
     slug: "emina-bright-stuff",
@@ -80,6 +87,7 @@ const seedProducts: SeedProduct[] = [
     hashtags: ["#BrightStuff", "#SkincareRemaja"],
     concerns: ["dark_spots"],
     color: "#F2C879",
+    imageUrl: unsplash("1631438420064-8f1b2b52b2e6"),
   },
   {
     slug: "makeover-powerstay",
@@ -97,6 +105,7 @@ const seedProducts: SeedProduct[] = [
     shades: ["N02", "W20", "C30", "N40"],
     concerns: ["pores"],
     color: "#C79A6B",
+    imageUrl: unsplash("1723647395143-c2b01f472357"),
   },
   {
     slug: "wardah-mineral-blush",
@@ -114,6 +123,7 @@ const seedProducts: SeedProduct[] = [
     hashtags: ["#BlushOn", "#Halal"],
     shades: ["Coral Pink", "Peach", "Rose"],
     color: "#E3A6A0",
+    imageUrl: unsplash("1590156546946-ce55a12a6a5d"),
   },
   {
     slug: "lumira-lip-cheek",
@@ -130,6 +140,7 @@ const seedProducts: SeedProduct[] = [
       "Balm multifungsi berbahan organik untuk bibir dan pipi, dibuat oleh UMKM lokal dengan bahan alami pilihan. Memberikan warna natural dan melembapkan sekaligus.",
     hashtags: ["#UMKMLokal", "#Organik"],
     color: "#C97B63",
+    imageUrl: unsplash("1631214524049-0ebbbe6d81aa"),
   },
   {
     slug: "tanahku-face-oil",
@@ -147,6 +158,7 @@ const seedProducts: SeedProduct[] = [
     hashtags: ["#UMKMLokal", "#BungaTelang"],
     concerns: ["wrinkles", "dark_spots"],
     color: "#6E7FB5",
+    imageUrl: unsplash("1671493235081-5842463637cd"),
   },
   {
     slug: "rumi-body-scrub",
@@ -164,6 +176,7 @@ const seedProducts: SeedProduct[] = [
     hashtags: ["#UMKMLokal", "#KopiRobusta"],
     concerns: ["blackheads", "pores"],
     color: "#7A5138",
+    imageUrl: unsplash("1510776537653-6d0da167186c"),
   },
   {
     slug: "avoskin-retinol-ampoule",
@@ -181,6 +194,7 @@ const seedProducts: SeedProduct[] = [
     hashtags: ["#Retinol", "#AntiAging", "#SkincareMalam"],
     concerns: ["wrinkles", "dark_spots", "pores"],
     color: "#B08A5E",
+    imageUrl: unsplash("1710410815589-dd83514104d0"),
   },
   {
     slug: "somethinc-salicylic-toner",
@@ -198,6 +212,7 @@ const seedProducts: SeedProduct[] = [
     hashtags: ["#BHA", "#KomedoBersih", "#Halal"],
     concerns: ["blackheads", "acne", "pores"],
     color: "#7FA8A0",
+    imageUrl: unsplash("1638609269267-f0128098a809"),
   },
   {
     slug: "npure-centella-moisturizer",
@@ -215,6 +230,7 @@ const seedProducts: SeedProduct[] = [
     hashtags: ["#Centella", "#KulitSensitif", "#Halal"],
     concerns: ["acne"],
     color: "#8FA96B",
+    imageUrl: unsplash("1763503836825-97f5450d155a"),
   },
   {
     slug: "skintific-alpha-arbutin",
@@ -232,6 +248,7 @@ const seedProducts: SeedProduct[] = [
     hashtags: ["#AlphaArbutin", "#NodaHitam", "#GlassSkin"],
     concerns: ["dark_spots"],
     color: "#C9A2B8",
+    imageUrl: unsplash("1573575155376-b5010099301b"),
   },
 ];
 
@@ -398,10 +415,11 @@ async function main() {
         shades: p.shades ?? [],
         concerns: p.concerns ?? [],
         color: p.color,
+        imageUrl: p.imageUrl,
         storeId: storeIdByName.get(p.storeName)!,
       },
-      // Keep concern tags in sync so re-seeding picks up taxonomy changes.
-      update: { concerns: p.concerns ?? [] },
+      // Keep concern tags and photo in sync so re-seeding picks up changes.
+      update: { concerns: p.concerns ?? [], imageUrl: p.imageUrl },
     });
   }
 

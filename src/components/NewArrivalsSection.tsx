@@ -49,7 +49,7 @@ export default function NewArrivalsSection({
             onClick={() => onOpenProduct(product.id)}
           >
             <div className="new-arrival-image">
-              <ProductImage color={product.color} label={product.name} />
+              <ProductImage color={product.color} label={product.name} imageUrl={product.imageUrl} />
               <span className="new-arrival-badge">
                 {launchLabel(product.daysSinceLaunch)}
               </span>
