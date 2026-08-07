@@ -17,6 +17,7 @@
     "prisma:studio": "prisma studio",
     "seed": "tsx prisma/seed.ts",
     "lint": "tsc -p tsconfig.json --noEmit",
+    "test:smoke": "node scripts/smoke.mjs",
     "test:api": "newman run postman/AURA-Marketplace.postman_collection.json -e postman/local.postman_environment.json",
     "test:api:prod": "newman run postman/AURA-Marketplace.postman_collection.json -e postman/production.postman_environment.json",
     "test:api:report": "newman run postman/AURA-Marketplace.postman_collection.json -e postman/local.postman_environment.json --reporters cli,htmlextra --reporter-htmlextra-export postman/report.html"

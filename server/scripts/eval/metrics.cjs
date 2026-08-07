@@ -109,8 +109,23 @@ for (const r of rows) {
   qualities[r.imageQuality] = (qualities[r.imageQuality] || 0) + 1;
 }
 
+/**
+ * Wilson score interval. At the sample sizes the free Gemini tier allows, a
+ * bare accuracy figure is close to meaningless - the interval is what tells
+ * you how much of the number is signal.
+ */
+function wilson(successes, total, z = 1.96) {
+  if (!total) return [0, 0];
+  const p = successes / total;
+  const d = 1 + (z * z) / total;
+  const centre = p + (z * z) / (2 * total);
+  const spread = z * Math.sqrt((p * (1 - p)) / total + (z * z) / (4 * total * total));
+  return [Math.max(0, (centre - spread) / d), Math.min(1, (centre + spread) / d)];
+}
+
 // ---- report ---------------------------------------------------------------
 const pct = (v) => (v * 100).toFixed(1) + "%";
+const accuracyCI = wilson(correct, rows.length);
 const pad = (s, n) => String(s).padEnd(n);
 const padL = (s, n) => String(s).padStart(n);
 
@@ -149,7 +164,10 @@ for (const c of CLASSES) {
 }
 
 console.log("\nOVERALL");
-console.log(`  Accuracy (top-1) : ${pct(accuracy)}  (${correct}/${rows.length})`);
+console.log(
+  `  Accuracy (top-1) : ${pct(accuracy)}  (${correct}/${rows.length})` +
+    `  95% CI ${pct(accuracyCI[0])} - ${pct(accuracyCI[1])}`,
+);
 console.log(`  Accuracy (top-2) : ${pct(top2)}`);
 console.log(`  Macro precision  : ${pct(macroPrecision)}`);
 console.log(`  Macro recall     : ${pct(macroRecall)}`);
@@ -172,6 +190,7 @@ if (outPath) {
         averagePrecision: ap,
         overall: {
           accuracy,
+          accuracyCI,
           top2Accuracy: top2,
           macroPrecision,
           macroRecall,

@@ -9,3 +9,8 @@ dist
 # Newman test outputs
 postman/report.html
 postman/newman-*.json
+
+# Dataset images pulled out of the Skin v2 archive for the accuracy run.
+# The sample manifest and the scores are committed; the pictures are not ours
+# to redistribute, and extract.cjs rebuilds them from the archive.
+scripts/eval/images/

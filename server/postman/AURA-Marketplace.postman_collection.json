@@ -68,6 +68,18 @@
     {
       "key": "sellerEmail",
       "value": ""
+    },
+    {
+      "key": "pendingSellerToken",
+      "value": ""
+    },
+    {
+      "key": "sellerProductId",
+      "value": ""
+    },
+    {
+      "key": "voucherId",
+      "value": ""
     }
   ],
   "event": [
@@ -3011,7 +3023,735 @@
       ]
     },
     {
-      "name": "13 Security headers",
+      "name": "14 Seller Center",
+      "item": [
+        {
+          "name": "GET /api/seller/store without token -> 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401 Unauthorized', () => pm.response.to.have.status(401));",
+                  "pm.test('a dashboard belongs to an account', () => {",
+                  "    pm.expect(pm.response.json().error.code).to.eql('UNAUTHORIZED');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/seller/store",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "seller",
+                "store"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/seller/store as the approved seller",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const store = pm.response.json().store;",
+                  "pm.test('the dashboard shows the seller own brand', () => {",
+                  "    pm.expect(store).to.be.an('object');",
+                  "    pm.expect(store.name).to.eql(pm.collectionVariables.get('applyBrandName'));",
+                  "});",
+                  "pm.test('admin approval is reflected', () => pm.expect(store.status).to.eql('APPROVED'));",
+                  "pm.test('reports the stats a seller needs', () => {",
+                  "    pm.expect(store.productCount, 'productCount').to.be.a('number');",
+                  "    pm.expect(store.unitsSold, 'unitsSold').to.be.a('number');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/seller/store",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "seller",
+                "store"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/seller/store for an account with no brand",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('null rather than 404 - having no store is normal', () => {",
+                  "    pm.expect(pm.response.json().store).to.eql(null);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/seller/store",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "seller",
+                "store"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/seller/products invalid -> 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('VALIDATION_ERROR', () => {",
+                  "    pm.expect(pm.response.json().error.code).to.eql('VALIDATION_ERROR');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"X\",\n  \"price\": 10,\n  \"category\": \"SKINCARE\",\n  \"description\": \"pendek\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/seller/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "seller",
+                "products"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/seller/products rejects an unknown concern -> 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('concerns are limited to the scan taxonomy', () => {",
+                  "    pm.expect(pm.response.json().error.code).to.eql('VALIDATION_ERROR');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Serum Uji Concern\",\n  \"price\": 89000,\n  \"category\": \"SKINCARE\",\n  \"description\": \"Concern harus memakai kosakata yang sama dengan AI Scan supaya produk ikut terjaring rekomendasi.\",\n  \"concerns\": [\n    \"glowing\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/seller/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "seller",
+                "products"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/seller/products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "const p = pm.response.json().product;",
+                  "pm.collectionVariables.set('sellerProductId', p.id);",
+                  "pm.test('keeps the submitted price', () => pm.expect(p.price).to.eql(89000));",
+                  "pm.test('listed as a UMKM product', () => pm.expect(p.umkm).to.eql(true));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Serum Newman {{$timestamp}}\",\n  \"price\": 89000,\n  \"category\": \"SKINCARE\",\n  \"description\": \"Serum uji dari koleksi Postman untuk memastikan produk penjual terbit ke katalog publik.\",\n  \"concerns\": [\n    \"acne\",\n    \"dark_spots\"\n  ],\n  \"halal\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/seller/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "seller",
+                "products"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/seller/products lists it",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const ids = pm.response.json().products.map(p => p.id);",
+                  "pm.test('the new listing is on the dashboard', () => {",
+                  "    pm.expect(ids).to.include(pm.collectionVariables.get('sellerProductId'));",
+                  "});",
+                  "pm.test('the dashboard dates the launch', () => {",
+                  "    const p = pm.response.json().products.find(p => p.id === pm.collectionVariables.get('sellerProductId'));",
+                  "    pm.expect(p.launchedAt, 'launchedAt').to.be.a('string');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/seller/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "seller",
+                "products"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/products/new includes the seller listing",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const ids = pm.response.json().products.map(p => p.id);",
+                  "pm.test('a new listing reaches Baru Rilis without an extra step', () => {",
+                  "    pm.expect(ids).to.include(pm.collectionVariables.get('sellerProductId'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/new",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "new"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/register (pending seller)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('pendingSellerEmail', `pending+${Date.now()}@aura.id`);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('pendingSellerToken', pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Newman Pending Seller\",\n  \"email\": \"{{pendingSellerEmail}}\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/brands/apply (stays pending)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('starts PENDING', () => {",
+                  "    pm.expect(pm.response.json().application.status).to.eql('PENDING');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{pendingSellerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Brand Menunggu {{$timestamp}}\",\n  \"tagline\": \"Brand yang sengaja dibiarkan menunggu persetujuan\",\n  \"story\": \"Dipakai untuk membuktikan brand yang belum disetujui tidak bisa menerbitkan produk ke katalog publik.\",\n  \"city\": \"Yogyakarta\",\n  \"contactName\": \"Newman Tester\",\n  \"contactEmail\": \"newman@aura.id\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/brands/apply",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "brands",
+                "apply"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/seller/products while pending -> 403",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('403 Forbidden', () => pm.response.to.have.status(403));",
+                  "pm.test('an unreviewed brand cannot reach the catalogue', () => {",
+                  "    pm.expect(pm.response.json().error.code).to.eql('STORE_NOT_APPROVED');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{pendingSellerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Serum Belum Disetujui\",\n  \"price\": 75000,\n  \"category\": \"SKINCARE\",\n  \"description\": \"Produk ini seharusnya ditolak karena brand pemiliknya belum ditinjau admin.\",\n  \"concerns\": [\n    \"acne\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/seller/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "seller",
+                "products"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "15 Vouchers",
+      "item": [
+        {
+          "name": "GET /api/vouchers logged out",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('the catalogue is browsable without an account', () => {",
+                  "    pm.expect(body.vouchers).to.be.an('array').that.is.not.empty;",
+                  "});",
+                  "pm.test('no balance is claimed for an anonymous caller', () => {",
+                  "    pm.expect(body.points).to.eql(null);",
+                  "});",
+                  "pm.test('sorted cheapest first', () => {",
+                  "    const costs = body.vouchers.map(v => v.pointsCost);",
+                  "    pm.expect(costs).to.eql([...costs].sort((a, b) => a - b));",
+                  "});",
+                  "pm.test('every voucher is priced and bounded', () => {",
+                  "    body.vouchers.forEach(v => {",
+                  "        pm.expect(v.pointsCost, v.code).to.be.above(0);",
+                  "        pm.expect(v.discountAmount, v.code).to.be.above(0);",
+                  "        pm.expect(v.minSpend, v.code).to.be.at.least(v.discountAmount);",
+                  "        pm.expect(v.validForDays, v.code).to.be.above(0);",
+                  "    });",
+                  "});",
+                  "pm.collectionVariables.set('voucherId', body.vouchers[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vouchers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vouchers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/vouchers as a signed-in user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('reports the caller balance', () => {",
+                  "    pm.expect(pm.response.json().points).to.be.a('number');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/vouchers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vouchers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/vouchers/mine without token -> 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401 Unauthorized', () => pm.response.to.have.status(401));",
+                  "pm.test('UNAUTHORIZED', () => {",
+                  "    pm.expect(pm.response.json().error.code).to.eql('UNAUTHORIZED');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vouchers/mine",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vouchers",
+                "mine"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/vouchers/mine",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('returns the caller own vouchers', () => {",
+                  "    pm.expect(pm.response.json().vouchers).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/vouchers/mine",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vouchers",
+                "mine"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/vouchers/:id/redeem without token -> 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vouchers/{{voucherId}}/redeem",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vouchers",
+                "{{voucherId}}",
+                "redeem"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/vouchers/unknown/redeem -> 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 Not Found', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/vouchers/tidak-ada/redeem",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vouchers",
+                "tidak-ada",
+                "redeem"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/vouchers/:id/redeem with a fresh account -> 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('points must be earned before they are spent', () => {",
+                  "    pm.expect(pm.response.json().error.code).to.eql('INSUFFICIENT_POINTS');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{pendingSellerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/vouchers/{{voucherId}}/redeem",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vouchers",
+                "{{voucherId}}",
+                "redeem"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "16 Security headers",
       "item": [
         {
           "name": "helmet + CORS headers present",

@@ -1,4 +1,9 @@
-import { loadStripe, type Stripe } from "@stripe/stripe-js";
+// The default entry point injects Stripe.js the moment the module is imported,
+// which cost every visitor a 252 KB download on the landing page for a script
+// only the payment screen uses. The /pure entry defers the injection until
+// loadStripe() is actually called.
+import type { Stripe } from "@stripe/stripe-js";
+import { loadStripe } from "@stripe/stripe-js/pure";
 
 const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as
   | string

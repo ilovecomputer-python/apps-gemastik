@@ -1,0 +1,116 @@
+{
+  "samples": 20,
+  "confusionMatrix": {
+    "acne": {
+      "acne": 4,
+      "blackheads": 0,
+      "dark_spots": 0,
+      "pores": 0,
+      "wrinkles": 0
+    },
+    "blackheads": {
+      "acne": 1,
+      "blackheads": 1,
+      "dark_spots": 0,
+      "pores": 2,
+      "wrinkles": 0
+    },
+    "dark_spots": {
+      "acne": 0,
+      "blackheads": 0,
+      "dark_spots": 4,
+      "pores": 0,
+      "wrinkles": 0
+    },
+    "pores": {
+      "acne": 0,
+      "blackheads": 0,
+      "dark_spots": 0,
+      "pores": 4,
+      "wrinkles": 0
+    },
+    "wrinkles": {
+      "acne": 0,
+      "blackheads": 0,
+      "dark_spots": 1,
+      "pores": 0,
+      "wrinkles": 3
+    }
+  },
+  "perClass": {
+    "acne": {
+      "tp": 4,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.8,
+      "recall": 1,
+      "f1": 0.888888888888889,
+      "support": 4
+    },
+    "blackheads": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 3,
+      "precision": 1,
+      "recall": 0.25,
+      "f1": 0.4,
+      "support": 4
+    },
+    "dark_spots": {
+      "tp": 4,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.8,
+      "recall": 1,
+      "f1": 0.888888888888889,
+      "support": 4
+    },
+    "pores": {
+      "tp": 4,
+      "fp": 2,
+      "fn": 0,
+      "precision": 0.6666666666666666,
+      "recall": 1,
+      "f1": 0.8,
+      "support": 4
+    },
+    "wrinkles": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "support": 4
+    }
+  },
+  "averagePrecision": {
+    "acne": 1,
+    "blackheads": 0.6810897435897436,
+    "dark_spots": 0.875,
+    "pores": 0.6575757575757576,
+    "wrinkles": 0.875
+  },
+  "overall": {
+    "accuracy": 0.8,
+    "accuracyCI": [
+      0.5839782779742402,
+      0.9193436467288001
+    ],
+    "top2Accuracy": 0.9,
+    "macroPrecision": 0.8533333333333333,
+    "macroRecall": 0.8,
+    "macroF1": 0.766984126984127,
+    "mAP": 0.8177331002331002
+  },
+  "diagnostics": {
+    "subjects": {
+      "face": 12,
+      "skin_closeup": 8
+    },
+    "qualities": {
+      "good": 17,
+      "fair": 3
+    }
+  }
+}

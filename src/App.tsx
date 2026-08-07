@@ -78,7 +78,8 @@ function App() {
     const has = wishlistIds.has(id);
     setWishlistIds((prev) => {
       const next = new Set(prev);
-      has ? next.delete(id) : next.add(id);
+      if (has) next.delete(id);
+      else next.add(id);
       return next;
     });
     try {
@@ -331,7 +332,7 @@ function App() {
   };
 
   if (view.name === "landing" || view.name === "login" || view.name === "register") {
-    return <div className="app-shell app-shell-landing">{renderView()}</div>;
+    return <main className="app-shell app-shell-landing">{renderView()}</main>;
   }
 
   const hideNav =
@@ -341,7 +342,9 @@ function App() {
 
   return (
     <div className="app-shell">
-      <div className="app-scroll">{renderView()}</div>
+      {/* A <main> landmark is how a screen reader skips straight to the
+          content instead of walking the whole page. */}
+      <main className="app-scroll">{renderView()}</main>
       {!hideNav && (
         <BottomNav
           active={activeTab}

@@ -8,6 +8,12 @@
       "port": 5173
     },
     {
+      "name": "aura-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "preview"],
+      "port": 4173
+    },
+    {
       "name": "aura-api",
       "url": "http://localhost:4000"
     }
