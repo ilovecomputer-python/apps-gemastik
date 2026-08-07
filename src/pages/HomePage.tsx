@@ -98,7 +98,12 @@ export default function HomePage({
         <div className="delivery-row">
           <div>
             <span className="delivery-label">DIKIRIM KE · ALAMAT UTAMA</span>
-            <div className="delivery-address">Rembang, Indonesia ▾</div>
+            <div className="delivery-address">
+              {/* The caret sits outside the truncating span so it survives on
+                  narrow phones - a bare "Rembang, Indon…" reads as a bug. */}
+              <span className="delivery-city">Rembang, Indonesia</span>
+              <span aria-hidden="true">▾</span>
+            </div>
           </div>
           <div className="header-actions">
             <button

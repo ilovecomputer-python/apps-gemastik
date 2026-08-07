@@ -5,6 +5,7 @@ import type {
   PaymentMethod,
   PaymentSession,
   ShippingOption,
+  UserVoucher,
 } from "../types";
 import {
   ApiError,
@@ -13,6 +14,7 @@ import {
   metaApi,
   ordersApi,
   paymentsApi,
+  vouchersApi,
 } from "../lib/api";
 import { formatPrice } from "../utils/format";
 import TopBar from "../components/TopBar";
@@ -23,12 +25,14 @@ interface CheckoutPageProps {
   onBack: () => void;
   onPlaceOrder: (orderId: string, total: number) => void;
   onPayOnline: (session: PaymentSession) => void;
+  onBrowseVouchers: () => void;
 }
 
 export default function CheckoutPage({
   onBack,
   onPlaceOrder,
   onPayOnline,
+  onBrowseVouchers,
 }: CheckoutPageProps) {
   const [items, setItems] = useState<CartLine[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -43,6 +47,9 @@ export default function CheckoutPage({
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [vouchers, setVouchers] = useState<UserVoucher[]>([]);
+  const [voucherId, setVoucherId] = useState<string | null>(null);
+  const [voucherSheetOpen, setVoucherSheetOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -50,12 +57,14 @@ export default function CheckoutPage({
       addressesApi.list(),
       metaApi.shippingOptions(),
       metaApi.paymentMethods(),
+      vouchersApi.mine(),
     ])
-      .then(([cart, addr, shipping, payment]) => {
+      .then(([cart, addr, shipping, payment, owned]) => {
         setItems(cart.items);
         setAddresses(addr.addresses);
         setShippingOptions(shipping.shippingOptions);
         setPaymentMethods(payment.paymentMethods);
+        setVouchers(owned.vouchers.filter((v) => v.usable));
         setAddressId(
           addr.addresses.find((a) => a.isDefault)?.id ?? addr.addresses[0]?.id ?? null,
         );
@@ -68,8 +77,22 @@ export default function CheckoutPage({
 
   const subtotal = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
   const shipping = shippingOptions.find((s) => s.id === shippingId) ?? null;
-  const total = subtotal + (shipping?.price ?? 0);
   const address = addresses.find((a) => a.id === addressId) ?? null;
+
+  const affordable = (v: UserVoucher) => subtotal >= v.voucher.minSpend;
+  const selectedVoucher = vouchers.find((v) => v.id === voucherId) ?? null;
+  // Shown before the server confirms it, but the server derives the real
+  // figure from the stored voucher — this is only the preview.
+  const discount = selectedVoucher
+    ? Math.min(selectedVoucher.voucher.discountAmount, subtotal)
+    : 0;
+  const total = subtotal + (shipping?.price ?? 0) - discount;
+
+  // Changing the cart can drop the basket below a chosen voucher's minimum.
+  useEffect(() => {
+    if (selectedVoucher && !affordable(selectedVoucher)) setVoucherId(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subtotal, selectedVoucher]);
 
   const selectedPayment =
     paymentMethods.find((p) => p.id === paymentId) ?? null;
@@ -80,6 +103,8 @@ export default function CheckoutPage({
     setPlacing(true);
     setError(null);
     try {
+      // Only the voucher's id travels; the discount is worked out server-side.
+      const voucher = voucherId ? { userVoucherId: voucherId } : {};
       if (paysOnline) {
         // Gateway orders stay PENDING until Stripe confirms, so hand off to
         // the payment page instead of creating a finished order here.
@@ -88,6 +113,7 @@ export default function CheckoutPage({
             addressId,
             shippingOptionId: shippingId,
             paymentMethodId: paymentId,
+            ...voucher,
           }),
         );
         return;
@@ -96,6 +122,7 @@ export default function CheckoutPage({
         addressId,
         shippingOptionId: shippingId,
         paymentMethodId: paymentId,
+        ...voucher,
       });
       onPlaceOrder(order.orderNumber, order.total);
     } catch (err) {
@@ -235,6 +262,43 @@ export default function CheckoutPage({
       </div>
 
       <div className="checkout-section">
+        <h3 className="section-title">Voucher</h3>
+        <button
+          className={`voucher-picker${selectedVoucher ? " active" : ""}`}
+          onClick={() =>
+            vouchers.length > 0 ? setVoucherSheetOpen(true) : onBrowseVouchers()
+          }
+        >
+          <Icon name="ticket" size={17} className="voucher-picker-icon" />
+          <div className="voucher-picker-body">
+            {selectedVoucher ? (
+              <>
+                <div className="voucher-picker-title">
+                  {selectedVoucher.voucher.title}
+                </div>
+                <div className="meta">
+                  Hemat {formatPrice(discount)} di pesanan ini
+                </div>
+              </>
+            ) : vouchers.length > 0 ? (
+              <>
+                <div className="voucher-picker-title">Pakai voucher</div>
+                <div className="meta">
+                  {vouchers.length} voucher siap dipakai
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="voucher-picker-title">Belum punya voucher</div>
+                <div className="meta">Tukar poin ulasanmu jadi potongan</div>
+              </>
+            )}
+          </div>
+          <Icon name="chevron-right" size={16} className="menu-chevron" />
+        </button>
+      </div>
+
+      <div className="checkout-section">
         <h3 className="section-title">Ringkasan pembayaran</h3>
         <div className="summary-row">
           <span>Subtotal produk</span>
@@ -244,6 +308,12 @@ export default function CheckoutPage({
           <span>Ongkos kirim {shipping ? `(${shipping.name})` : ""}</span>
           <span>{formatPrice(shipping?.price ?? 0)}</span>
         </div>
+        {discount > 0 && (
+          <div className="summary-row summary-discount">
+            <span>Diskon voucher</span>
+            <span>−{formatPrice(discount)}</span>
+          </div>
+        )}
         <div className="summary-row summary-total">
           <span>Total pembayaran</span>
           <span className="price large">{formatPrice(total)}</span>
@@ -269,6 +339,61 @@ export default function CheckoutPage({
               : "Buat Pesanan"}
         </button>
       </div>
+
+      {voucherSheetOpen && (
+        <div className="sheet-overlay" onClick={() => setVoucherSheetOpen(false)}>
+          <div className="sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="sheet-handle" />
+            <h3 className="sheet-title">Pilih voucher</h3>
+            <div className="option-list">
+              {vouchers.map((v) => {
+                const usable = affordable(v);
+                return (
+                  <button
+                    key={v.id}
+                    className={`option-row voucher-row${
+                      voucherId === v.id ? " active" : ""
+                    }${usable ? "" : " disabled"}`}
+                    disabled={!usable}
+                    onClick={() => {
+                      setVoucherId(v.id);
+                      setVoucherSheetOpen(false);
+                    }}
+                  >
+                    <div>
+                      <div className="option-row-title">{v.voucher.title}</div>
+                      <div className="meta">
+                        {usable
+                          ? `Berlaku sampai ${new Date(v.expiresAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}`
+                          : `Belanja minimal ${formatPrice(v.voucher.minSpend)} — kurang ${formatPrice(v.voucher.minSpend - subtotal)}`}
+                      </div>
+                    </div>
+                    <span className="option-row-price">
+                      −{formatPrice(v.voucher.discountAmount)}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="sheet-actions">
+              {voucherId && (
+                <button
+                  className="btn-secondary"
+                  onClick={() => {
+                    setVoucherId(null);
+                    setVoucherSheetOpen(false);
+                  }}
+                >
+                  Lepas voucher
+                </button>
+              )}
+              <button className="btn-secondary" onClick={onBrowseVouchers}>
+                Tukar poin
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {addressSheetOpen && (
         <div

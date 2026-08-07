@@ -8,8 +8,30 @@
   position: relative;
 }
 
+/*
+ * On a wide screen the 480px column is the whole app, and without an edge it
+ * reads as a phone layout nobody adapted. Giving it a border and a shadow
+ * against a darker field makes the same column read as a deliberate frame.
+ * Nothing inside reflows - only the surroundings change.
+ */
+@media (min-width: 900px) {
+  body {
+    background: var(--beige2);
+  }
+
+  .app-shell {
+    border-left: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+}
+
 .app-shell-landing {
   height: 100%;
+  /* Landing and the auth screens are one panel with no inner scroller, so a
+     short viewport - a phone in landscape, a small laptop window - would
+     otherwise clip the heading and the submit button off the top and bottom. */
+  overflow-y: auto;
 }
 
 .app-scroll {
@@ -88,6 +110,12 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  gap: 12px;
+}
+
+/* Lets the address ellipsis instead of shoving the icons off a narrow phone. */
+.delivery-row > div:first-child {
+  min-width: 0;
 }
 
 .delivery-label {
@@ -97,14 +125,24 @@
 }
 
 .delivery-address {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
   font-weight: 600;
   font-size: 15px;
   margin-top: 2px;
 }
 
+.delivery-city {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .header-actions {
   display: flex;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .icon-btn {
@@ -130,7 +168,7 @@
   padding: 0 3px;
   border-radius: var(--radius-pill);
   background: var(--rosy);
-  color: var(--paper);
+  color: var(--on-dark);
   font-size: 9px;
   font-weight: 700;
   display: flex;
@@ -187,9 +225,9 @@
 }
 
 .chip.active {
-  background: var(--dark);
-  border-color: var(--dark);
-  color: var(--paper);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
 }
 
 .chip-filter {
@@ -201,7 +239,7 @@
   height: 15px;
   border-radius: 50%;
   background: var(--rosy);
-  color: var(--paper);
+  color: var(--on-dark);
   font-size: 9px;
   font-weight: 700;
   display: flex;
@@ -226,7 +264,7 @@
   gap: 6px;
   text-align: left;
   border: none;
-  color: var(--paper);
+  color: var(--on-dark);
   scroll-snap-align: start;
 }
 
@@ -271,7 +309,7 @@
 .link-btn {
   border: none;
   background: none;
-  color: var(--midnight);
+  color: var(--teal-ink);
   font-weight: 600;
   font-size: 13px;
 }
@@ -354,17 +392,17 @@
 
 .badge-halal {
   background: var(--moss);
-  color: var(--paper);
+  color: var(--on-dark);
 }
 
 .badge-umkm {
   background: var(--rosy);
-  color: var(--paper);
+  color: var(--on-dark);
 }
 
 .badge-ai {
   background: var(--midnight);
-  color: var(--paper);
+  color: var(--on-dark);
   align-self: flex-start;
 }
 
@@ -508,7 +546,7 @@
   padding: 3px 8px;
   border-radius: var(--radius-pill);
   background: rgba(10, 51, 35, 0.85);
-  color: var(--paper);
+  color: var(--on-dark);
   font-size: 9.5px;
   font-weight: 700;
 }
@@ -673,7 +711,7 @@
   padding: 16px;
   border-radius: var(--radius-lg);
   background: linear-gradient(140deg, var(--rosy), var(--dark));
-  color: var(--paper);
+  color: var(--on-dark);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -767,7 +805,7 @@
   padding: 18px;
   border-radius: var(--radius-lg);
   background: linear-gradient(150deg, var(--midnight), var(--dark));
-  color: var(--paper);
+  color: var(--on-dark);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -811,8 +849,9 @@
   line-height: 1.5;
 }
 
+/* Sits on the rewards gradient, which is dark in both themes. */
 .rewards-cta {
-  background: var(--paper);
+  background: var(--on-dark);
   color: var(--dark);
 }
 
@@ -941,7 +980,7 @@
 
 .badge-new {
   background: var(--midnight);
-  color: var(--paper);
+  color: var(--on-dark);
 }
 
 /* Brand on-boarding */
@@ -1002,7 +1041,7 @@
   justify-content: center;
   font-size: 20px;
   flex-shrink: 0;
-  color: var(--midnight);
+  color: var(--teal-ink);
 }
 
 .scan-mode-title {
@@ -1101,7 +1140,7 @@
 .scan-preview.has-photo {
   border-style: solid;
   background: linear-gradient(160deg, var(--midnight), var(--dark));
-  color: var(--paper);
+  color: var(--on-dark);
   font-weight: 600;
 }
 
@@ -1285,7 +1324,7 @@
   border-radius: var(--radius-pill);
   border: none;
   background: var(--dark);
-  color: var(--paper);
+  color: var(--on-dark);
   font-weight: 600;
   font-size: 14.5px;
 }
@@ -1341,7 +1380,7 @@
   height: 38px;
   border-radius: 50%;
   background: var(--moss);
-  color: var(--paper);
+  color: var(--on-dark);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1377,7 +1416,7 @@
 .shade-chip.active {
   background: var(--rosy);
   border-color: var(--rosy);
-  color: var(--paper);
+  color: var(--on-dark);
 }
 
 .description-text {
@@ -1395,7 +1434,7 @@
 
 .hashtag {
   font-size: 12px;
-  color: var(--midnight);
+  color: var(--teal-ink);
 }
 
 .buy-btn {
@@ -1559,7 +1598,7 @@
   padding: 6px 12px;
   border-radius: var(--radius-pill);
   background: var(--midnight);
-  color: var(--paper);
+  color: var(--on-dark);
   font-size: 11.5px;
   font-weight: 700;
   flex-shrink: 0;
@@ -1603,7 +1642,7 @@
   height: 48px;
   border-radius: 50%;
   background: var(--dark);
-  color: var(--paper);
+  color: var(--on-dark);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1642,7 +1681,7 @@
   border-radius: var(--radius-lg);
   background: linear-gradient(140deg, var(--rosy), var(--dark));
   border: none;
-  color: var(--paper);
+  color: var(--on-dark);
   display: flex;
   align-items: center;
   gap: 14px;
@@ -1695,7 +1734,7 @@
   font-size: 17px;
   width: 24px;
   text-align: center;
-  color: var(--midnight);
+  color: var(--teal-ink);
 }
 
 .menu-title {
@@ -1761,7 +1800,7 @@
 }
 
 .bottom-nav-item.active {
-  color: var(--dark);
+  color: var(--accent);
 }
 
 .bottom-nav-icon {
@@ -1778,7 +1817,7 @@
   padding: 0 3px;
   border-radius: var(--radius-pill);
   background: var(--rosy);
-  color: var(--paper);
+  color: var(--on-dark);
   font-size: 8.5px;
   font-weight: 700;
   display: flex;
@@ -1863,8 +1902,8 @@
 
 .option-chip.active {
   background: var(--midnight);
-  border-color: var(--midnight);
-  color: var(--paper);
+  border-color: var(--teal-ink);
+  color: var(--on-dark);
 }
 
 .sheet-actions {
@@ -2100,7 +2139,7 @@
 
 .checkout-address-icon {
   margin-top: 2px;
-  color: var(--midnight);
+  color: var(--teal-ink);
   flex-shrink: 0;
 }
 
@@ -2184,7 +2223,7 @@
 }
 
 .option-row.active {
-  border-color: var(--midnight);
+  border-color: var(--teal-ink);
   background: rgba(16, 86, 102, 0.06);
 }
 
@@ -2207,7 +2246,7 @@
 
 .badge-default {
   background: var(--midnight);
-  color: var(--paper);
+  color: var(--on-dark);
 }
 
 .radio-dot {
@@ -2219,7 +2258,7 @@
 }
 
 .radio-dot.active {
-  border-color: var(--midnight);
+  border-color: var(--teal-ink);
   background: radial-gradient(
     circle,
     var(--midnight) 0 40%,
@@ -2239,6 +2278,54 @@
   font-weight: 700;
   padding-top: 8px;
   border-top: 1px dashed var(--line);
+}
+
+.summary-discount {
+  color: var(--moss);
+  font-weight: 600;
+}
+
+.voucher-picker {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: var(--card);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+
+.voucher-picker.active {
+  border-color: var(--moss);
+  background: color-mix(in srgb, var(--moss) 8%, var(--card));
+}
+
+.voucher-picker-icon {
+  color: var(--moss);
+  flex-shrink: 0;
+}
+
+.voucher-picker-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.voucher-picker-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.voucher-row.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.voucher-row .option-row-price {
+  color: var(--moss);
+  font-weight: 700;
 }
 
 .checkout-footer {
@@ -2295,7 +2382,7 @@
   height: 28px;
   border-radius: 6px;
   background: var(--dark);
-  color: var(--paper);
+  color: var(--on-dark);
   font-size: 14px;
   font-weight: 700;
   display: flex;
@@ -2365,7 +2452,7 @@
   height: 64px;
   border-radius: 50%;
   background: var(--moss);
-  color: var(--paper);
+  color: var(--on-dark);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2411,15 +2498,7 @@
 }
 
 .auth-mark {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--dark);
-  color: var(--paper);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .auth-copy {
@@ -2427,6 +2506,40 @@
   color: var(--muted);
   max-width: 280px;
   margin-bottom: 20px;
+}
+
+/* Pembeli / Penjual switch. Same account, same credentials - this only picks
+   where a successful login or registration lands. */
+.auth-role-tabs {
+  display: flex;
+  width: 100%;
+  max-width: 320px;
+  padding: 4px;
+  gap: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--card);
+  border: 1px solid var(--line);
+  margin-bottom: 22px;
+}
+
+.auth-role-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  background: none;
+  padding: 10px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.auth-role-tab.active {
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 .auth-form {
@@ -2517,32 +2630,32 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 14px;
-  margin-top: 20vh;
+  gap: 6px;
 }
 
 .landing-mark {
-  margin-bottom: 4px;
+  margin-bottom: 10px;
 }
 
-.landing-eyebrow {
-  font-size: 10.5px;
-  letter-spacing: 0.16em;
+.landing-wordmark {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.landing-wordmark-name {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+}
+
+.landing-wordmark-sub {
+  font-size: 11px;
+  letter-spacing: 0.28em;
   color: var(--muted);
   font-weight: 600;
-}
-
-.landing-title {
-  font-size: 34px;
-  line-height: 1.15;
-  color: var(--dark);
-}
-
-.landing-copy {
-  font-size: 14px;
-  color: var(--muted);
-  line-height: 1.55;
-  max-width: 320px;
 }
 
 .landing-cta {

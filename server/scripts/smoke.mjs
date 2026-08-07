@@ -728,6 +728,90 @@ async function main() {
     return "PENDING, keranjang tidak hilang";
   });
 
+  await step("Earn and redeem a second voucher", async () => {
+    const catalogue = await api("GET", "/api/products");
+    const others = (catalogue.body.products ?? catalogue.body).filter(
+      (p) => p.id !== ctx.product.id,
+    );
+    let points = await myPoints();
+    for (const product of others) {
+      if (points >= ctx.voucher.pointsCost) break;
+      const res = await api("POST", `/api/products/${product.id}/reviews`, {
+        token: ctx.token,
+        body: { rating: 5, text: "Repurchase ketiga, teksturnya masih sama enaknya." },
+      });
+      if ([200, 201].includes(res.status)) points += res.body.pointsAwarded ?? 10;
+    }
+    expect(points >= ctx.voucher.pointsCost, `only reached ${points} points`);
+    const res = await api("POST", `/api/vouchers/${ctx.voucher.id}/redeem`, { token: ctx.token });
+    expect([200, 201].includes(res.status), `redeem: ${res.status}`);
+    ctx.cardVoucher = res.body.userVoucher ?? res.body.voucher ?? res.body;
+    return `voucher kedua siap (${points} poin terkumpul)`;
+  });
+
+  await step("Card checkout applies the voucher", async () => {
+    await api("POST", `/api/cart/${ctx.product.id}`, { token: ctx.token });
+    const res = await api("POST", "/api/payments/intent", {
+      token: ctx.token,
+      body: {
+        addressId: ctx.address.id,
+        shippingOptionId: ctx.shipping.id,
+        paymentMethodId: ctx.stripeMethod.id,
+        userVoucherId: ctx.cardVoucher.id,
+      },
+    });
+    expect([200, 201].includes(res.status), `intent: ${res.status} ${JSON.stringify(res.body)?.slice(0, 200)}`);
+    expect(res.body.discount > 0, "the card path ignored the voucher");
+    expect(
+      res.body.amount === res.body.subtotal + res.body.shippingFee - res.body.discount,
+      "the discount is not reflected in the amount Stripe will charge",
+    );
+    ctx.voucherOrderId = res.body.orderId;
+    return `${rupiah(res.body.subtotal)} + ${rupiah(res.body.shippingFee)} - ${rupiah(res.body.discount)} = ${rupiah(res.body.amount)}`;
+  });
+
+  await step("The reserved voucher cannot be spent elsewhere", async () => {
+    const mine = await api("GET", "/api/vouchers/mine", { token: ctx.token });
+    const held = (mine.body.vouchers ?? mine.body).find((v) => v.id === ctx.cardVoucher.id);
+    expect(held && held.usable === false, "an unpaid card checkout left the voucher spendable");
+    await api("POST", `/api/cart/${ctx.product.id}`, { token: ctx.token });
+    const res = await api("POST", "/api/orders", {
+      token: ctx.token,
+      body: {
+        addressId: ctx.address.id,
+        shippingOptionId: ctx.shipping.id,
+        paymentMethodId: ctx.payment.id,
+        userVoucherId: ctx.cardVoucher.id,
+      },
+    });
+    expect([400, 409].includes(res.status), `expected a refusal, got ${res.status}`);
+    return `${res.status} ${res.body?.error?.code ?? ""}`;
+  });
+
+  // Reserving is only acceptable if walking away gives the voucher back.
+  await step("Abandoning the card checkout returns the voucher", async () => {
+    const res = await api("POST", "/api/payments/intent", {
+      token: ctx.token,
+      body: {
+        addressId: ctx.address.id,
+        shippingOptionId: ctx.shipping.id,
+        paymentMethodId: ctx.stripeMethod.id,
+        userVoucherId: ctx.cardVoucher.id,
+      },
+    });
+    expect([200, 201].includes(res.status), `retry intent: ${res.status} ${JSON.stringify(res.body)?.slice(0, 200)}`);
+    expect(res.body.discount > 0, "the voucher was not returned in time for the retry");
+    expect(res.body.orderId !== ctx.voucherOrderId, "the retry reused the abandoned order");
+
+    const stale = await api("GET", `/api/payments/orders/${ctx.voucherOrderId}`, {
+      token: ctx.token,
+    });
+    const status = (stale.body.order ?? stale.body).status;
+    expect(status === "CANCELLED", `the superseded order should be CANCELLED, got ${status}`);
+    await api("DELETE", "/api/cart", { token: ctx.token });
+    return "voucher kembali, pesanan lama dibatalkan";
+  });
+
   // --- Report -------------------------------------------------------------
 
   const width = Math.max(...results.map((r) => r.name.length));

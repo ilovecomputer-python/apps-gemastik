@@ -143,7 +143,14 @@ function App() {
       case "login":
         return (
           <LoginPage
-            onSuccess={() => setView({ name: "home" })}
+            onSuccess={(destination) => {
+              // Each destination is a distinct View member with no shared
+              // shape, so it's picked explicitly rather than forwarded as a
+              // generic { name: destination } object.
+              if (destination === "admin") setView({ name: "admin" });
+              else if (destination === "seller") setView({ name: "seller" });
+              else setView({ name: "home" });
+            }}
             onGoRegister={() => setView({ name: "register" })}
             onSkip={() => setView({ name: "home" })}
           />
@@ -151,7 +158,9 @@ function App() {
       case "register":
         return (
           <RegisterPage
-            onSuccess={() => setView({ name: "home" })}
+            onSuccess={(destination) =>
+              setView(destination === "seller" ? { name: "seller" } : { name: "home" })
+            }
             onGoLogin={() => setView({ name: "login" })}
           />
         );
@@ -305,6 +314,7 @@ function App() {
               setView({ name: "order-success", orderId, total });
             }}
             onPayOnline={(session) => setView({ name: "payment", session })}
+            onBrowseVouchers={() => setView({ name: "vouchers" })}
           />
         );
       case "payment":

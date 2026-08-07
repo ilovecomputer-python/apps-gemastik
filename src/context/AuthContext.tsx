@@ -12,8 +12,8 @@ import { authApi, tokenStore } from "../lib/api";
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
+  register: (name: string, email: string, password: string) => Promise<User>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -41,6 +41,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { token, user } = await authApi.login(email, password);
     tokenStore.set(token);
     setUser(user);
+    // Returned directly rather than read back from context state: the caller
+    // (login/register screens) needs to route on the role the instant it is
+    // known, and setUser's effect on `user` isn't visible until next render.
+    return user;
   }, []);
 
   const register = useCallback(
@@ -48,6 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { token, user } = await authApi.register(name, email, password);
       tokenStore.set(token);
       setUser(user);
+      return user;
     },
     [],
   );

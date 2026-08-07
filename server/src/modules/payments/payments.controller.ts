@@ -9,6 +9,11 @@ import {
   toStripeAmount,
 } from "../../lib/stripe.js";
 import { env } from "../../lib/env.js";
+import {
+  markVoucherUsed,
+  releaseVoucherForOrder,
+  resolveVoucher,
+} from "../orders/orders.voucher.js";
 import { createPaymentIntentSchema } from "./payments.schema.js";
 
 function generateOrderNumber() {
@@ -52,11 +57,18 @@ export async function createPaymentIntent(req: Request, res: Response) {
   if (cartItems.length === 0)
     throw HttpError.badRequest("Keranjang masih kosong", "EMPTY_CART");
 
+  // An earlier card checkout the shopper walked away from is still holding its
+  // voucher. Free it before validating this one, otherwise going back a screen
+  // and trying again would report the shopper's own voucher as already spent.
+  await releaseAbandonedCheckouts(userId);
+
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
     0,
   );
-  const total = subtotal + shippingOption.price;
+  const applied = await resolveVoucher(userId, input.userVoucherId, subtotal);
+  const discount = applied?.discount ?? 0;
+  const total = subtotal + shippingOption.price - discount;
 
   if (total < STRIPE_MINIMUM_RUPIAH) {
     throw HttpError.badRequest(
@@ -67,27 +79,44 @@ export async function createPaymentIntent(req: Request, res: Response) {
 
   const stripe = getStripe();
 
-  const order = await prisma.order.create({
-    data: {
-      orderNumber: generateOrderNumber(),
-      userId,
-      addressId: address.id,
-      shippingOptionId: shippingOption.id,
-      paymentMethodId: paymentMethod.id,
-      subtotal,
-      shippingFee: shippingOption.price,
-      total,
-      status: "PENDING",
-      items: {
-        create: cartItems.map((item) => ({
-          productId: item.productId,
-          brand: item.product.brand,
-          name: item.product.name,
-          unitPrice: item.product.price,
-          quantity: item.quantity,
-        })),
+  const order = await prisma.$transaction(async (tx) => {
+    const created = await tx.order.create({
+      data: {
+        orderNumber: generateOrderNumber(),
+        userId,
+        addressId: address.id,
+        shippingOptionId: shippingOption.id,
+        paymentMethodId: paymentMethod.id,
+        subtotal,
+        shippingFee: shippingOption.price,
+        discount,
+        total,
+        status: "PENDING",
+        items: {
+          create: cartItems.map((item) => ({
+            productId: item.productId,
+            brand: item.product.brand,
+            name: item.product.name,
+            unitPrice: item.product.price,
+            quantity: item.quantity,
+          })),
+        },
       },
-    },
+    });
+
+    if (applied) {
+      // Reserved rather than merely validated: two payment pages opened at
+      // once must not both be able to pay with this voucher.
+      const reserved = await markVoucherUsed(tx, applied.userVoucherId, created.id);
+      if (reserved.count === 0) {
+        throw HttpError.conflict(
+          "Voucher ini baru saja dipakai di pesanan lain.",
+          "VOUCHER_USED",
+        );
+      }
+    }
+
+    return created;
   });
 
   let intent;
@@ -101,8 +130,13 @@ export async function createPaymentIntent(req: Request, res: Response) {
       description: `AURA Marketplace ${order.orderNumber}`,
     });
   } catch (err) {
-    // Don't strand a PENDING order that can never be paid.
-    await prisma.order.delete({ where: { id: order.id } });
+    // Don't strand a PENDING order that can never be paid — and let go of the
+    // voucher first, both because the shopper should keep it and because the
+    // reservation row references the order we are about to delete.
+    await prisma.$transaction(async (tx) => {
+      await releaseVoucherForOrder(tx, order.id);
+      await tx.order.delete({ where: { id: order.id } });
+    });
     const message = err instanceof Error ? err.message : String(err);
     console.error("Stripe PaymentIntent creation failed:", message);
     throw new HttpError(
@@ -121,10 +155,42 @@ export async function createPaymentIntent(req: Request, res: Response) {
     clientSecret: intent.client_secret,
     orderId: order.id,
     orderNumber: order.orderNumber,
+    subtotal,
+    shippingFee: shippingOption.price,
+    discount,
+    voucherTitle: applied?.title ?? null,
     amount: total,
     currency: STRIPE_CURRENCY,
     returnUrl: `${env.APP_URL}/?payment=done`,
   });
+}
+
+/**
+ * Cancel this shopper's earlier unpaid card checkouts and hand back whatever
+ * vouchers they were holding.
+ *
+ * Only PENDING orders are touched, so nothing that has been paid for is
+ * affected. A PENDING order is superseded the moment its owner starts another
+ * checkout: there is one cart, so there can only be one live payment.
+ */
+async function releaseAbandonedCheckouts(userId: string) {
+  const stale = await prisma.order.findMany({
+    where: { userId, status: "PENDING" },
+    select: { id: true },
+  });
+  if (stale.length === 0) return;
+
+  const ids = stale.map((o) => o.id);
+  await prisma.$transaction([
+    prisma.userVoucher.updateMany({
+      where: { orderId: { in: ids } },
+      data: { usedAt: null, orderId: null },
+    }),
+    prisma.order.updateMany({
+      where: { id: { in: ids }, status: "PENDING" },
+      data: { status: "CANCELLED" },
+    }),
+  ]);
 }
 
 /**
@@ -153,10 +219,23 @@ async function settleOrder(paymentIntentId: string) {
   console.log(`Order ${order.orderNumber} settled via Stripe`);
 }
 
+/**
+ * A declined or cancelled payment gives the voucher back — it was reserved
+ * when the intent was created, and nothing was ever charged for it.
+ */
 async function failOrder(paymentIntentId: string) {
-  await prisma.order.updateMany({
-    where: { stripePaymentIntentId: paymentIntentId, status: "PENDING" },
-    data: { status: "CANCELLED" },
+  const order = await prisma.order.findUnique({
+    where: { stripePaymentIntentId: paymentIntentId },
+    select: { id: true, status: true },
+  });
+  if (!order || order.status !== "PENDING") return;
+
+  await prisma.$transaction(async (tx) => {
+    await releaseVoucherForOrder(tx, order.id);
+    await tx.order.updateMany({
+      where: { id: order.id, status: "PENDING" },
+      data: { status: "CANCELLED" },
+    });
   });
 }
 

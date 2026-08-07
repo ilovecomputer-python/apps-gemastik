@@ -153,6 +153,10 @@ export interface PaymentSession {
   clientSecret: string;
   orderId: string;
   orderNumber: string;
+  subtotal: number;
+  shippingFee: number;
+  discount: number;
+  voucherTitle: string | null;
   amount: number;
   currency: string;
   returnUrl: string;

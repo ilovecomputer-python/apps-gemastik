@@ -66,3 +66,22 @@ export function markVoucherUsed(
     data: { usedAt: new Date(), orderId },
   });
 }
+
+/**
+ * Hand the voucher back.
+ *
+ * Card checkout has to reserve the voucher when the PaymentIntent is created,
+ * because the alternative — waiting for the payment to settle — lets someone
+ * open two payment pages with the same voucher and pay both. Reserving means
+ * the shopper who then abandons the payment must get the voucher back, which
+ * is what this does.
+ */
+export function releaseVoucherForOrder(
+  tx: Prisma.TransactionClient,
+  orderId: string,
+) {
+  return tx.userVoucher.updateMany({
+    where: { orderId },
+    data: { usedAt: null, orderId: null },
+  });
+}

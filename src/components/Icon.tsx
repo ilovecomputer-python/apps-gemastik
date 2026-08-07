@@ -18,6 +18,7 @@ export type IconName =
   | "camera"
   | "upload"
   | "sparkle"
+  | "ticket"
   | "face";
 
 interface IconProps {
@@ -120,6 +121,12 @@ const PATHS: Record<IconName, React.ReactNode> = {
   ),
   sparkle: (
     <path d="M12 3l1.6 5.4L19 10l-5.4 1.6L12 17l-1.6-5.4L5 10l5.4-1.6z" />
+  ),
+  ticket: (
+    <>
+      <path d="M3 9.2V7a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2.2a2.8 2.8 0 0 0 0 5.6V17a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2.2a2.8 2.8 0 0 0 0-5.6z" />
+      <path d="M14 6v2M14 11v2M14 16v2" />
+    </>
   ),
   face: (
     <>

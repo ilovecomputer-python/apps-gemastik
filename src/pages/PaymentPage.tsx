@@ -174,6 +174,12 @@ export default function PaymentPage({
           <span>No. Pesanan</span>
           <span className="order-id">{session.orderNumber}</span>
         </div>
+        {session.discount > 0 && (
+          <div className="summary-row summary-discount">
+            <span>{session.voucherTitle ?? "Diskon voucher"}</span>
+            <span>−{formatPrice(session.discount)}</span>
+          </div>
+        )}
         <div className="summary-row summary-total">
           <span>Yang harus dibayar</span>
           <span className="price large">{formatPrice(session.amount)}</span>

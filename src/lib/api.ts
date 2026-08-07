@@ -175,6 +175,7 @@ export const paymentsApi = {
     addressId: string;
     shippingOptionId: string;
     paymentMethodId: string;
+    userVoucherId?: string;
   }) =>
     request<PaymentSession>("/payments/intent", {
       method: "POST",
@@ -194,8 +195,12 @@ export const paymentsApi = {
 
 // --- Orders ---
 export const ordersApi = {
-  create: (data: { addressId: string; shippingOptionId: string; paymentMethodId: string }) =>
-    request<{ order: Order }>("/orders", { method: "POST", body: data, auth: true }),
+  create: (data: {
+    addressId: string;
+    shippingOptionId: string;
+    paymentMethodId: string;
+    userVoucherId?: string;
+  }) => request<{ order: Order }>("/orders", { method: "POST", body: data, auth: true }),
   list: () => request<{ orders: Order[] }>("/orders", { auth: true }),
   get: (id: string) => request<{ order: Order }>(`/orders/${id}`, { auth: true }),
 };
