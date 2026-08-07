@@ -1,15 +1,17 @@
 # Laporan Pengujian
 
-Empat lapis pengujian, masing-masing menjawab pertanyaan yang berbeda:
+Lima lapis pengujian, masing-masing menjawab pertanyaan yang berbeda:
 
 | Lapis | Pertanyaan yang dijawab | Hasil |
 | --- | --- | --- |
-| Smoke test | Apakah alur pengguna sungguhan masih bisa diselesaikan? | 49/49 lokal, 49/49 produksi |
-| Postman / Newman | Apakah setiap endpoint menepati kontrak dan batas aksesnya? | 305/305 lokal, 302/302 produksi |
-| Lighthouse | Apakah halamannya cepat, bisa diakses, dan sehat? | 93 / 100 / 100 / 100 (desktop) |
+| Smoke test | Apakah alur pengguna sungguhan masih bisa diselesaikan? | 53/53 lokal |
+| Postman / Newman | Apakah setiap endpoint menepati kontrak dan batas aksesnya? | 310/310 lokal |
+| Lighthouse | Apakah halamannya cepat, bisa diakses, dan sehat? | 94 / 100 / 100 / 100 (desktop, produksi) |
 | Evaluasi akurasi AI | Seberapa benar analisis kulitnya? | 80,0% top-1 (n=20, CI 95% 58–92%) |
+| Keamanan siber | Tahan brute-force, banjir permintaan, dan celah umum? | Lihat §5 — semua terkonfirmasi bekerja |
 
-Tanggal jalan: 7 Agustus 2026.
+Tanggal jalan: 7 Agustus 2026 (retest kedua di hari yang sama, setelah tab
+navigasi Brand Baru dan perbaikan checkout voucher).
 
 ---
 
@@ -23,7 +25,7 @@ belanja dengan akun itu**. Yang diuji bukan satu endpoint, melainkan apakah
 rangkaian langkahnya masih nyambung — keranjang terisi, pesanan terbentuk,
 poin bertambah, voucher terpakai, produk penjual terbit.
 
-Empat puluh sembilan langkah, dijalankan berurutan:
+53 langkah, dijalankan berurutan, **53/53 lulus** pada retest ini. Cakupannya:
 
 **Permukaan publik.** Health, katalog, Baru Rilis, detail produk, opsi kirim &
 bayar, Brand Spotlight, feed ulasan, dan penolakan 401 untuk endpoint tertutup.
@@ -37,16 +39,24 @@ yang menebak id pesanan harus ditolak.
 dilanggan lalu dibatalkan; ulasan ditulis dan poinnya diperiksa naik persis
 sebanyak `pointsAwarded`. Mengulas produk yang sama dua kali harus 409.
 
-**Voucher.** Ini bagian yang paling banyak menahan regresi:
+**Voucher, termasuk jalur kartu.** Ditukar dari poin yang dikumpulkan lewat
+jalur normal (menulis ulasan, bukan disuntik ke database), lalu dibelanjakan
+dua kali — sekali di checkout COD/transfer, sekali lagi di jalur pembayaran
+kartu:
 
-1. Akun baru mencoba menukar voucher termurah → ditolak `INSUFFICIENT_POINTS`.
-2. Poin **dikumpulkan lewat jalur normal** — menulis ulasan sampai 50 poin.
-   Tidak ada penyuntikan saldo langsung ke database, karena kalau saldonya
-   disuntik, yang teruji bukan lagi loop-nya.
-3. Voucher ditukar; saldo harus turun tepat sebesar `pointsCost`.
-4. Checkout berikutnya: Rp99.000 + Rp8.000 − Rp10.000 = **Rp97.000**.
-5. Voucher yang sama dipakai lagi → `VOUCHER_USED`.
-6. Voucher milik orang lain dipakai → `INVALID_VOUCHER`.
+1. Redeem tanpa poin cukup → `INSUFFICIENT_POINTS`.
+2. Voucher ditukar, saldo turun tepat sebesar `pointsCost`.
+3. Checkout: Rp99.000 + Rp8.000 − Rp10.000 = **Rp97.000**.
+4. Voucher yang sama dipakai lagi → `VOUCHER_USED`. Voucher orang lain →
+   `INVALID_VOUCHER`.
+5. **Jalur kartu**: voucher kedua ditukar, `POST /api/payments/intent` diberi
+   `userVoucherId` dan diskonnya benar-benar mengurangi jumlah yang ditagih
+   Stripe. Voucher itu langsung terkunci (`VOUCHER_USED` jika dicoba di tempat
+   lain) selama PaymentIntent hidup.
+6. Checkout kartu yang **ditinggalkan** (tidak pernah dikonfirmasi) harus
+   mengembalikan voucher ke akun dan membatalkan pesanan lama begitu sesi
+   checkout berikutnya dimulai — supaya pembeli tidak kehilangan voucher hanya
+   karena berubah pikiran soal metode bayar.
 
 **Alur penjual dan admin.** Daftar penjual → pendaftaran brand anonim ditolak
 401 → daftar brand (PENDING) → dashboard tetap terlihat saat menunggu →
@@ -57,175 +67,253 @@ di katalog publik, di Baru Rilis, dan di dashboard penjual.
 
 **Integrasi pihak ketiga.** Stripe membuat PaymentIntent sungguhan (gratis,
 tidak pernah dikonfirmasi) dan pesanannya harus tetap `PENDING` dengan keranjang
-utuh — checkout yang ditinggalkan tidak boleh menghapus keranjang. Untuk Gemini
-hanya status kunci yang dicek; satu scan sungguhan memakan kuota yang dibutuhkan
-evaluasi akurasi.
+utuh. Untuk Gemini hanya status kunci yang dicek, supaya tidak memakan kuota
+yang dibutuhkan evaluasi akurasi.
 
 ---
 
 ## 2. Koleksi Postman
 
-`npm run test:api` (lokal) dan `npm run test:api:prod` (produksi), dijalankan
-dengan Newman.
+`npm run test:api` di `server/`, dijalankan dengan Newman terhadap API lokal.
 
-94 request, 305 assertion. Pembagian tugasnya sengaja dipisah dari smoke test:
-koleksi ini memeriksa **kontrak dan batas akses per endpoint** — bentuk respons,
-kode error, siapa yang boleh memanggil — sementara smoke test memeriksa
-rangkaian langkahnya.
+**94 request, 310 assertion, 0 gagal.** Termasuk folder khusus:
 
-Dua folder baru ditambahkan pada putaran ini:
+**Seller Center.** Dashboard butuh akun (401 tanpa token); akun tanpa brand
+mendapat `store: null` dan bukan 404; nama produk terlalu pendek ditolak 400;
+`concerns` di luar kosakata AI Scan ditolak 400; produk baru ditandai `umkm`
+dan bertanggal sehingga masuk Baru Rilis tanpa langkah tambahan; penjual yang
+sengaja dibiarkan PENDING membuktikan guard 403 masih hidup.
 
-**14 Seller Center.** Dashboard butuh akun (401 tanpa token); akun tanpa brand
-mendapat `store: null` dan bukan 404, karena tidak punya toko itu keadaan normal;
-nama produk terlalu pendek ditolak 400; `concerns` di luar kosakata AI Scan
-ditolak 400 — kalau kosakatanya bebas, produk penjual tidak akan pernah
-terjaring rekomendasi hasil scan; produk baru ditandai `umkm` dan bertanggal
-sehingga masuk Baru Rilis tanpa langkah tambahan; dan penjual kedua yang sengaja
-dibiarkan PENDING membuktikan guard 403 masih hidup.
+**Vouchers.** Katalog bisa dibuka tanpa akun (saldo `null`, bukan 0); urutan
+termurah dulu; setiap voucher wajib punya `minSpend ≥ discountAmount`; `/mine`
+dan `redeem` butuh token; voucher tak dikenal 404; akun baru yang mencoba
+menukar mendapat `INSUFFICIENT_POINTS`.
 
-**15 Vouchers.** Katalog bisa dibuka tanpa akun (saldo `null`, bukan 0, karena
-tidak ada yang bisa diklaim tentang saldo orang anonim); urutannya termurah dulu;
-setiap voucher wajib punya `minSpend ≥ discountAmount` supaya tidak ada pesanan
-yang lunas oleh diskon saja; `/mine` dan `redeem` butuh token; voucher tak
-dikenal 404; akun baru yang mencoba menukar mendapat `INSUFFICIENT_POINTS`.
+**Security headers** (folder tersendiri). Memeriksa langsung lewat HTTP: header
+`X-Powered-By` disembunyikan, `Content-Security-Policy` terpasang,
+`X-Content-Type-Options` terpasang, dan header `RateLimit-*` benar-benar
+terekspos ke pemanggil — bukan cuma diklaim di kode.
 
-Selisih 3 assertion antara lokal (305) dan produksi (302) berasal dari
-pemeriksaan yang bergantung konfigurasi lingkungan, bukan dari kegagalan.
+Suite penuh tidak dijalankan ulang terhadap produksi pada retest ini (itu akan
+membuat puluhan akun uji baru di database Supabase yang sama setiap kali
+dijalankan tanpa menambah sinyal baru, karena kodenya identik). Sebagai
+gantinya produksi diverifikasi dengan pemeriksaan header langsung — lihat §5.5.
 
 ---
 
 ## 3. Lighthouse
 
-Diaudit terhadap `https://aura-marketplace-eta.vercel.app` dengan Lighthouse
-13.4.1. Laporan lengkap ada di `docs/lighthouse/`.
+Diaudit terhadap `https://aura-marketplace-eta.vercel.app` (build produksi
+yang sudah memuat robots.txt, lihat §6) dengan Lighthouse CLI.
 
 | Kategori | Desktop | Mobile |
 | --- | --- | --- |
-| Performance | **93** | **94** |
+| Performance | **94** | **94** |
 | Accessibility | **100** | **100** |
 | Best Practices | **100** | **100** |
 | SEO | **100** | **100** |
+| Agentic browsing¹ | **100** | **100** |
 
-Sebelum perbaikan: 88 / 98 / 77 / 90 (desktop) dan 87 / 98 / 77 / 90 (mobile).
+Core Web Vitals: FCP 1,0 s / LCP 1,4 s / TBT 0 ms / CLS 0 (desktop);
+FCP 1,5 s / LCP 3,0 s / TBT 0 ms / CLS 0 (mobile). Laporan lengkap ada di
+`docs/lighthouse/*.report.html`.
 
-Tiga temuan dan penanganannya:
+¹ Kategori baru di Lighthouse yang menilai seberapa mudah agen berbasis LLM
+mem-parsing halaman (nama tautan, struktur, metadata) — bukan salah satu dari
+empat kategori inti, dicatat karena muncul di laporan.
 
-**Stripe.js dimuat di halaman depan.** Entry point bawaan `@stripe/stripe-js`
-menyuntikkan script Stripe begitu modulnya di-*import*, bukan saat `loadStripe()`
-dipanggil. Akibatnya setiap pengunjung mengunduh 252 KB untuk script yang hanya
-dipakai layar pembayaran. Diganti ke entry `@stripe/stripe-js/pure`, yang menunda
-penyuntikan sampai `loadStripe()` benar-benar dipanggil. Sudah diverifikasi di
-peramban: nol script Stripe di beranda, keranjang, dan checkout; script baru
-muncul — bersama iframe Elements-nya — ketika halaman pembayaran dibuka.
+**Satu temuan pada retest ini: `robots.txt` tidak ada** (skor SEO sempat 91).
+File statis ditambahkan (`public/robots.txt`, mengizinkan semua crawler) dan
+dites lagi — SEO naik ke 100 di kedua preset. Ditangani langsung karena ini
+perubahan tanpa risiko: file statis baru, tidak menyentuh perilaku apa pun.
 
-**Tidak ada landmark `<main>`.** Pembaca layar jadi harus menyusuri seluruh
-halaman untuk sampai ke isinya. Shell aplikasi dan shell landing kini memakai
-`<main>`.
-
-**Tidak ada meta description.** Ditambahkan, beserta `theme-color`.
-
-Yang sengaja **tidak** diperbaiki: `unused-javascript` yang tersisa dan umur
-cache pendek pada `js.stripe.com` — keduanya milik script Stripe sendiri, dan
-mengganti Stripe Elements dengan form kartu sendiri berarti memindahkan data
-kartu ke server kami, yang justru melanggar PCI-DSS.
+Tiga temuan dari putaran sebelumnya (Stripe.js yang termuat di halaman depan,
+landmark `<main>` yang hilang, meta description yang hilang) tetap terjaga —
+tidak ada regresi.
 
 ---
 
 ## 4. Evaluasi akurasi AI Scan
 
-`server/scripts/eval/` — sampel berimbang dari dataset **Skin v2** (lima kelas:
-`acne`, `blackheads`, `dark_spots`, `pores`, `wrinkles`), diskor memakai system
-instruction, prompt, schema, dan temperature yang **persis sama** dengan yang
-dipakai `scan.vision.ts` di produksi.
-
-### Angka
+Tidak diulang pada retest ini — masih di 20/150 sampel karena kuota gratis
+Gemini (±20 request/hari/model). Angka dari evaluasi terakhir:
 
 ```
-Samples evaluated: 20
-
-CONFUSION MATRIX (baris = label, kolom = prediksi)
-                    acne blackheads dark_spots      pores   wrinkles   total
-acne                   4          0          0          0          0       4
-blackheads             1          1          0          2          0       4
-dark_spots             0          0          4          0          0       4
-pores                  0          0          0          4          0       4
-wrinkles               0          0          1          0          3       4
-
-PER-CLASS
-class          precision   recall      F1      AP  support
-acne               80,0%   100,0%   88,9%  100,0%        4
-blackheads        100,0%    25,0%   40,0%   68,1%        4
-dark_spots         80,0%   100,0%   88,9%   87,5%        4
-pores              66,7%   100,0%   80,0%   65,8%        4
-wrinkles          100,0%    75,0%   85,7%   87,5%        4
-
-OVERALL
-  Accuracy (top-1) : 80,0%  (16/20)   CI 95%: 58,4% - 91,9%
-  Accuracy (top-2) : 90,0%
-  Macro F1         : 76,7%
-  mAP              : 81,8%
-  Baseline acak    : 20,0%
+Accuracy (top-1) : 80,0%  (16/20)   CI 95%: 58,4% - 91,9%
+Accuracy (top-2) : 90,0%
+Macro F1         : 76,7%
+mAP              : 81,8%
+Baseline acak    : 20,0%
 ```
 
-### Bagaimana metriknya didefinisikan
-
-Model mengembalikan lima skor keparahan 0–100 per gambar, sedangkan dataset
-memberi satu label per gambar. Karena itu dipakai dua sudut pandang:
-
-- **Klasifikasi label tunggal** — `argmax` dari kelima skor dianggap prediksi.
-  Menghasilkan confusion matrix, precision/recall/F1, dan akurasi top-1/top-2.
-- **Peringkat** — skor tiap kelas diperlakukan sebagai keyakinan, lalu semua
-  gambar diurutkan berdasarkan skor itu. Menghasilkan Average Precision per
-  kelas (interpolasi semua titik, seperti scikit-learn/COCO); **mAP** adalah
-  rata-ratanya.
-
-Sudut pandang peringkat penting karena kondisi kulit saling tumpang tindih:
-wajah berlabel `acne` sering betul-betul punya `dark_spots` juga. Argmax
-menghukum itu, AP tidak.
-
-### Apa yang boleh disimpulkan — dan apa yang tidak
-
-**Boleh:** empat kali lipat baseline acak, dan pola kesalahannya masuk akal
-secara kosmetik, bukan acak.
-
-**Tidak boleh:** menyebut "80% akurat" tanpa kualifikasi. Dengan n=20, selang
-kepercayaan 95%-nya membentang **58%–92%**. Angka tengahnya tidak cukup untuk
-mengklaim performa tertentu, dan tiap kelas hanya diwakili 4 gambar — satu
-gambar salah menggeser recall satu kelas sebesar 25 poin.
-
-**Kelemahan yang paling jelas:** `blackheads`, recall 25%. Tiga dari empat
-tertukar, dua di antaranya menjadi `pores`. Secara visual keduanya memang
-bertetangga — komedo menyumbat pori, dan pada foto beresolusi sedang keduanya
-tampil sebagai titik gelap di hidung. Ini kelemahan nyata, bukan artefak sampel
-kecil, dan patut jadi target perbaikan prompt berikutnya.
-
-### Kenapa hanya 20 gambar
-
-Kuota gratis Gemini membatasi **±20 request per hari per model**. Sampelnya
-sudah disiapkan 150 gambar dan berimbang antar kelas, dan `run.cjs` menulis
-JSONL secara bertambah sehingga bisa dilanjutkan keesokan harinya ke berkas yang
-sama. Untuk menyelesaikan 150 gambar dibutuhkan billing aktif di project Google
-Cloud, atau beberapa hari jalan bertahap.
-
-Angka di atas dilaporkan apa adanya, tanpa dibulatkan ke atas dan tanpa
-menghilangkan selang kepercayaannya.
+`blackheads` tetap kelas terlemah (recall 25%, tertukar `pores`). Detail
+metode dan interpretasi lengkap ada di riwayat laporan ini per 6 Agustus 2026;
+tidak diubah di sini karena tidak ada data baru.
 
 ---
 
-## Perubahan yang lahir dari pengujian ini
+## 5. Uji keamanan siber
 
-**Rate limit login dipisah dari rate limit pendaftaran.** Sebelumnya keduanya
-berbagi satu penghitung 20 percobaan / 15 menit. Jaringan seluler Indonesia
-menempatkan sangat banyak pelanggan di balik satu alamat CGNAT, jadi penghitung
-yang ikut menghitung login **berhasil** akan mengunci satu sel dari akunnya
-sendiri begitu dua puluh tetangganya masuk. Sekarang login hanya menghitung
-kegagalan (`skipSuccessfulRequests`), sementara pendaftaran tetap menghitung
-semua percobaan — sebab pendaftaran yang berhasil justru yang diincar penyalah
-guna — dengan jendela per jam.
+Empat sudut: brute-force kredensial, banjir permintaan (DDoS-adjacent), audit
+kode statis, dan audit dependency. Semua dijalankan terhadap **API lokal**
+kecuali disebutkan lain — bukan produksi, dan alasannya dijelaskan di §5.2.
 
-**Bug yang ditemukan dan masih terbuka:** halaman checkout belum punya pemilih
-voucher. Backend-nya sudah menerima `userVoucherId` dan sudah terbukti benar
-lewat smoke test, tapi `CheckoutPage.tsx` tidak pernah mengirimkannya, dan jalur
-pembayaran kartu (`POST /api/payments/intent`) belum menerima voucher sama
-sekali. Artinya poin bisa ditukar jadi voucher, tapi voucher itu belum bisa
-dipakai dari antarmuka.
+### 5.1 Simulasi brute-force
+
+Skrip menembak `/api/auth/login` dan `/api/auth/register` secepat mungkin,
+persis pola yang dipakai alat credential-stuffing sungguhan.
+
+| Target | Batas yang diklaim kode | Hasil simulasi |
+| --- | --- | --- |
+| `POST /api/auth/register` (flood 45x) | 40/jam, semua percobaan dihitung | **201 tepat 40 kali**, percobaan ke-41 dan seterusnya `429 RATE_LIMITED` |
+| `POST /api/auth/login`, password salah (flood 25x) | 20/15 menit, hanya kegagalan dihitung | **401 tepat 20 kali**, percobaan ke-21 dan seterusnya `429 RATE_LIMITED` |
+| Login dengan password **benar**, dilakukan tepat setelah limiter di atas penuh | — | **429** — ditolak juga |
+
+Baris terakhir bukan bug. Limiter bekerja per-IP, bukan per-akun: begitu
+kuota IP itu habis karena 20 kegagalan, panggilan berikutnya ditolak sebelum
+sempat memeriksa password-nya sama sekali — termasuk yang benar. Ini
+konsekuensi yang disengaja dari desainnya (lihat komentar di
+`auth.routes.ts`), dan simulasi ini membuktikan perilakunya persis seperti
+yang diklaim kode, bukan cuma di atas kertas.
+
+Efek samping yang perlu diketahui: menjalankan skrip ini membuat login dan
+registrasi dari mesin lokal benar-benar dibatasi selama sisa jendela waktunya
+(±15 menit untuk login, ±1 jam untuk registrasi, dihitung dari 07:58 WIB).
+Ini murni akibat menembak API lokal sendiri (mulai ±19:58 WIB); tidak
+menyentuh produksi.
+
+### 5.2 Uji beban / ketahanan DDoS
+
+**Batasan yang sengaja dijaga: tidak ada banjir permintaan sungguhan ke
+`aura-marketplace-api.vercel.app`.** Tiga alasan — Vercel melarang load-testing
+tanpa pemberitahuan lebih dulu di kebijakan penggunaannya; setiap request
+serverless yang dipakai bisa berbiaya nyata; dan ketahanan terhadap DDoS
+volumetrik sungguhan (jutaan request dari banyak IP) adalah tanggung jawab
+lapisan edge/CDN Vercel, bukan sesuatu yang bisa dibuktikan atau digagalkan
+oleh kode aplikasi. Yang **bisa** diuji secara bertanggung jawab dari kode
+aplikasi adalah: apakah pembatas permintaannya benar-benar menyala saat
+kebanjiran, dan apakah prosesnya tetap hidup sesudahnya.
+
+Simulasi lokal: 500 permintaan `GET /api/products` ditembakkan **bersamaan**
+(bukan berurutan) ke API lokal.
+
+```
+500 permintaan bersamaan -> selesai dalam 1.356 ms
+200 OK  : 300  (persis di batas 300/menit yang dikonfigurasi apiLimiter)
+429     : 200  (sisanya ditolak, bukan di-antre atau membuat server ngadat)
+error koneksi: 0
+latensi 2xx: p50 1.109 ms | p95 1.222 ms | p99 1.227 ms
+cek kesehatan setelah banjir: 200 OK dalam 9 ms
+```
+
+Pembatas global (`apiLimiter`, 300/menit per IP di `app.ts`) memotong tepat di
+angka yang dikonfigurasi, tidak lebih tidak kurang, dan server tetap responsif
+(9 ms) begitu banjirnya selesai — tidak ada proses yang macet atau memori yang
+menumpuk. Terhadap serangan "slow request" (slowloris), server bergantung pada
+batas waktu bawaan Node.js 20 (`headersTimeout` 60 dtk, `requestTimeout` 5
+menit) karena tidak ada konfigurasi timeout khusus — cukup untuk kasus umum,
+tapi dicatat sebagai area penguatan lanjutan kalau suatu saat trafiknya makin
+besar.
+
+### 5.3 Audit kode statis
+
+Diperiksa manual + agen terpisah untuk delapan sudut, mencakup seluruh modul
+backend (`orders`, `cart`, `addresses`, `wishlist`, `seller`, `admin`,
+`vouchers`, `payments`, `brands`, `reviews`, `subscription`, `scan`) dan
+bagian relevan dari frontend.
+
+**Bersih, terverifikasi:**
+- **IDOR** — setiap query yang membaca/mengubah data milik pengguna (pesanan,
+  alamat, keranjang, voucher, toko) memfilter berdasarkan `userId` dari token,
+  bukan cuma `id` dari URL. Endpoint admin dijaga `requireAdmin`, yang membaca
+  ulang role dari database di setiap request — bukan dari isi token — supaya
+  akses admin yang dicabut langsung berhenti berlaku.
+- **Injeksi SQL** — nol pemakaian `$queryRaw`/`$executeRaw` mentah di seluruh
+  backend; semua akses lewat query builder Prisma yang sudah terparameterisasi.
+- **XSS** — nol `dangerouslySetInnerHTML` atau `innerHTML` di frontend; teks
+  dari pengguna (ulasan, cerita brand) selalu lewat JSX yang di-escape React
+  secara default.
+- **Verifikasi webhook Stripe** — signature diperiksa (`stripe.webhooks.
+  constructEvent`) sebelum payload dipercaya sama sekali; route-nya dipasang
+  sebelum parser JSON supaya byte mentahnya tidak berubah.
+- **Kepercayaan harga** — total, ongkir, dan diskon selalu dihitung ulang dari
+  database di server; permintaan dari klien cuma boleh mengirim ID (alamat,
+  opsi kirim, voucher), tidak pernah angka harga.
+- **Rahasia** — nol API key atau secret yang ditulis langsung di kode; semua
+  lewat `env.ts` yang divalidasi zod.
+
+**Ditemukan dan langsung diperbaiki:**
+- `jwt.verify()` tidak mengunci daftar algoritma yang diterima. Default
+  `jsonwebtoken` sudah cukup aman untuk kasus ini (secret berupa string, tidak
+  ada kunci RSA yang bisa dikacaukan), tapi mengunci ke `["HS256"]` secara
+  eksplisit adalah praktik standar OWASP untuk menutup celah *algorithm
+  confusion* — perubahan satu baris, nol risiko perilaku (lihat §6).
+
+**Ditemukan, dicatat, sengaja belum diperbaiki:**
+- Endpoint AI Scan memvalidasi tipe MIME dari header yang diklaim klien dan
+  membatasi ukuran hasil decode ke 6MB, tapi tidak memeriksa byte asli file
+  untuk memastikan isinya benar-benar gambar. Risikonya rendah — server tidak
+  punya library decode gambar (`sharp`/`jimp` dsb.) sehingga tidak ada
+  permukaan *decompression bomb* di sisi server; skenario terburuknya cuma
+  kuota Gemini terbuang untuk file bukan-gambar berlabel gambar. Menunda
+  perbaikan karena solusinya (pemeriksaan magic bytes) butuh dependency baru
+  untuk risiko yang saat ini kecil.
+
+### 5.4 Audit dependency (`npm audit`)
+
+| Paket | Dependency produksi | Dependency dev |
+| --- | --- | --- |
+| Frontend (root) | **0 kerentanan** | 0 kerentanan |
+| Backend (`server/`) | **0 kerentanan** | 19 (8 sedang, 10 tinggi, 1 kritis) |
+
+Ke-19 temuan backend semuanya berasal dari satu rantai: `newman` +
+`newman-reporter-htmlextra` (alat penjalan koleksi Postman) dan dependency
+transitifnya (`handlebars`, `lodash`, `node-forge`, `postman-runtime`,
+`postman-sandbox`). Ini alat pengujian yang **tidak pernah ikut ter-deploy** —
+`tsc` hanya mengompilasi `src/`, bukan `devDependencies` — dan hanya berjalan
+di mesin developer sendiri terhadap koleksi Postman yang juga ditulis sendiri,
+bukan memproses input dari internet. Karena `--omit=dev` menunjukkan nol
+kerentanan, permukaan yang benar-benar berjalan di produksi bersih. Tidak
+dipaksa `npm audit fix --force` karena itu akan mengganti Newman ke versi yang
+punya breaking changes, demi kerentanan yang tidak menyentuh risiko produksi.
+
+### 5.5 Verifikasi header di produksi
+
+Setelah redeploy (§6), dicek langsung dengan satu permintaan tunggal ke
+`aura-marketplace-api.vercel.app` — bukan flood, cuma konfirmasi bahwa yang
+berjalan lokal juga menyala di lingkungan sungguhan:
+
+```
+Content-Security-Policy: default-src 'self'; ...
+X-Content-Type-Options: nosniff
+Ratelimit-Limit: 300
+Ratelimit-Policy: 300;w=60
+Ratelimit-Remaining: 299
+```
+
+Header `X-Powered-By` tidak ada di respons (disembunyikan lewat
+`app.disable("x-powered-by")`).
+
+---
+
+## 6. Perubahan yang lahir dari pengujian ini
+
+**`public/robots.txt` ditambahkan.** Tidak ada sebelumnya, membuat skor SEO
+Lighthouse mentok di 91. Perubahan statis, nol risiko.
+
+**`jwt.verify()` dikunci ke algoritma `HS256`.** Ditemukan saat audit kode
+statis (§5.3). Tidak mengubah token mana pun yang saat ini valid — semua
+token yang pernah diterbitkan aplikasi ini sudah ditandatangani `HS256` lewat
+`jwt.sign()` yang juga tidak menyebut algoritma lain — jadi ini murni menutup
+celah teoretis, bukan mengubah perilaku untuk pengguna sah mana pun.
+
+Keduanya sudah di-build, diverifikasi lokal, dan di-deploy ke produksi
+(`npx vercel --prod --yes` di `server/` lalu di root) sebelum audit Lighthouse
+§3 dan verifikasi header §5.5 dijalankan — supaya angka yang dilaporkan di
+kedua bagian itu mencerminkan kondisi produksi yang sudah diperbaiki, bukan
+kondisi lama.
+
+**Rate limiter login/registrasi (dari retest sebelumnya, lihat commit
+"Fix the checkout voucher bug and split login into buyer/seller") diuji ulang
+di bawah simulasi serangan sungguhan (§5.1) dan terbukti berperilaku persis
+seperti yang diklaim kodenya** — bukan cuma lulus review kode.

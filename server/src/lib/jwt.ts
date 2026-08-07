@@ -11,4 +11,4 @@ export const signAuthToken = (payload: AuthTokenPayload) =>
   });
 
 export const verifyAuthToken = (token: string): AuthTokenPayload =>
-  jwt.verify(token, env.JWT_SECRET) as AuthTokenPayload;
+  jwt.verify(token, env.JWT_SECRET, { algorithms: ["HS256"] }) as AuthTokenPayload;
