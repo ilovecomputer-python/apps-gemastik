@@ -19,7 +19,8 @@ export type IconName =
   | "upload"
   | "sparkle"
   | "ticket"
-  | "face";
+  | "face"
+  | "trash";
 
 interface IconProps {
   name: IconName;
@@ -132,6 +133,13 @@ const PATHS: Record<IconName, React.ReactNode> = {
     <>
       <circle cx="12" cy="12" r="8.5" />
       <path d="M9 10.5h.01M15 10.5h.01M8.5 14.5c1 1.2 2.2 1.8 3.5 1.8s2.5-.6 3.5-1.8" />
+    </>
+  ),
+  trash: (
+    <>
+      <path d="M5 7h14M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+      <path d="M7 7l1 13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1l1-13" />
+      <path d="M10 11v6M14 11v6" />
     </>
   ),
 };

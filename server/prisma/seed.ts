@@ -586,6 +586,31 @@ async function main() {
     console.log("Demo user already exists, skipping");
   }
 
+  console.log("Seeding demo seller...");
+  const sellerEmail = "seller@aura.id";
+  const existingSeller = await prisma.user.findUnique({
+    where: { email: sellerEmail },
+  });
+  if (!existingSeller) {
+    const passwordHash = await bcrypt.hash("password123", 12);
+    const sellerUser = await prisma.user.create({
+      data: {
+        email: sellerEmail,
+        name: "Admin Glow Lokal",
+        passwordHash,
+      },
+    });
+    // Owns an already-approved seeded store, so the Seller Center login hint
+    // leads straight to a populated dashboard rather than an empty PENDING one.
+    await prisma.store.update({
+      where: { id: storeIdByName.get("Glow Lokal Store")! },
+      data: { ownerId: sellerUser.id },
+    });
+    console.log(`Demo seller created: ${sellerEmail} / password123`);
+  } else {
+    console.log("Demo seller already exists, skipping");
+  }
+
   console.log("Seed complete.");
 }
 

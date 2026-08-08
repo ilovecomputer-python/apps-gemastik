@@ -35,10 +35,38 @@ export default function ScanResultPage({
       <div className="checkout-section">
         <div className="undertone-card">
           <div className="undertone-head">
-            <span className="option-row-title">{result.undertoneLabel}</span>
-            <span className="undertone-depth">Kulit {result.depthLabel}</span>
+            <span className="option-row-title">{result.personalColour.label}</span>
+            <span className="undertone-depth">Personal Colour</span>
           </div>
-          <p className="condition-advice">{result.undertoneAdvice}</p>
+          <p className="condition-advice">{result.personalColour.summary}</p>
+          <div className="hashtag-row">
+            {result.personalColour.palette.map((colour) => (
+              <span key={colour} className="hashtag">{colour}</span>
+            ))}
+          </div>
+          {result.personalColour.avoid.length > 0 && (
+            <>
+              <span className="undertone-depth">Sebaiknya dihindari</span>
+              <div className="hashtag-row">
+                {result.personalColour.avoid.map((colour) => (
+                  <span key={colour} className="hashtag hashtag-avoid">{colour}</span>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        <div className="undertone-card">
+          <div className="undertone-head">
+            <span className="option-row-title">{result.skinShade.fitzpatrickLabel}</span>
+            <span className="undertone-depth">{result.skinShade.undertoneLabel}</span>
+          </div>
+          <p className="condition-advice">{result.skinShade.undertoneAdvice}</p>
+          {result.skinShade.matchedShade && (
+            <span className="badge badge-umkm">
+              Shade cocok: {result.skinShade.matchedShade}
+            </span>
+          )}
         </div>
       </div>
 

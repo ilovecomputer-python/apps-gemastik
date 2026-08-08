@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { ReviewerStats, User } from "../types";
 import { reviewsApi } from "../lib/api";
 import TopBar from "../components/TopBar";
-import Icon, { type IconName } from "../components/Icon";
+import Icon from "../components/Icon";
 
 interface AccountPageProps {
   user: User | null;
@@ -15,17 +15,10 @@ interface AccountPageProps {
   onOpenAdmin: () => void;
   onOpenVouchers: () => void;
   onOpenCommunity: () => void;
+  onOpenOrders: () => void;
+  onOpenWishlist: () => void;
+  onOpenAddresses: () => void;
 }
-
-const MENU_ITEMS: { title: string; desc: string; icon: IconName }[] = [
-  { title: "Pesanan saya", desc: "Lacak dan riwayat pesanan", icon: "package" },
-  { title: "Wishlist", desc: "Produk favorit dan alert harga", icon: "heart" },
-  {
-    title: "Profil dan pengaturan",
-    desc: "Alamat, kontak, notifikasi, keamanan",
-    icon: "user",
-  },
-];
 
 export default function AccountPage({
   user,
@@ -38,6 +31,9 @@ export default function AccountPage({
   onOpenAdmin,
   onOpenVouchers,
   onOpenCommunity,
+  onOpenOrders,
+  onOpenWishlist,
+  onOpenAddresses,
 }: AccountPageProps) {
   const [reviewerStats, setReviewerStats] = useState<ReviewerStats | null>(null);
 
@@ -128,18 +124,38 @@ export default function AccountPage({
       </button>
 
       <div className="menu-list">
-        {MENU_ITEMS.map((item) => (
-          <button key={item.title} className="menu-item">
-            <span className="menu-icon">
-              <Icon name={item.icon} size={17} />
-            </span>
-            <div>
-              <div className="menu-title">{item.title}</div>
-              <p className="menu-desc">{item.desc}</p>
-            </div>
-            <Icon name="chevron-right" size={15} className="menu-chevron" />
-          </button>
-        ))}
+        <button className="menu-item" onClick={onOpenOrders}>
+          <span className="menu-icon">
+            <Icon name="package" size={17} />
+          </span>
+          <div>
+            <div className="menu-title">Pesanan saya</div>
+            <p className="menu-desc">Lacak dan riwayat pesanan</p>
+          </div>
+          <Icon name="chevron-right" size={15} className="menu-chevron" />
+        </button>
+
+        <button className="menu-item" onClick={onOpenWishlist}>
+          <span className="menu-icon">
+            <Icon name="heart" size={17} />
+          </span>
+          <div>
+            <div className="menu-title">Wishlist</div>
+            <p className="menu-desc">Produk favorit yang kamu simpan</p>
+          </div>
+          <Icon name="chevron-right" size={15} className="menu-chevron" />
+        </button>
+
+        <button className="menu-item" onClick={onOpenAddresses}>
+          <span className="menu-icon">
+            <Icon name="user" size={17} />
+          </span>
+          <div>
+            <div className="menu-title">Alamat pengiriman</div>
+            <p className="menu-desc">Kelola alamat rumah, kantor, dan lainnya</p>
+          </div>
+          <Icon name="chevron-right" size={15} className="menu-chevron" />
+        </button>
 
         <div className="menu-item menu-toggle">
           <span className="menu-icon">

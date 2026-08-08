@@ -26,6 +26,11 @@ const COPY: Record<Intent, { title: string; body: string; hint: string }> = {
   },
 };
 
+const DEMO_EMAIL: Record<Intent, string> = {
+  buyer: "demo@aura.id",
+  seller: "seller@aura.id",
+};
+
 export default function LoginPage({
   onSuccess,
   onGoRegister,
@@ -33,10 +38,17 @@ export default function LoginPage({
 }: LoginPageProps) {
   const { login } = useAuth();
   const [intent, setIntent] = useState<Intent>("buyer");
-  const [email, setEmail] = useState("demo@aura.id");
+  const [email, setEmail] = useState(DEMO_EMAIL.buyer);
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const handleIntentChange = (next: Intent) => {
+    // Swap the pre-filled demo address along with the tab, but leave it
+    // alone once the visitor has typed something of their own.
+    if (email === DEMO_EMAIL[intent]) setEmail(DEMO_EMAIL[next]);
+    setIntent(next);
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -72,7 +84,7 @@ export default function LoginPage({
           role="tab"
           aria-selected={intent === "buyer"}
           className={`auth-role-tab${intent === "buyer" ? " active" : ""}`}
-          onClick={() => setIntent("buyer")}
+          onClick={() => handleIntentChange("buyer")}
         >
           <Icon name="user" size={15} />
           Pembeli
@@ -82,7 +94,7 @@ export default function LoginPage({
           role="tab"
           aria-selected={intent === "seller"}
           className={`auth-role-tab${intent === "seller" ? " active" : ""}`}
-          onClick={() => setIntent("seller")}
+          onClick={() => handleIntentChange("seller")}
         >
           <Icon name="store" size={15} />
           Penjual

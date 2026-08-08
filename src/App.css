@@ -974,6 +974,15 @@
   line-height: 1.45;
 }
 
+.order-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
 .badge-status-pending {
   background: rgba(211, 150, 140, 0.25);
   color: #a8635a;
@@ -1446,6 +1455,12 @@
 .hashtag {
   font-size: 12px;
   color: var(--teal-ink);
+}
+
+.hashtag-avoid {
+  color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--rosy);
 }
 
 .buy-btn {

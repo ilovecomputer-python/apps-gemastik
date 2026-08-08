@@ -37,6 +37,28 @@ export interface ScanRecommendation {
   reason: string;
 }
 
+export interface PersonalColourResult {
+  season: string;
+  label: string;
+  summary: string;
+  palette: string[];
+  avoid: string[];
+  axes: {
+    hue: string;
+    value: string;
+    chroma: string;
+  };
+}
+
+export interface SkinShadeResult {
+  fitzpatrick: number;
+  fitzpatrickLabel: string;
+  undertone: string;
+  undertoneLabel: string;
+  undertoneAdvice: string;
+  matchedShade: string | null;
+}
+
 /** Result of the single unified skin scan. */
 export interface ScanAnalysis {
   headline: string;
@@ -48,11 +70,8 @@ export interface ScanAnalysis {
   skinTypeLabel: string;
   conditions: ScanCondition[];
   topConcerns: string[];
-  undertone: string;
-  undertoneLabel: string;
-  undertoneAdvice: string;
-  depth: string;
-  depthLabel: string;
+  personalColour: PersonalColourResult;
+  skinShade: SkinShadeResult;
 }
 
 export interface CartLine {
@@ -325,6 +344,8 @@ export type View =
   | { name: "admin" }
   | { name: "seller" }
   | { name: "vouchers" }
-  | { name: "community" };
+  | { name: "community" }
+  | { name: "orders" }
+  | { name: "addresses" };
 
 export type BottomTab = "home" | "scan" | "brands" | "account";

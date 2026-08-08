@@ -158,6 +158,8 @@ export const addressesApi = {
       body: data,
       auth: true,
     }),
+  remove: (id: string) =>
+    request<{ ok: true }>(`/addresses/${id}`, { method: "DELETE", auth: true }),
 };
 
 // --- Meta ---

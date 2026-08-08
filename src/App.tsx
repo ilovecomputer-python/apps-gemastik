@@ -28,16 +28,21 @@ import VouchersPage from "./pages/VouchersPage";
 import CommunityPage from "./pages/CommunityPage";
 import QuizPage from "./pages/QuizPage";
 import QuizResultPage from "./pages/QuizResultPage";
+import OrderHistoryPage from "./pages/OrderHistoryPage";
+import AddressesPage from "./pages/AddressesPage";
 
 function App() {
   const { user, loading: authLoading, logout } = useAuth();
   const [view, setView] = useState<View>({ name: "landing" });
   const [wishlistIds, setWishlistIds] = useState<Set<string>>(new Set());
   const [cartCount, setCartCount] = useState(0);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(
+    () => localStorage.getItem("aura-theme") === "dark",
+  );
 
   useEffect(() => {
     document.documentElement.dataset.theme = darkMode ? "dark" : "light";
+    localStorage.setItem("aura-theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   const refreshWishlist = useCallback(async () => {
@@ -280,8 +285,15 @@ function App() {
             onOpenAdmin={() => requireAuth({ name: "admin" })}
             onOpenVouchers={() => requireAuth({ name: "vouchers" })}
             onOpenCommunity={() => setView({ name: "community" })}
+            onOpenOrders={() => requireAuth({ name: "orders" })}
+            onOpenWishlist={() => requireAuth({ name: "wishlist" })}
+            onOpenAddresses={() => requireAuth({ name: "addresses" })}
           />
         );
+      case "orders":
+        return <OrderHistoryPage onBack={() => setView({ name: "account" })} />;
+      case "addresses":
+        return <AddressesPage onBack={() => setView({ name: "account" })} />;
       case "admin":
         return <AdminPage onBack={() => setView({ name: "account" })} />;
       case "seller":
