@@ -1,0 +1,76 @@
+{
+  "passed": 14,
+  "total": 14,
+  "results": [
+    {
+      "step": "Landing page loads with entry CTA",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "Tap 'Masuk ke AURA' reaches Login screen",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "'Belum punya akun? Daftar' reaches Register screen",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "Register as buyer -> lands on Home",
+      "ok": true,
+      "detail": "selenium.buyer.20260809153938@ujicoba.id"
+    },
+    {
+      "step": "Filter by 'Skincare' category returns products",
+      "ok": true,
+      "detail": "27 cards"
+    },
+    {
+      "step": "Search box accepts input and re-queries",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "Open product detail page",
+      "ok": true,
+      "detail": "Niacinamide 10% + Zinc Serum"
+    },
+    {
+      "step": "Toggle wishlist on product detail",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "Add to cart shows confirmation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "Cart page shows the added item",
+      "ok": true,
+      "detail": "1 item(s)"
+    },
+    {
+      "step": "Reset session -> fresh visitor reaches Register",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "Register as seller -> lands on Seller Center",
+      "ok": true,
+      "detail": "selenium.seller.20260809153938@ujicoba.id"
+    },
+    {
+      "step": "'Daftarkan brand' reaches the application form",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "Submit brand application succeeds",
+      "ok": true,
+      "detail": "Selenium Test Brand 20260809153938"
+    }
+  ]
+}

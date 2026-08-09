@@ -1,0 +1,1255 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1786264799301,506,GET /api/products,200,OK,Buyer Browsing Load 1-1,text,true,,20003,129,3,3,http://localhost:4000/api/products,501,0,217
+1786264799939,17,GET /api/products,200,OK,Buyer Browsing Load 1-2,text,true,,20003,129,3,3,http://localhost:4000/api/products,17,0,6
+1786264800943,17,GET /api/products,200,OK,Buyer Browsing Load 1-3,text,true,,20003,129,4,4,http://localhost:4000/api/products,17,0,2
+1786264801018,32,GET /api/products/new,200,OK,Buyer Browsing Load 1-1,text,true,,12391,133,4,4,http://localhost:4000/api/products/new,32,0,0
+1786264801158,23,GET /api/products/new,200,OK,Buyer Browsing Load 1-2,text,true,,12391,133,4,4,http://localhost:4000/api/products/new,23,0,0
+1786264801945,26,GET /api/products,200,OK,Buyer Browsing Load 1-4,text,true,,20003,129,5,5,http://localhost:4000/api/products,26,0,2
+1786264802177,15,GET /api/products/new,200,OK,Buyer Browsing Load 1-3,text,true,,12391,133,5,5,http://localhost:4000/api/products/new,15,0,0
+1786264802255,70,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-1,text,true,,1778,155,5,5,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,70,0,0
+1786264802382,22,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-2,text,true,,1778,155,5,5,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,22,0,0
+1786264802971,18,GET /api/products,200,OK,Buyer Browsing Load 1-5,text,true,,20003,129,6,6,http://localhost:4000/api/products,17,0,7
+1786264803174,7,GET /api/products/new,200,OK,Buyer Browsing Load 1-4,text,true,,12391,133,6,6,http://localhost:4000/api/products/new,7,0,0
+1786264803396,8,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-3,text,true,,1778,155,6,6,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,8,0,0
+1786264804190,266,GET /api/products/new,200,OK,Buyer Browsing Load 1-5,text,true,,12391,133,7,7,http://localhost:4000/api/products/new,266,0,0
+1786264804382,375,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-4,text,true,,1778,155,8,8,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,375,0,0
+1786264803977,786,GET /api/products,200,OK,Buyer Browsing Load 1-6,text,true,,20003,129,8,8,http://localhost:4000/api/products,786,0,2
+1786264804936,464,GET /api/products,200,OK,Buyer Browsing Load 1-7,text,true,,20003,129,8,8,http://localhost:4000/api/products,464,0,3
+1786264805658,353,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-5,text,true,,1778,155,9,9,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,353,0,0
+1786264805978,447,GET /api/products/new,200,OK,Buyer Browsing Load 1-6,text,true,,12391,133,9,9,http://localhost:4000/api/products/new,446,0,0
+1786264805952,479,GET /api/products,200,OK,Buyer Browsing Load 1-8,text,true,,20003,129,9,9,http://localhost:4000/api/products,478,0,1
+1786264803527,2974,POST /api/auth/login,200,OK,Buyer Browsing Load 1-1,text,true,,1357,233,9,9,http://localhost:4000/api/auth/login,2974,0,0
+1786264803605,3188,POST /api/auth/login,200,OK,Buyer Browsing Load 1-2,text,true,,1357,233,10,10,http://localhost:4000/api/auth/login,3187,0,0
+1786264806603,394,GET /api/products/new,200,OK,Buyer Browsing Load 1-7,text,true,,12391,133,10,10,http://localhost:4000/api/products/new,394,0,0
+1786264806962,250,GET /api/products,200,OK,Buyer Browsing Load 1-9,text,true,,20003,129,10,10,http://localhost:4000/api/products,249,0,1
+1786264804605,3078,POST /api/auth/login,200,OK,Buyer Browsing Load 1-3,text,true,,1357,233,10,10,http://localhost:4000/api/auth/login,3078,0,0
+1786264807628,710,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-6,text,true,,1778,155,11,11,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,710,0,0
+1786264807632,709,GET /api/products/new,200,OK,Buyer Browsing Load 1-8,text,true,,12391,133,11,11,http://localhost:4000/api/products/new,709,0,0
+1786264807703,642,GET /api/products,200,OK,Buyer Browsing Load 1-1,text,true,,20003,129,11,11,http://localhost:4000/api/products,642,0,0
+1786264807998,349,GET /api/products,200,OK,Buyer Browsing Load 1-2,text,true,,20003,129,11,11,http://localhost:4000/api/products,349,0,0
+1786264807925,430,GET /api/products,200,OK,Buyer Browsing Load 1-10,text,true,,20003,129,11,11,http://localhost:4000/api/products,430,0,1
+1786264805960,2396,POST /api/auth/login,200,OK,Buyer Browsing Load 1-4,text,true,,1357,233,11,11,http://localhost:4000/api/auth/login,2396,0,0
+1786264808200,360,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-7,text,true,,1778,155,11,11,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,360,0,0
+1786264808413,352,GET /api/products/new,200,OK,Buyer Browsing Load 1-9,text,true,,12391,133,12,12,http://localhost:4000/api/products/new,352,0,0
+1786264808940,237,GET /api/products,200,OK,Buyer Browsing Load 1-11,text,true,,20003,129,12,12,http://localhost:4000/api/products,237,0,1
+1786264808885,295,GET /api/products,200,OK,Buyer Browsing Load 1-3,text,true,,20003,129,12,12,http://localhost:4000/api/products,295,0,0
+1786264807212,2040,POST /api/auth/login,200,OK,Buyer Browsing Load 1-5,text,true,,1357,233,12,12,http://localhost:4000/api/auth/login,2040,0,0
+1786264809551,144,GET /api/products/new,200,OK,Buyer Browsing Load 1-2,text,true,,12391,133,12,12,http://localhost:4000/api/products/new,143,0,0
+1786264809552,144,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-8,text,true,,1778,155,12,12,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,144,0,0
+1786264809552,149,GET /api/products/new,200,OK,Buyer Browsing Load 1-1,text,true,,12391,133,12,12,http://localhost:4000/api/products/new,149,0,0
+1786264809564,251,GET /api/products,200,OK,Buyer Browsing Load 1-4,text,true,,20003,129,13,13,http://localhost:4000/api/products,251,0,0
+1786264809564,358,GET /api/products/new,200,OK,Buyer Browsing Load 1-10,text,true,,12391,133,13,13,http://localhost:4000/api/products/new,358,0,0
+1786264809979,357,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-9,text,true,,1778,155,13,13,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,356,0,0
+1786264809940,398,GET /api/products,200,OK,Buyer Browsing Load 1-12,text,true,,20003,129,13,13,http://localhost:4000/api/products,398,0,2
+1786264810453,302,GET /api/products,200,OK,Buyer Browsing Load 1-5,text,true,,20003,129,14,14,http://localhost:4000/api/products,302,0,0
+1786264810378,378,GET /api/products/new,200,OK,Buyer Browsing Load 1-11,text,true,,12391,133,14,14,http://localhost:4000/api/products/new,378,0,0
+1786264810383,377,GET /api/products/new,200,OK,Buyer Browsing Load 1-3,text,true,,12391,133,14,14,http://localhost:4000/api/products/new,377,0,0
+1786264810896,312,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-2,text,true,,1778,155,14,14,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,312,0,0
+1786264810902,313,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-1,text,true,,1778,155,14,14,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,312,0,0
+1786264810930,289,GET /api/products,200,OK,Buyer Browsing Load 1-13,text,true,,20003,129,14,14,http://localhost:4000/api/products,289,0,2
+1786264809553,1671,POST /api/auth/login,200,OK,Buyer Browsing Load 1-6,text,true,,1357,233,14,14,http://localhost:4000/api/auth/login,1671,0,0
+1786264809764,1468,POST /api/auth/login,200,OK,Buyer Browsing Load 1-7,text,true,,1357,233,14,14,http://localhost:4000/api/auth/login,1468,0,0
+1786264811020,317,GET /api/products/new,200,OK,Buyer Browsing Load 1-4,text,true,,12391,133,14,14,http://localhost:4000/api/products/new,317,0,0
+1786264811128,312,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-10,text,true,,1778,155,14,14,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,312,0,0
+1786264811545,207,GET /api/products/new,200,OK,Buyer Browsing Load 1-12,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,207,0,0
+1786264810897,1013,POST /api/auth/login,200,OK,Buyer Browsing Load 1-8,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,1013,0,0
+1786264811957,161,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-11,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,161,0,0
+1786264811957,163,GET /api/products/new,200,OK,Buyer Browsing Load 1-5,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,163,0,0
+1786264811972,149,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-3,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,149,0,0
+1786264811943,180,GET /api/products,200,OK,Buyer Browsing Load 1-14,text,true,,20003,129,15,15,http://localhost:4000/api/products,180,0,2
+1786264811545,684,POST /api/auth/login,200,OK,Buyer Browsing Load 1-9,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,684,0,0
+1786264812421,306,GET /api/products/new,200,OK,Buyer Browsing Load 1-13,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,306,0,0
+1786264812427,512,GET /api/products,200,OK,Buyer Browsing Load 1-6,text,true,,20003,129,15,15,http://localhost:4000/api/products,512,0,0
+1786264812539,402,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-4,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,402,0,0
+1786264812433,511,GET /api/products,200,OK,Buyer Browsing Load 1-7,text,true,,20003,129,15,15,http://localhost:4000/api/products,510,0,0
+1786264812911,340,GET /api/products,200,OK,Buyer Browsing Load 1-15,text,true,,20003,129,15,15,http://localhost:4000/api/products,340,0,2
+1786264812955,602,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-12,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,602,0,0
+1786264813126,434,GET /api/products,200,OK,Buyer Browsing Load 1-8,text,true,,20003,129,15,15,http://localhost:4000/api/products,434,0,0
+1786264813324,594,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-5,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,594,0,0
+1786264813326,694,GET /api/products/new,200,OK,Buyer Browsing Load 1-14,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,694,0,0
+1786264813431,593,GET /api/products,200,OK,Buyer Browsing Load 1-9,text,true,,20003,129,15,15,http://localhost:4000/api/products,593,0,0
+1786264812416,1609,POST /api/auth/login,200,OK,Buyer Browsing Load 1-1,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,1609,0,0
+1786264812415,1981,POST /api/auth/login,200,OK,Buyer Browsing Load 1-2,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,1981,0,0
+1786264813940,759,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-13,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,759,0,0
+1786264814152,653,GET /api/products/new,200,OK,Buyer Browsing Load 1-7,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,653,0,0
+1786264814152,656,GET /api/products/new,200,OK,Buyer Browsing Load 1-6,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,656,0,0
+1786264814457,797,GET /api/products/new,200,OK,Buyer Browsing Load 1-15,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,797,0,0
+1786264812642,2665,POST /api/auth/login,200,OK,Buyer Browsing Load 1-10,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2665,0,0
+1786264814765,948,GET /api/products/new,200,OK,Buyer Browsing Load 1-8,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,948,0,0
+1786264815222,1069,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-14,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,1069,0,0
+1786264815237,1056,GET /api/products/new,200,OK,Buyer Browsing Load 1-9,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,1056,0,0
+1786264815237,1057,GET /api/products,200,OK,Buyer Browsing Load 1-1,text,true,,20003,129,15,15,http://localhost:4000/api/products,1057,0,0
+1786264815604,697,GET /api/products,200,OK,Buyer Browsing Load 1-2,text,true,,20003,129,15,15,http://localhost:4000/api/products,697,0,0
+1786264813324,2987,POST /api/auth/login,200,OK,Buyer Browsing Load 1-11,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2987,0,0
+1786264813325,2988,POST /api/auth/login,200,OK,Buyer Browsing Load 1-3,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2988,0,0
+1786264816015,706,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-6,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,706,0,0
+1786264816016,706,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-7,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,706,0,0
+1786264816455,648,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-15,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,648,0,0
+1786264816517,593,GET /api/products,200,OK,Buyer Browsing Load 1-10,text,true,,20003,129,15,15,http://localhost:4000/api/products,593,0,0
+1786264814152,3006,POST /api/auth/login,200,OK,Buyer Browsing Load 1-4,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3006,0,0
+1786264816928,539,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-8,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,539,0,0
+1786264814765,2942,POST /api/auth/login,200,OK,Buyer Browsing Load 1-12,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2942,0,0
+1786264815131,2579,POST /api/auth/login,200,OK,Buyer Browsing Load 1-5,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2579,0,0
+1786264817507,381,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-9,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,381,0,0
+1786264817507,384,GET /api/products/new,200,OK,Buyer Browsing Load 1-2,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,384,0,0
+1786264817507,393,GET /api/products/new,200,OK,Buyer Browsing Load 1-1,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,392,0,0
+1786264817522,383,GET /api/products,200,OK,Buyer Browsing Load 1-11,text,true,,20003,129,15,15,http://localhost:4000/api/products,383,0,0
+1786264817522,385,GET /api/products,200,OK,Buyer Browsing Load 1-3,text,true,,20003,129,15,15,http://localhost:4000/api/products,385,0,0
+1786264815909,2004,POST /api/auth/login,200,OK,Buyer Browsing Load 1-13,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2004,0,0
+1786264818318,652,GET /api/products/new,200,OK,Buyer Browsing Load 1-10,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,652,0,0
+1786264818364,710,GET /api/products,200,OK,Buyer Browsing Load 1-4,text,true,,20003,129,15,15,http://localhost:4000/api/products,710,0,0
+1786264818910,681,GET /api/products,200,OK,Buyer Browsing Load 1-12,text,true,,20003,129,15,15,http://localhost:4000/api/products,681,0,0
+1786264818926,667,GET /api/products,200,OK,Buyer Browsing Load 1-5,text,true,,20003,129,15,15,http://localhost:4000/api/products,667,0,0
+1786264819096,947,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-2,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,947,0,0
+1786264819111,1035,GET /api/products/new,200,OK,Buyer Browsing Load 1-3,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,1035,0,0
+1786264819111,1037,GET /api/products/new,200,OK,Buyer Browsing Load 1-11,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,1037,0,0
+1786264819112,1037,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-1,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,1037,0,0
+1786264819126,1025,GET /api/products,200,OK,Buyer Browsing Load 1-13,text,true,,20003,129,15,15,http://localhost:4000/api/products,1025,0,0
+1786264817492,2667,POST /api/auth/login,200,OK,Buyer Browsing Load 1-14,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2667,0,0
+1786264820176,901,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-10,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,901,0,0
+1786264820284,794,GET /api/products/new,200,OK,Buyer Browsing Load 1-4,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,794,0,0
+1786264817923,3159,POST /api/auth/login,200,OK,Buyer Browsing Load 1-6,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3159,0,0
+1786264817938,3146,POST /api/auth/login,200,OK,Buyer Browsing Load 1-7,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3146,0,0
+1786264820795,639,GET /api/products/new,200,OK,Buyer Browsing Load 1-5,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,638,0,0
+1786264820795,640,GET /api/products/new,200,OK,Buyer Browsing Load 1-12,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,640,0,0
+1786264818318,3127,POST /api/auth/login,200,OK,Buyer Browsing Load 1-15,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3127,0,0
+1786264821354,521,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-11,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,521,0,0
+1786264821355,522,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-3,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,522,0,0
+1786264821354,525,GET /api/products/new,200,OK,Buyer Browsing Load 1-13,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,525,0,0
+1786264821369,516,GET /api/products,200,OK,Buyer Browsing Load 1-14,text,true,,20003,129,15,15,http://localhost:4000/api/products,516,0,0
+1786264818682,3211,POST /api/auth/login,200,OK,Buyer Browsing Load 1-8,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3211,0,0
+1786264819096,2798,POST /api/auth/login,200,OK,Buyer Browsing Load 1-9,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2798,0,0
+1786264822284,532,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-4,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,532,0,0
+1786264822284,636,GET /api/products,200,OK,Buyer Browsing Load 1-6,text,true,,20003,129,15,15,http://localhost:4000/api/products,636,0,0
+1786264822300,623,GET /api/products,200,OK,Buyer Browsing Load 1-7,text,true,,20003,129,15,15,http://localhost:4000/api/products,622,0,0
+1786264822641,693,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-5,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,693,0,0
+1786264822641,694,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-12,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,694,0,0
+1786264822656,681,GET /api/products,200,OK,Buyer Browsing Load 1-15,text,true,,20003,129,15,15,http://localhost:4000/api/products,681,0,0
+1786264823088,710,GET /api/products/new,200,OK,Buyer Browsing Load 1-14,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,710,0,0
+1786264823091,809,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-13,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,809,0,0
+1786264823105,808,GET /api/products,200,OK,Buyer Browsing Load 1-8,text,true,,20003,129,15,15,http://localhost:4000/api/products,808,0,0
+1786264823104,816,GET /api/products,200,OK,Buyer Browsing Load 1-9,text,true,,20003,129,15,15,http://localhost:4000/api/products,816,0,0
+1786264821354,3026,POST /api/auth/login,200,OK,Buyer Browsing Load 1-1,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3026,0,0
+1786264824121,664,GET /api/products/new,200,OK,Buyer Browsing Load 1-6,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,664,0,0
+1786264824137,649,GET /api/products/new,200,OK,Buyer Browsing Load 1-7,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,649,0,0
+1786264821248,3549,POST /api/auth/login,200,OK,Buyer Browsing Load 1-2,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3548,0,0
+1786264824553,828,GET /api/products/new,200,OK,Buyer Browsing Load 1-15,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,828,0,0
+1786264822285,3108,POST /api/auth/login,200,OK,Buyer Browsing Load 1-10,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3108,0,0
+1786264825000,902,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-14,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,902,0,0
+1786264825125,884,GET /api/products/new,200,OK,Buyer Browsing Load 1-8,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,884,0,0
+1786264825124,887,GET /api/products/new,200,OK,Buyer Browsing Load 1-9,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,887,0,0
+1786264825587,935,GET /api/products,200,OK,Buyer Browsing Load 1-1,text,true,,20003,129,15,15,http://localhost:4000/api/products,935,0,0
+1786264823088,3438,POST /api/auth/login,200,OK,Buyer Browsing Load 1-3,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3438,0,0
+1786264823089,3440,POST /api/auth/login,200,OK,Buyer Browsing Load 1-11,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3440,0,0
+1786264825990,946,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-6,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,946,0,0
+1786264825990,947,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-7,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,947,0,0
+1786264826005,935,GET /api/products,200,OK,Buyer Browsing Load 1-2,text,true,,20003,129,15,15,http://localhost:4000/api/products,935,0,0
+1786264826591,745,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-15,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,745,0,0
+1786264826607,731,GET /api/products,200,OK,Buyer Browsing Load 1-10,text,true,,20003,129,15,15,http://localhost:4000/api/products,731,0,0
+1786264824029,3317,POST /api/auth/login,200,OK,Buyer Browsing Load 1-4,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3317,0,0
+1786264827222,530,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-9,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,530,0,0
+1786264827222,532,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-8,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,532,0,0
+1786264824538,3504,POST /api/auth/login,200,OK,Buyer Browsing Load 1-12,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3504,0,0
+1786264824538,3505,POST /api/auth/login,200,OK,Buyer Browsing Load 1-5,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3505,0,0
+1786264827729,494,GET /api/products,200,OK,Buyer Browsing Load 1-3,text,true,,20003,129,15,15,http://localhost:4000/api/products,494,0,0
+1786264827729,496,GET /api/products/new,200,OK,Buyer Browsing Load 1-1,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,496,0,0
+1786264827744,483,GET /api/products,200,OK,Buyer Browsing Load 1-11,text,true,,20003,129,15,15,http://localhost:4000/api/products,482,0,0
+1786264825109,3125,POST /api/auth/login,200,OK,Buyer Browsing Load 1-13,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3125,0,0
+1786264828145,394,GET /api/products/new,200,OK,Buyer Browsing Load 1-2,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,394,0,0
+1786264828546,698,GET /api/products/new,200,OK,Buyer Browsing Load 1-10,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,698,0,0
+1786264828561,687,GET /api/products,200,OK,Buyer Browsing Load 1-4,text,true,,20003,129,15,15,http://localhost:4000/api/products,686,0,0
+1786264827115,2138,POST /api/auth/login,200,OK,Buyer Browsing Load 1-14,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2138,0,0
+1786264829252,1013,GET /api/products,200,OK,Buyer Browsing Load 1-12,text,true,,20003,129,15,15,http://localhost:4000/api/products,1013,0,0
+1786264829438,828,GET /api/products,200,OK,Buyer Browsing Load 1-13,text,true,,20003,129,15,15,http://localhost:4000/api/products,828,0,0
+1786264829252,1016,GET /api/products,200,OK,Buyer Browsing Load 1-5,text,true,,20003,129,15,15,http://localhost:4000/api/products,1016,0,0
+1786264829438,830,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-1,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,830,0,0
+1786264829438,831,GET /api/products/new,200,OK,Buyer Browsing Load 1-11,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,831,0,0
+1786264829438,832,GET /api/products/new,200,OK,Buyer Browsing Load 1-3,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,832,0,0
+1786264828145,2183,POST /api/auth/login,200,OK,Buyer Browsing Load 1-6,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2183,0,0
+1786264829745,886,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-2,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,886,0,0
+1786264828145,2490,POST /api/auth/login,200,OK,Buyer Browsing Load 1-7,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2490,0,0
+1786264830450,483,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-10,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,483,0,0
+1786264830450,484,GET /api/products/new,200,OK,Buyer Browsing Load 1-4,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,484,0,0
+1786264830466,470,GET /api/products,200,OK,Buyer Browsing Load 1-14,text,true,,20003,129,15,15,http://localhost:4000/api/products,470,0,0
+1786264828546,2391,POST /api/auth/login,200,OK,Buyer Browsing Load 1-15,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2390,0,0
+1786264828960,2039,POST /api/auth/login,200,OK,Buyer Browsing Load 1-9,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2039,0,0
+1786264828960,2041,POST /api/auth/login,200,OK,Buyer Browsing Load 1-8,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2041,0,0
+1786264831468,10,GET /api/products/new,200,OK,Buyer Browsing Load 1-13,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,10,0,0
+1786264831468,12,GET /api/products/new,200,OK,Buyer Browsing Load 1-5,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,11,0,0
+1786264831468,13,GET /api/products/new,200,OK,Buyer Browsing Load 1-12,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,13,0,0
+1786264831484,213,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-11,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,212,0,0
+1786264831484,214,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-3,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,214,0,0
+1786264831530,273,GET /api/products,200,OK,Buyer Browsing Load 1-6,text,true,,20003,129,15,15,http://localhost:4000/api/products,272,0,0
+1786264831839,275,GET /api/products,200,OK,Buyer Browsing Load 1-7,text,true,,20003,129,15,15,http://localhost:4000/api/products,274,0,0
+1786264831484,799,POST /api/auth/login,200,OK,Buyer Browsing Load 1-1,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,799,0,0
+1786264832149,339,GET /api/products/new,200,OK,Buyer Browsing Load 1-14,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,339,0,0
+1786264832149,341,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-4,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,340,0,0
+1786264832149,342,GET /api/products,200,OK,Buyer Browsing Load 1-15,text,true,,20003,129,15,15,http://localhost:4000/api/products,342,0,0
+1786264832210,283,GET /api/products,200,OK,Buyer Browsing Load 1-9,text,true,,20003,129,15,15,http://localhost:4000/api/products,283,0,0
+1786264832210,284,GET /api/products,200,OK,Buyer Browsing Load 1-8,text,true,,20003,129,15,15,http://localhost:4000/api/products,284,0,0
+1786264832691,205,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-12,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,205,0,0
+1786264832691,205,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-13,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,205,0,0
+1786264832691,206,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-5,text,true,,1778,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,206,0,0
+1786264831839,1059,POST /api/auth/login,200,OK,Buyer Browsing Load 1-2,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,1059,0,0
+1786264833015,509,GET /api/products/new,200,OK,Buyer Browsing Load 1-6,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,509,0,0
+1786264832136,1393,POST /api/auth/login,200,OK,Buyer Browsing Load 1-10,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,1392,0,0
+1786264833327,405,GET /api/products/new,200,OK,Buyer Browsing Load 1-7,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,405,0,0
+1786264833497,238,GET /api/products,200,OK,Buyer Browsing Load 1-1,text,true,,20003,129,15,15,http://localhost:4000/api/products,238,0,0
+1786264833698,246,GET /api/products/new,200,OK,Buyer Browsing Load 1-9,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,246,0,0
+1786264833698,247,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-14,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,247,0,0
+1786264833698,249,GET /api/products/new,200,OK,Buyer Browsing Load 1-15,text,true,,12391,133,15,15,http://localhost:4000/api/products/new,248,0,0
+1786264833698,354,GET /api/products/new,200,OK,Buyer Browsing Load 1-8,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,354,0,0
+1786264834101,821,GET /api/products,200,OK,Buyer Browsing Load 1-2,text,true,,20002,129,15,15,http://localhost:4000/api/products,820,0,0
+1786264832907,2020,POST /api/auth/login,200,OK,Buyer Browsing Load 1-3,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2020,0,0
+1786264832907,2023,POST /api/auth/login,200,OK,Buyer Browsing Load 1-11,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2023,0,0
+1786264834734,1037,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-6,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,1037,0,0
+1786264834733,1040,GET /api/products,200,OK,Buyer Browsing Load 1-10,text,true,,20002,129,15,15,http://localhost:4000/api/products,1040,0,0
+1786264834935,839,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-7,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,839,0,0
+1786264834950,826,GET /api/products/new,200,OK,Buyer Browsing Load 1-1,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,826,0,0
+1786264835151,628,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-9,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,628,0,0
+1786264835151,629,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-15,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,629,0,0
+1786264835260,623,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-8,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,623,0,0
+1786264836140,741,GET /api/products,200,OK,Buyer Browsing Load 1-3,text,true,,20002,129,15,15,http://localhost:4000/api/products,740,0,0
+1786264836125,757,GET /api/products/new,200,OK,Buyer Browsing Load 1-2,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,757,0,0
+1786264836140,744,GET /api/products,200,OK,Buyer Browsing Load 1-11,text,true,,20002,129,15,15,http://localhost:4000/api/products,744,0,0
+1786264833698,3187,POST /api/auth/login,200,OK,Buyer Browsing Load 1-4,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3187,0,0
+1786264836988,601,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-1,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,601,0,0
+1786264836988,705,GET /api/products/new,200,OK,Buyer Browsing Load 1-10,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,705,0,0
+1786264834100,3897,POST /api/auth/login,200,OK,Buyer Browsing Load 1-13,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3897,0,0
+1786264834101,3897,POST /api/auth/login,200,OK,Buyer Browsing Load 1-12,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3897,0,0
+1786264834101,3898,POST /api/auth/login,200,OK,Buyer Browsing Load 1-5,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3898,0,0
+1786264835151,2849,POST /api/auth/login,200,OK,Buyer Browsing Load 1-14,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2849,0,0
+1786264838091,930,GET /api/products,200,OK,Buyer Browsing Load 1-4,text,true,,20002,129,15,15,http://localhost:4000/api/products,930,0,0
+1786264838091,932,GET /api/products/new,200,OK,Buyer Browsing Load 1-11,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,932,0,0
+1786264838091,933,GET /api/products/new,200,OK,Buyer Browsing Load 1-3,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,933,0,0
+1786264838091,934,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-2,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,934,0,0
+1786264838896,740,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-10,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,740,0,0
+1786264839204,891,GET /api/products,200,OK,Buyer Browsing Load 1-14,text,true,,20002,129,15,15,http://localhost:4000/api/products,891,0,0
+1786264839204,892,GET /api/products,200,OK,Buyer Browsing Load 1-5,text,true,,20002,129,15,15,http://localhost:4000/api/products,892,0,0
+1786264839204,893,GET /api/products,200,OK,Buyer Browsing Load 1-13,text,true,,20002,129,15,15,http://localhost:4000/api/products,893,0,0
+1786264839204,894,GET /api/products,200,OK,Buyer Browsing Load 1-12,text,true,,20002,129,15,15,http://localhost:4000/api/products,894,0,0
+1786264836973,3125,POST /api/auth/login,200,OK,Buyer Browsing Load 1-6,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3125,0,0
+1786264836988,3114,POST /api/auth/login,200,OK,Buyer Browsing Load 1-7,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3114,0,0
+1786264836989,3132,POST /api/auth/login,200,OK,Buyer Browsing Load 1-15,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3132,0,0
+1786264837098,3024,POST /api/auth/login,200,OK,Buyer Browsing Load 1-8,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3024,0,0
+1786264836989,3235,POST /api/auth/login,200,OK,Buyer Browsing Load 1-9,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3235,0,0
+1786264840235,204,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-11,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,204,0,0
+1786264840235,205,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-3,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,205,0,0
+1786264840236,205,GET /api/products/new,200,OK,Buyer Browsing Load 1-4,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,205,0,0
+1786264838804,1637,POST /api/auth/login,200,OK,Buyer Browsing Load 1-1,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,1637,0,0
+1786264840235,516,POST /api/auth/login,200,OK,Buyer Browsing Load 1-2,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,516,0,0
+1786264840844,443,POST /api/auth/login,200,OK,Buyer Browsing Load 1-10,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,443,0,0
+1786264841307,8,GET /api/products/new,200,OK,Buyer Browsing Load 1-14,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,8,0,0
+1786264841307,10,GET /api/products/new,200,OK,Buyer Browsing Load 1-12,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,10,0,0
+1786264841307,12,GET /api/products,200,OK,Buyer Browsing Load 1-6,text,true,,20002,129,15,15,http://localhost:4000/api/products,12,0,0
+1786264841307,14,GET /api/products/new,200,OK,Buyer Browsing Load 1-13,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,14,0,0
+1786264841307,15,GET /api/products/new,200,OK,Buyer Browsing Load 1-5,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,15,0,0
+1786264841337,7,GET /api/products,200,OK,Buyer Browsing Load 1-8,text,true,,20002,129,15,15,http://localhost:4000/api/products,7,0,0
+1786264841337,9,GET /api/products,200,OK,Buyer Browsing Load 1-15,text,true,,20002,129,15,15,http://localhost:4000/api/products,9,0,0
+1786264841307,101,GET /api/products,200,OK,Buyer Browsing Load 1-7,text,true,,20002,129,15,15,http://localhost:4000/api/products,101,0,0
+1786264841432,9,GET /api/products,200,OK,Buyer Browsing Load 1-9,text,true,,20002,129,15,15,http://localhost:4000/api/products,9,0,0
+1786264841649,110,GET /api/products,200,OK,Buyer Browsing Load 1-1,text,true,,20002,129,15,15,http://localhost:4000/api/products,110,0,0
+1786264841649,211,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-4,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,211,0,0
+1786264841959,403,GET /api/products,200,OK,Buyer Browsing Load 1-2,text,true,,20002,129,15,15,http://localhost:4000/api/products,403,0,0
+1786264841649,715,POST /api/auth/login,200,OK,Buyer Browsing Load 1-3,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,715,0,0
+1786264841650,812,POST /api/auth/login,200,OK,Buyer Browsing Load 1-11,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,812,0,0
+1786264842498,7,GET /api/products,200,OK,Buyer Browsing Load 1-10,text,true,,20002,129,15,15,http://localhost:4000/api/products,7,0,0
+1786264842530,7,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-14,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,7,0,0
+1786264842532,7,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-12,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,7,0,0
+1786264842530,10,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-13,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,10,0,0
+1786264842532,9,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-5,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,9,0,0
+1786264842533,12,GET /api/products/new,200,OK,Buyer Browsing Load 1-6,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,12,0,0
+1786264842546,6,GET /api/products/new,200,OK,Buyer Browsing Load 1-8,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,6,0,0
+1786264842562,8,GET /api/products/new,200,OK,Buyer Browsing Load 1-15,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,8,0,0
+1786264842621,8,GET /api/products/new,200,OK,Buyer Browsing Load 1-7,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,8,0,0
+1786264842650,7,GET /api/products/new,200,OK,Buyer Browsing Load 1-9,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,7,0,0
+1786264842961,5,GET /api/products/new,200,OK,Buyer Browsing Load 1-1,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,5,0,0
+1786264843068,515,POST /api/auth/login,200,OK,Buyer Browsing Load 1-4,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,515,0,0
+1786264843563,23,GET /api/products/new,200,OK,Buyer Browsing Load 1-2,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,23,0,0
+1786264843579,8,GET /api/products,200,OK,Buyer Browsing Load 1-3,text,true,,20002,129,15,15,http://localhost:4000/api/products,8,0,0
+1786264843672,8,GET /api/products,200,OK,Buyer Browsing Load 1-11,text,true,,20002,129,15,15,http://localhost:4000/api/products,8,0,0
+1786264843718,10,GET /api/products/new,200,OK,Buyer Browsing Load 1-10,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,10,0,0
+1786264843748,12,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-6,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,12,0,0
+1786264843763,911,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-8,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,911,0,0
+1786264843778,897,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-15,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,897,0,0
+1786264843838,838,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-7,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,838,0,0
+1786264843869,808,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-9,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,808,0,0
+1786264844179,901,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-1,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,901,0,0
+1786264844797,624,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-2,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,624,0,0
+1786264844797,625,GET /api/products/new,200,OK,Buyer Browsing Load 1-3,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,625,0,0
+1786264844797,626,GET /api/products,200,OK,Buyer Browsing Load 1-4,text,true,,20002,129,15,15,http://localhost:4000/api/products,626,0,0
+1786264844937,486,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-10,text,true,,1777,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,486,0,0
+1786264844890,635,GET /api/products/new,200,OK,Buyer Browsing Load 1-11,text,true,,12390,133,15,15,http://localhost:4000/api/products/new,635,0,0
+1786264843748,1780,POST /api/auth/login,200,OK,Buyer Browsing Load 1-12,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,1780,0,0
+1786264843749,1813,POST /api/auth/login,200,OK,Buyer Browsing Load 1-13,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,1813,0,0
+1786264843748,1916,POST /api/auth/login,200,OK,Buyer Browsing Load 1-5,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,1916,0,0
+1786264843749,1916,POST /api/auth/login,200,OK,Buyer Browsing Load 1-14,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,1916,0,0
+1786264844970,969,POST /api/auth/login,200,OK,Buyer Browsing Load 1-6,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,969,0,0
+1786264846635,834,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-3,text,true,,1776,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,834,0,0
+1786264846635,835,GET /api/products/new,200,OK,Buyer Browsing Load 1-4,text,true,,12389,133,15,15,http://localhost:4000/api/products/new,835,0,0
+1786264846728,743,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-11,text,true,,1776,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,743,0,0
+1786264846728,745,GET /api/products,200,OK,Buyer Browsing Load 1-12,text,true,,20001,129,15,15,http://localhost:4000/api/products,745,0,0
+1786264847148,333,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-6,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,129,15,15,http://localhost:4000/api/products,333,0,0
+1786264846869,1322,GET /api/products,200,OK,Buyer Browsing Load 1-14,text,true,,20001,129,15,15,http://localhost:4000/api/products,1321,0,0
+1786264846869,1323,GET /api/products,200,OK,Buyer Browsing Load 1-5,text,true,,20001,129,15,15,http://localhost:4000/api/products,1323,0,0
+1786264846775,1421,GET /api/products,200,OK,Buyer Browsing Load 1-13,text,true,,20001,129,15,15,http://localhost:4000/api/products,1421,0,0
+1786264848684,216,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-11,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,233,15,15,http://localhost:4000/api/auth/login,216,0,0
+1786264848684,217,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-12,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,133,15,15,http://localhost:4000/api/products/new,217,0,0
+1786264848684,219,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-6,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,133,15,15,http://localhost:4000/api/products/new,219,0,0
+1786264848685,219,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-4,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,219,0,0
+1786264848685,221,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-3,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,233,15,15,http://localhost:4000/api/auth/login,221,0,0
+1786264845879,3056,POST /api/auth/login,200,OK,Buyer Browsing Load 1-15,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3056,0,0
+1786264845879,3377,POST /api/auth/login,200,OK,Buyer Browsing Load 1-9,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3377,0,0
+1786264845879,3380,POST /api/auth/login,200,OK,Buyer Browsing Load 1-7,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3380,0,0
+1786264845879,3381,POST /api/auth/login,200,OK,Buyer Browsing Load 1-8,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3381,0,0
+1786264849395,167,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-5,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,133,15,15,http://localhost:4000/api/products/new,167,0,0
+1786264849395,167,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-14,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,133,15,15,http://localhost:4000/api/products/new,167,0,0
+1786264849410,153,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-13,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,133,15,15,http://localhost:4000/api/products/new,153,0,0
+1786264846281,3283,POST /api/auth/login,200,OK,Buyer Browsing Load 1-1,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,3283,0,0
+1786264846635,2968,POST /api/auth/login,200,OK,Buyer Browsing Load 1-10,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2968,0,0
+1786264846635,2969,POST /api/auth/login,200,OK,Buyer Browsing Load 1-2,text,true,,1357,233,15,15,http://localhost:4000/api/auth/login,2969,0,0
+1786264850104,3,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-11,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264850107,1,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-12,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,1,0,0
+1786264850108,2,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-6,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,2,0,0
+1786264850119,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-3,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264850119,4,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-4,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,233,15,15,http://localhost:4000/api/auth/login,4,0,0
+1786264850136,1,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-15,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,129,15,15,http://localhost:4000/api/products,1,0,0
+1786264850460,1,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-7,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,129,15,15,http://localhost:4000/api/products,1,0,0
+1786264850460,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-9,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264850475,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-8,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1091,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264850765,2,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-13,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,2,0,0
+1786264850765,3,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-5,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,3,0,0
+1786264850765,5,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-14,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,5,0,0
+1786264850766,5,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-1,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,5,0,0
+1786264850812,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-10,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264850812,3,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-2,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,3,0,0
+1786264851322,3,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-12,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,3,0,0
+1786264851322,5,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-6,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,5,0,0
+1786264851325,5,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-11,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,4,0,0
+1786264851336,4,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-3,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,3,0,0
+1786264851341,3,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-4,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,3,0,0
+1786264851351,3,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-15,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,3,0,0
+1786264851676,2,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-9,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,2,0,0
+1786264851676,3,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-7,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,3,0,0
+1786264851691,2,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-8,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,2,0,0
+1786264851969,5,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-13,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,5,0,0
+1786264851989,5,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-14,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,5,0,0
+1786264851984,12,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-1,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,12,0,0
+1786264851992,6,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-5,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,6,0,0
+1786264852029,2,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-2,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,2,0,0
+1786264852029,6,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-10,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,6,0,0
+1786264852538,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-6,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264852538,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-12,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264852538,3,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-11,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,3,0,0
+1786264852553,2,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-4,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,2,0,0
+1786264852553,2,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-3,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,2,0,0
+1786264852569,1,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-15,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,1,0,0
+1786264852892,2,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-7,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,2,0,0
+1786264852892,3,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-9,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,3,0,0
+1786264852907,2,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-8,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,2,0,0
+1786264853185,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-13,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264853201,2,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-1,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,2,0,0
+1786264853201,4,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-5,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,4,0,0
+1786264853202,5,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-14,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,5,0,0
+1786264853248,4,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-2,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,4,0,0
+1786264853248,9,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-10,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,9,0,0
+1786264853742,2,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-12,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,2,0,0
+1786264853743,3,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-11,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,3,0,0
+1786264853743,5,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-6,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,5,0,0
+1786264853758,1,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-4,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,1,0,0
+1786264853758,2,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-3,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,2,0,0
+1786264853774,1,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-15,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,1,0,0
+1786264854098,2,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-9,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,2,0,0
+1786264854099,3,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-7,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,3,0,0
+1786264854113,2,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-8,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,2,0,0
+1786264854395,2,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-13,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,2,0,0
+1786264854409,3,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-1,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,3,0,0
+1786264854409,5,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-14,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,5,0,0
+1786264854410,5,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-5,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,5,0,0
+1786264854455,2,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-2,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,2,0,0
+1786264854471,2,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-10,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,2,0,0
+1786264854961,2,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-4,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,2,0,0
+1786264854961,3,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-6,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,3,0,0
+1786264854962,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-11,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264854964,1,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-12,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,1,0,0
+1786264854977,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-3,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264854992,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-15,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264855316,3,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-9,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,3,0,0
+1786264855316,4,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-7,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,4,0,0
+1786264855332,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-8,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264855611,3,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-13,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,3,0,0
+1786264855627,2,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-5,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,2,0,0
+1786264855627,3,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-14,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,2,0,0
+1786264855628,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-1,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264855672,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-2,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264855688,6,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-10,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,6,0,0
+1786264856168,6,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-6,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,6,0,0
+1786264856168,13,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-12,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,12,0,0
+1786264856169,13,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-4,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,13,0,0
+1786264856169,14,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-11,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,14,0,0
+1786264856184,3,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-3,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,3,0,0
+1786264856202,2,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-15,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,2,0,0
+1786264856526,4,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-9,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,4,0,0
+1786264856530,3,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-7,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,3,0,0
+1786264856542,3,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-8,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,3,0,0
+1786264856831,1,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-14,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,1,0,0
+1786264856831,2,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-5,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,2,0,0
+1786264856833,2,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-1,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,2,0,0
+1786264856881,2,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-2,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,2,0,0
+1786264856909,1,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-10,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,1,0,0
+1786264856908,4,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-13,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,4,0,0
+1786264857385,6,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-4,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,6,0,0
+1786264857385,6,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-11,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,6,0,0
+1786264857390,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-12,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264857385,8,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-6,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,8,0,0
+1786264857400,1,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-3,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,1,0,0
+1786264857416,1,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-15,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,1,0,0
+1786264857741,2,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-7,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,2,0,0
+1786264857741,2,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-9,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,1,0,0
+1786264857756,2,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-8,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,2,0,0
+1786264858038,3,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-5,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,3,0,0
+1786264858081,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-14,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264858088,2,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-1,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,2,0,0
+1786264858096,1,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-2,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,1,0,0
+1786264858126,1,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-10,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,1,0,0
+1786264858126,2,GET /api/products,429,Too Many Requests,Buyer Browsing Load 1-13,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,129,15,15,http://localhost:4000/api/products,2,0,0
+1786264858605,1,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-6,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,1,0,0
+1786264858605,3,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-12,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,15,15,http://localhost:4000/api/products/new,3,0,0
+1786264858605,4,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-3,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,15,15,http://localhost:4000/api/auth/login,4,0,0
+1786264858606,4,GET /api/products/:id (detail),429,Too Many Requests,Buyer Browsing Load 1-4,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,155,15,15,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,4,0,0
+1786264858609,5,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-11,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,14,14,http://localhost:4000/api/auth/login,5,0,0
+1786264858621,1,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-15,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,14,14,http://localhost:4000/api/auth/login,1,0,0
+1786264858958,2,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-9,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,14,14,http://localhost:4000/api/auth/login,2,0,0
+1786264858958,3,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-7,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,14,14,http://localhost:4000/api/auth/login,3,0,0
+1786264858973,3,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-8,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,14,14,http://localhost:4000/api/auth/login,3,0,0
+1786264859249,1,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-5,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,14,14,http://localhost:4000/api/products/new,1,0,0
+1786264859300,3,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-1,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,14,14,http://localhost:4000/api/auth/login,3,0,0
+1786264859300,4,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-2,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,13,13,http://localhost:4000/api/auth/login,4,0,0
+1786264859303,2,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-14,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,13,13,http://localhost:4000/api/products/new,2,0,0
+1786264859327,6,POST /api/auth/login,429,Too Many Requests,Buyer Browsing Load 1-10,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,233,12,12,http://localhost:4000/api/auth/login,4,0,0
+1786264859327,7,GET /api/products/new,429,Too Many Requests,Buyer Browsing Load 1-13,text,false,"Test failed: code expected to equal /
+
+****** received  : [[[429]]]
+
+****** comparison: [[[200]]]
+
+/",1089,133,12,12,http://localhost:4000/api/products/new,7,0,0
+1786264859806,5,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-6,text,true,,1778,155,12,12,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,5,0,0
+1786264859821,212,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-12,text,true,,1778,155,12,12,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,212,0,0
+1786264859825,315,GET /api/products,200,OK,Buyer Browsing Load 1-11,text,true,,20003,129,12,12,http://localhost:4000/api/products,315,0,0
+1786264859837,305,GET /api/products,200,OK,Buyer Browsing Load 1-15,text,true,,20003,129,12,12,http://localhost:4000/api/products,305,0,0
+1786264860161,191,GET /api/products,200,OK,Buyer Browsing Load 1-9,text,true,,20003,129,12,12,http://localhost:4000/api/products,191,0,0
+1786264860175,179,GET /api/products,200,OK,Buyer Browsing Load 1-7,text,true,,20003,129,12,12,http://localhost:4000/api/products,179,0,0
+1786264860176,179,GET /api/products,200,OK,Buyer Browsing Load 1-8,text,true,,20003,129,12,12,http://localhost:4000/api/products,179,0,0
+1786264860452,17,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-5,text,true,,1778,155,12,12,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,17,0,0
+1786264859821,649,POST /api/auth/login,200,OK,Buyer Browsing Load 1-4,text,true,,1357,233,12,12,http://localhost:4000/api/auth/login,649,0,0
+1786264860513,7,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-14,text,true,,1778,155,11,11,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,7,0,0
+1786264860546,5,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-13,text,true,,1778,155,11,11,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,5,0,0
+1786264860546,10,GET /api/products,200,OK,Buyer Browsing Load 1-10,text,true,,20003,129,11,11,http://localhost:4000/api/products,10,0,0
+1786264861347,340,GET /api/products/new,200,OK,Buyer Browsing Load 1-15,text,true,,12391,133,11,11,http://localhost:4000/api/products/new,339,0,0
+1786264861347,348,GET /api/products/new,200,OK,Buyer Browsing Load 1-11,text,true,,12391,133,11,11,http://localhost:4000/api/products/new,348,0,0
+1786264861022,683,POST /api/auth/login,200,OK,Buyer Browsing Load 1-6,text,true,,1357,233,11,11,http://localhost:4000/api/auth/login,683,0,0
+1786264861565,246,GET /api/products/new,200,OK,Buyer Browsing Load 1-7,text,true,,12391,133,10,10,http://localhost:4000/api/products/new,246,0,0
+1786264861565,248,GET /api/products/new,200,OK,Buyer Browsing Load 1-8,text,true,,12391,133,10,10,http://localhost:4000/api/products/new,248,0,0
+1786264861565,350,GET /api/products/new,200,OK,Buyer Browsing Load 1-9,text,true,,12391,133,10,10,http://localhost:4000/api/products/new,350,0,0
+1786264861765,561,GET /api/products/new,200,OK,Buyer Browsing Load 1-10,text,true,,12391,133,10,10,http://localhost:4000/api/products/new,561,0,0
+1786264861239,1900,POST /api/auth/login,200,OK,Buyer Browsing Load 1-12,text,true,,1357,233,10,10,http://localhost:4000/api/auth/login,1900,0,0
+1786264862890,553,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-15,text,true,,1778,155,10,10,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,553,0,0
+1786264863013,432,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-7,text,true,,1778,155,10,10,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,432,0,0
+1786264862906,540,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-11,text,true,,1778,155,10,10,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,540,0,0
+1786264863029,417,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-8,text,true,,1778,155,10,10,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,417,0,0
+1786264863122,325,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-9,text,true,,1778,155,10,10,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,325,0,0
+1786264861672,2034,POST /api/auth/login,200,OK,Buyer Browsing Load 1-5,text,true,,1357,233,10,10,http://localhost:4000/api/auth/login,2034,0,0
+1786264863539,264,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-10,text,true,,1778,155,9,9,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,264,0,0
+1786264861734,2072,POST /api/auth/login,200,OK,Buyer Browsing Load 1-14,text,true,,1357,233,9,9,http://localhost:4000/api/auth/login,2072,0,0
+1786264861765,2042,POST /api/auth/login,200,OK,Buyer Browsing Load 1-13,text,true,,1357,233,9,9,http://localhost:4000/api/auth/login,2042,0,0
+1786264864353,6,GET /api/products,200,OK,Buyer Browsing Load 1-12,text,true,,20003,129,9,9,http://localhost:4000/api/products,6,0,0
+1786264865018,1378,GET /api/products,200,OK,Buyer Browsing Load 1-14,text,true,,20003,129,9,9,http://localhost:4000/api/products,1378,0,0
+1786264865018,1380,GET /api/products,200,OK,Buyer Browsing Load 1-13,text,true,,20003,129,9,9,http://localhost:4000/api/products,1380,0,0
+1786264865563,837,GET /api/products/new,200,OK,Buyer Browsing Load 1-12,text,true,,12391,133,9,9,http://localhost:4000/api/products/new,837,0,0
+1786264864650,2340,POST /api/auth/login,200,OK,Buyer Browsing Load 1-8,text,true,,1357,233,9,9,http://localhost:4000/api/auth/login,2340,0,0
+1786264864654,2780,POST /api/auth/login,200,OK,Buyer Browsing Load 1-11,text,true,,1357,233,8,8,http://localhost:4000/api/auth/login,2780,0,0
+1786264864654,2781,POST /api/auth/login,200,OK,Buyer Browsing Load 1-15,text,true,,1357,233,8,8,http://localhost:4000/api/auth/login,2781,0,0
+1786264864655,2781,POST /api/auth/login,200,OK,Buyer Browsing Load 1-9,text,true,,1357,233,7,7,http://localhost:4000/api/auth/login,2781,0,0
+1786264864651,2918,POST /api/auth/login,200,OK,Buyer Browsing Load 1-7,text,true,,1357,233,6,6,http://localhost:4000/api/auth/login,2918,0,0
+1786264865003,2601,POST /api/auth/login,200,OK,Buyer Browsing Load 1-10,text,true,,1357,233,5,5,http://localhost:4000/api/auth/login,2601,0,0
+1786264867609,4,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-12,text,true,,1778,155,4,4,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,4,0,0
+1786264867609,6,GET /api/products/new,200,OK,Buyer Browsing Load 1-14,text,true,,12391,133,4,4,http://localhost:4000/api/products/new,6,0,0
+1786264867609,7,GET /api/products/new,200,OK,Buyer Browsing Load 1-13,text,true,,12391,133,4,4,http://localhost:4000/api/products/new,7,0,0
+1786264868640,7,GET /api/products,200,OK,Buyer Browsing Load 1-15,text,true,,20003,129,4,4,http://localhost:4000/api/products,7,0,0
+1786264868825,206,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-13,text,true,,1778,155,4,4,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,206,0,0
+1786264868825,207,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-14,text,true,,1778,155,4,4,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,207,0,0
+1786264868825,528,POST /api/auth/login,200,OK,Buyer Browsing Load 1-12,text,true,,1357,233,4,4,http://localhost:4000/api/auth/login,528,0,0
+1786264869858,6,GET /api/products/new,200,OK,Buyer Browsing Load 1-15,text,true,,12391,133,3,3,http://localhost:4000/api/products/new,6,0,0
+1786264871072,278,GET /api/products/:id (detail),200,OK,Buyer Browsing Load 1-15,text,true,,1778,155,3,3,http://localhost:4000/api/products/cmsgubi8a0008uq5c7xip76tm,278,0,0
+1786264870243,1109,POST /api/auth/login,200,OK,Buyer Browsing Load 1-14,text,true,,1357,233,3,3,http://localhost:4000/api/auth/login,1109,0,0
+1786264870243,1167,POST /api/auth/login,200,OK,Buyer Browsing Load 1-13,text,true,,1357,233,2,2,http://localhost:4000/api/auth/login,1167,0,0
+1786264872555,548,POST /api/auth/login,200,OK,Buyer Browsing Load 1-15,text,true,,1357,233,1,1,http://localhost:4000/api/auth/login,548,0,0

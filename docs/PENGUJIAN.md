@@ -317,3 +317,89 @@ kondisi lama.
 "Fix the checkout voucher bug and split login into buyer/seller") diuji ulang
 di bawah simulasi serangan sungguhan (§5.1) dan terbukti berperilaku persis
 seperti yang diklaim kodenya** — bukan cuma lulus review kode.
+
+---
+
+## 7. Retest dengan toolchain standar — Postman, Selenium, JMeter (9 Agustus 2026)
+
+Tiga alat berbeda, tiga lapis yang tidak saling menggantikan: Postman menguji
+*kontrak* API secara langsung, Selenium menguji *pengalaman* lewat UI
+sungguhan di browser, JMeter menguji *ketahanan* di bawah beban bersamaan.
+Semua dijalankan terhadap stack lokal (`localhost:4000` + `localhost:5173`).
+
+### 7.1 Postman / Newman
+
+`npm run test:api` — koleksi sudah tumbuh sejak §2: **94 request, 188
+test-script, 321 assertion, 0 gagal**, selesai dalam 13,5 detik.
+
+### 7.2 Selenium (otomasi web)
+
+*(Appium tidak dipakai — AURA adalah web app, bukan aplikasi mobile native,
+jadi tidak ada target yang relevan untuknya.)*
+
+Skrip Python (`selenium` 4.46) mengemudikan Chrome headless persis seperti
+pengguna sungguhan — klik tombol, isi form, baca hasil dari DOM — bukan
+memanggil API langsung. Dua persona baru dari nol:
+
+**Pembeli baru** — landing → login → daftar → filter kategori "Skincare"
+(27 produk) → cari "serum" → buka detail produk → toggle wishlist → tambah ke
+keranjang → verifikasi keranjang berisi 1 item. **10/10 langkah lulus.**
+
+**Penjual/brand baru** — reset sesi (localStorage dikosongkan, simulasi
+browser baru) → daftar sebagai Penjual → Seller Center kosong → "Daftarkan
+brand" → isi form lengkap → submit → "Pendaftaran terkirim". **4/4 langkah
+lulus.**
+
+Percobaan pertama sempat menunjukkan 3 langkah gagal (filter kategori,
+pencarian, buka detail produk) — setelah ditelusuri lewat log console
+browser dan screenshot, penyebabnya adalah skrip pengujian yang tidak
+menunggu cukup lama untuk fetch async React selesai, bukan bug aplikasi.
+Setelah skrip diperbaiki (menunggu kondisi DOM yang jelas, bukan jeda waktu
+tetap), percobaan kedua **lulus 14/14** — konsisten dengan hasil Postman
+yang dari awal sudah 0 gagal di jalur yang sama.
+
+### 7.3 JMeter (uji performa)
+
+Rencana uji (`aura-loadtest.jmx`): 15 pengguna virtual, ramp-up 15 detik,
+masing-masing 8 iterasi × 4 permintaan (`GET /api/products`,
+`GET /api/products/new`, `GET /api/products/:id`, `POST /api/auth/login`
+dengan kredensial sah) — total **480 permintaan** ke API lokal.
+
+| Sampler | Jumlah | Error | Rata-rata | p95 | p99 |
+| --- | --- | --- | --- | --- | --- |
+| GET /api/products | 120 | 25,8% | 385 ms | 1.056 ms | 1.412 ms |
+| GET /api/products/new | 120 | 29,2% | 305 ms | 930 ms | 1.052 ms |
+| GET /api/products/:id | 120 | 25,8% | 355 ms | 945 ms | 1.062 ms |
+| POST /api/auth/login | 120 | 26,7% | 1.735 ms | 3.501 ms | 3.898 ms |
+| **Total** | **480** | **26,9%** | **695 ms** | **3.114 ms** | **3.513 ms** |
+
+**Semua 129 error adalah `429 Too Many Requests` — nol `500`, nol koneksi
+gagal.** Diperiksa langsung dari `responseCode` di hasil mentah, bukan
+diasumsikan. Ini `apiLimiter` global (300/menit/IP, §5.2) yang menyala persis
+seperti dirancang begitu 15 pengguna bersamaan mendorong lebih dari 300
+permintaan gabungan dalam satu jendela menit — bukan server yang goyah.
+Responsnya pun cepat (rata-rata 18 ms untuk setiap 429, karena limiter
+menolak sebelum menyentuh database) dibanding 944 ms rata-rata untuk yang
+lolos (200).
+
+**Temuan yang lebih menarik: login adalah titik paling lambat di bawah
+beban bersamaan** (p99 3,9 detik vs ~1,0–1,4 detik untuk endpoint baca
+murni), padahal secara terpisah (Postman, satu permintaan pada satu waktu)
+login biasa selesai dalam puluhan milidetik. Penyebabnya bukan database —
+`bcrypt.compare()` yang memverifikasi password bersifat CPU-bound dan
+sinkron; dengan 15 login diproses hampir bersamaan di satu proses Node
+(tidak di-cluster), semuanya berebut event loop yang sama. Ini bukan bug,
+tapi batas skalabilitas yang nyata dan spesifik: kalau lonjakan login
+sungguhan pernah terjadi (mis. jam ramai promo), inilah endpoint yang akan
+melambat lebih dulu. Dicatat sebagai area penguatan lanjutan (opsi:
+`worker_threads` untuk bcrypt, atau menurunkan cost factor-nya), bukan
+diperbaiki sekarang karena di luar cakupan permintaan pengujian ini.
+
+Rencana uji ada di `docs/jmeter/aura-loadtest.jmx` (bisa dibuka ulang di GUI
+JMeter atau dijalankan lagi via `jmeter -n -t aura-loadtest.jmx -l
+results.jtl`); data mentah per-request di `docs/jmeter/results.jtl` dan
+ringkasan angka di `docs/jmeter/statistics.json`. Dashboard HTML interaktif
+sengaja tidak disertakan di repo — isinya menyeret seluruh library vendor
+JMeter (Bootstrap, Font Awesome, dst., ±3 MB) yang tidak spesifik ke proyek
+ini; bisa dibuat ulang kapan saja dengan
+`jmeter -g results.jtl -o report/`.
