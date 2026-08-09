@@ -186,9 +186,7 @@ export default function ProductDetailPage({
           <div className="store-avatar">{product.storeName[0]}</div>
           <div>
             <div className="store-name">{product.storeName}</div>
-            <div className="meta">
-              ★ {product.storeRating.toFixed(1)} · Kunjungi toko →
-            </div>
+            <div className="meta">★ {product.storeRating.toFixed(1)}</div>
           </div>
         </div>
 

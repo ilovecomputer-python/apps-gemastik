@@ -253,7 +253,7 @@ export const brandsApi = {
     request<{
       application: { id: string; name: string; status: string };
       message: string;
-    }>("/brands/apply", { method: "POST", body: data }),
+    }>("/brands/apply", { method: "POST", body: data, auth: true }),
 };
 
 // --- Seller Center ---
