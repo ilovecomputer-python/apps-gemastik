@@ -32,6 +32,9 @@ import OrderHistoryPage from "./pages/OrderHistoryPage";
 import AddressesPage from "./pages/AddressesPage";
 
 const ENTERED_KEY = "aura-entered";
+const LAST_ACTIVE_KEY = "aura-last-active";
+const IDLE_LIMIT_MS = 30 * 60 * 1000;
+const IDLE_EVENTS = ["mousemove", "mousedown", "keydown", "scroll", "touchstart"];
 
 function App() {
   const { user, loading: authLoading, logout } = useAuth();
@@ -45,11 +48,50 @@ function App() {
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem("aura-theme") === "dark",
   );
+  const [sessionExpired, setSessionExpired] = useState(false);
 
   useEffect(() => {
     document.documentElement.dataset.theme = darkMode ? "dark" : "light";
     localStorage.setItem("aura-theme", darkMode ? "dark" : "light");
   }, [darkMode]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const goToExpiredLogin = () => {
+      logout();
+      setSessionExpired(true);
+      setView({ name: "login" });
+    };
+
+    // A closed tab keeps no timers running, so idle time spent away from an
+    // open tab is tracked through localStorage instead of only in memory -
+    // otherwise reopening the tab would always grant a fresh 30 minutes.
+    const lastActive = Number(localStorage.getItem(LAST_ACTIVE_KEY));
+    if (lastActive && Date.now() - lastActive > IDLE_LIMIT_MS) {
+      goToExpiredLogin();
+      return;
+    }
+
+    let timer: ReturnType<typeof setTimeout>;
+    const resetTimer = () => {
+      localStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
+      clearTimeout(timer);
+      timer = setTimeout(goToExpiredLogin, IDLE_LIMIT_MS);
+    };
+
+    resetTimer();
+    IDLE_EVENTS.forEach((event) =>
+      window.addEventListener(event, resetTimer, { passive: true }),
+    );
+
+    return () => {
+      clearTimeout(timer);
+      IDLE_EVENTS.forEach((event) =>
+        window.removeEventListener(event, resetTimer),
+      );
+    };
+  }, [user, logout]);
 
   useEffect(() => {
     // Once past the splash/login/register screens - whether logged in or
@@ -167,7 +209,9 @@ function App() {
       case "login":
         return (
           <LoginPage
+            sessionExpired={sessionExpired}
             onSuccess={(destination) => {
+              setSessionExpired(false);
               // Each destination is a distinct View member with no shared
               // shape, so it's picked explicitly rather than forwarded as a
               // generic { name: destination } object.
@@ -175,8 +219,14 @@ function App() {
               else if (destination === "seller") setView({ name: "seller" });
               else setView({ name: "home" });
             }}
-            onGoRegister={() => setView({ name: "register" })}
-            onSkip={() => setView({ name: "home" })}
+            onGoRegister={() => {
+              setSessionExpired(false);
+              setView({ name: "register" });
+            }}
+            onSkip={() => {
+              setSessionExpired(false);
+              setView({ name: "home" });
+            }}
           />
         );
       case "register":

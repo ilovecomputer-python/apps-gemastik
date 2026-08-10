@@ -8,6 +8,7 @@ type LoginDestination = "home" | "seller" | "admin";
 type Intent = "buyer" | "seller";
 
 interface LoginPageProps {
+  sessionExpired?: boolean;
   onSuccess: (destination: LoginDestination) => void;
   onGoRegister: () => void;
   onSkip: () => void;
@@ -32,6 +33,7 @@ const DEMO_EMAIL: Record<Intent, string> = {
 };
 
 export default function LoginPage({
+  sessionExpired,
   onSuccess,
   onGoRegister,
   onSkip,
@@ -77,6 +79,13 @@ export default function LoginPage({
       <Logo size={52} className="auth-mark" />
       <h2>{copy.title}</h2>
       <p className="auth-copy">{copy.body}</p>
+
+      {sessionExpired && (
+        <p className="auth-notice">
+          Sesi kamu berakhir karena 30 menit tidak ada aktivitas. Masuk lagi
+          untuk lanjut.
+        </p>
+      )}
 
       <div className="auth-role-tabs" role="tablist" aria-label="Masuk sebagai">
         <button
