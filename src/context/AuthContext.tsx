@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import type { User } from "../types";
-import { authApi, tokenStore } from "../lib/api";
+import { authApi, lastActiveStore, tokenStore } from "../lib/api";
 
 interface AuthContextValue {
   user: User | null;
@@ -40,6 +40,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     const { token, user } = await authApi.login(email, password);
     tokenStore.set(token);
+    // Must happen before setUser: App.tsx's idle-timeout effect checks this
+    // the instant `user` goes non-null, and a stale value left over from a
+    // tab closed 30+ minutes ago would otherwise immediately log this fresh
+    // login back out again.
+    lastActiveStore.markNow();
     setUser(user);
     // Returned directly rather than read back from context state: the caller
     // (login/register screens) needs to route on the role the instant it is
@@ -51,6 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (name: string, email: string, password: string) => {
       const { token, user } = await authApi.register(name, email, password);
       tokenStore.set(token);
+      lastActiveStore.markNow();
       setUser(user);
       return user;
     },
@@ -59,6 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(() => {
     tokenStore.clear();
+    lastActiveStore.clear();
     setUser(null);
   }, []);
 

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import type { BottomTab, View } from "./types";
 import { useAuth } from "./context/AuthContext";
-import { cartApi, wishlistApi } from "./lib/api";
+import { cartApi, lastActiveStore, wishlistApi } from "./lib/api";
 import BottomNav from "./components/BottomNav";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
@@ -32,7 +32,6 @@ import OrderHistoryPage from "./pages/OrderHistoryPage";
 import AddressesPage from "./pages/AddressesPage";
 
 const ENTERED_KEY = "aura-entered";
-const LAST_ACTIVE_KEY = "aura-last-active";
 const IDLE_LIMIT_MS = 30 * 60 * 1000;
 const IDLE_EVENTS = ["mousemove", "mousedown", "keydown", "scroll", "touchstart"];
 
@@ -67,7 +66,10 @@ function App() {
     // A closed tab keeps no timers running, so idle time spent away from an
     // open tab is tracked through localStorage instead of only in memory -
     // otherwise reopening the tab would always grant a fresh 30 minutes.
-    const lastActive = Number(localStorage.getItem(LAST_ACTIVE_KEY));
+    // AuthContext.login/register stamp this fresh on success, so this only
+    // ever catches a *restored* session (valid token, tab reopened after
+    // 30+ idle minutes) - never a login that just happened moments ago.
+    const lastActive = lastActiveStore.get();
     if (lastActive && Date.now() - lastActive > IDLE_LIMIT_MS) {
       goToExpiredLogin();
       return;
@@ -75,7 +77,7 @@ function App() {
 
     let timer: ReturnType<typeof setTimeout>;
     const resetTimer = () => {
-      localStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
+      lastActiveStore.markNow();
       clearTimeout(timer);
       timer = setTimeout(goToExpiredLogin, IDLE_LIMIT_MS);
     };

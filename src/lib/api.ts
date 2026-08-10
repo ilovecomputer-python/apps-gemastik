@@ -29,11 +29,25 @@
 const API_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? "http://localhost:4000/api";
 
 const TOKEN_KEY = "aura_token";
+const LAST_ACTIVE_KEY = "aura-last-active";
 
 export const tokenStore = {
   get: () => localStorage.getItem(TOKEN_KEY),
   set: (token: string) => localStorage.setItem(TOKEN_KEY, token),
   clear: () => localStorage.removeItem(TOKEN_KEY),
+};
+
+/**
+ * Backs the 30-minute idle-logout timer (see App.tsx). A shared store so
+ * "just logged in" (AuthContext) and "still moving the mouse" (App.tsx) both
+ * write the same key - login has to stamp it fresh, otherwise a stale value
+ * left over from a tab closed hours ago immediately re-triggers the idle
+ * check the instant the next login succeeds.
+ */
+export const lastActiveStore = {
+  get: () => Number(localStorage.getItem(LAST_ACTIVE_KEY)) || 0,
+  markNow: () => localStorage.setItem(LAST_ACTIVE_KEY, String(Date.now())),
+  clear: () => localStorage.removeItem(LAST_ACTIVE_KEY),
 };
 
 export class ApiError extends Error {
