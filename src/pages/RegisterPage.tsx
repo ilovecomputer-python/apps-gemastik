@@ -111,8 +111,10 @@ export default function RegisterPage({
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Minimal 8 karakter"
+            placeholder="Min. 8 karakter, ada huruf besar & angka"
             minLength={8}
+            pattern="(?=.*[A-Z])(?=.*[0-9]).*"
+            title="Harus ada huruf besar dan angka"
             required
           />
         </label>

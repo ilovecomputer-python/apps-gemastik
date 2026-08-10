@@ -67,8 +67,8 @@ function expectStatus(res, want, label) {
 }
 
 const stamp = Date.now();
-const shopper = { email: `smoke+${stamp}@aura.id`, password: "password123" };
-const seller = { email: `smoke-seller+${stamp}@aura.id`, password: "password123" };
+const shopper = { email: `smoke+${stamp}@aura.id`, password: "Password123" };
+const seller = { email: `smoke-seller+${stamp}@aura.id`, password: "Password123" };
 const ctx = {};
 
 async function main() {
@@ -251,7 +251,7 @@ async function main() {
 
   await step("Another account cannot read this order", async () => {
     const other = await api("POST", "/api/auth/register", {
-      body: { name: "Smoke Intruder", email: `smoke-intruder+${stamp}@aura.id`, password: "password123" },
+      body: { name: "Smoke Intruder", email: `smoke-intruder+${stamp}@aura.id`, password: "Password123" },
     });
     expectStatus(other, 201, "intruder register");
     const res = await api("GET", `/api/orders/${ctx.order.id}`, { token: other.body.token });
@@ -466,7 +466,7 @@ async function main() {
 
   await step("A voucher belonging to someone else is refused", async () => {
     const other = await api("POST", "/api/auth/register", {
-      body: { name: "Smoke Voucher Thief", email: `smoke-thief+${stamp}@aura.id`, password: "password123" },
+      body: { name: "Smoke Voucher Thief", email: `smoke-thief+${stamp}@aura.id`, password: "Password123" },
     });
     const address = await api("POST", "/api/addresses", {
       token: other.body.token,

@@ -217,7 +217,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Newman Tester\",\n  \"email\": \"{{registerEmail}}\",\n  \"password\": \"password123\"\n}"
+							"raw": "{\n  \"name\": \"Newman Tester\",\n  \"email\": \"{{registerEmail}}\",\n  \"password\": \"Password123\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/register",
@@ -256,7 +256,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Newman Tester\",\n  \"email\": \"{{registerEmail}}\",\n  \"password\": \"password123\"\n}"
+							"raw": "{\n  \"name\": \"Newman Tester\",\n  \"email\": \"{{registerEmail}}\",\n  \"password\": \"Password123\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/register",
@@ -2001,7 +2001,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Newman Seller\",\n  \"email\": \"{{sellerEmail}}\",\n  \"password\": \"password123\"\n}"
+							"raw": "{\n  \"name\": \"Newman Seller\",\n  \"email\": \"{{sellerEmail}}\",\n  \"password\": \"Password123\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/register",
@@ -3390,7 +3390,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Newman Pending Seller\",\n  \"email\": \"{{pendingSellerEmail}}\",\n  \"password\": \"password123\"\n}"
+							"raw": "{\n  \"name\": \"Newman Pending Seller\",\n  \"email\": \"{{pendingSellerEmail}}\",\n  \"password\": \"Password123\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/register",
