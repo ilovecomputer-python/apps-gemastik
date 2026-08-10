@@ -31,9 +31,15 @@ import QuizResultPage from "./pages/QuizResultPage";
 import OrderHistoryPage from "./pages/OrderHistoryPage";
 import AddressesPage from "./pages/AddressesPage";
 
+const ENTERED_KEY = "aura-entered";
+
 function App() {
   const { user, loading: authLoading, logout } = useAuth();
-  const [view, setView] = useState<View>({ name: "landing" });
+  const [view, setView] = useState<View>(() =>
+    localStorage.getItem(ENTERED_KEY) === "1"
+      ? { name: "home" }
+      : { name: "landing" },
+  );
   const [wishlistIds, setWishlistIds] = useState<Set<string>>(new Set());
   const [cartCount, setCartCount] = useState(0);
   const [darkMode, setDarkMode] = useState(
@@ -44,6 +50,16 @@ function App() {
     document.documentElement.dataset.theme = darkMode ? "dark" : "light";
     localStorage.setItem("aura-theme", darkMode ? "dark" : "light");
   }, [darkMode]);
+
+  useEffect(() => {
+    // Once past the splash/login/register screens - whether logged in or
+    // just browsing as a guest - a refresh should keep you inside the app
+    // instead of bouncing back to the landing screen's "Masuk ke AURA" CTA,
+    // which reads as a forced logout even though no session was lost.
+    if (view.name !== "landing" && view.name !== "login" && view.name !== "register") {
+      localStorage.setItem(ENTERED_KEY, "1");
+    }
+  }, [view.name]);
 
   const refreshWishlist = useCallback(async () => {
     if (!user) {
