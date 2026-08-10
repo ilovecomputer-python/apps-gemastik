@@ -130,15 +130,7 @@ export default function LoginPage({
         </button>
       </form>
 
-      <p className="auth-hint">
-        {copy.hint}
-        {intent === "buyer" && (
-          <>
-            <br />
-            Demo admin: admin@aura.id / admin12345
-          </>
-        )}
-      </p>
+      <p className="auth-hint">{copy.hint}</p>
 
       <div className="auth-footer">
         <button className="link-btn" onClick={onGoRegister}>
