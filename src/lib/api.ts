@@ -13,6 +13,7 @@
   Review,
   ReviewerStats,
   ScanAnalysis,
+  SellerOrder,
   SellerProduct,
   SellerStore,
   ShippingOption,
@@ -276,6 +277,12 @@ export const sellerApi = {
       body: data,
       auth: true,
     }),
+  orders: () => request<{ orders: SellerOrder[] }>("/seller/orders", { auth: true }),
+  advanceOrder: (id: string) =>
+    request<{ order: { id: string; status: string } }>(
+      `/seller/orders/${id}/advance`,
+      { method: "PATCH", auth: true },
+    ),
 };
 
 // --- Vouchers ---

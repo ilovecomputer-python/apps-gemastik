@@ -682,6 +682,97 @@
   font-weight: 700;
 }
 
+.seller-stat-money {
+  font-size: 15px;
+}
+
+.seller-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.seller-stat.attn {
+  background: rgba(211, 150, 140, 0.16);
+  border-color: rgba(211, 150, 140, 0.4);
+}
+
+.seller-stat.attn .seller-stat-value {
+  color: #a8635a;
+}
+
+.seller-order-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.seller-advance-btn {
+  align-self: flex-end;
+  padding: 8px 18px;
+}
+
+.seller-health {
+  display: flex;
+  gap: 10px;
+  padding: 0 20px;
+  margin-bottom: 4px;
+}
+
+.seller-health-item {
+  flex: 1;
+  padding: 10px 8px;
+  border-radius: var(--radius-md);
+  background: var(--card);
+  border: 1px solid var(--line);
+  text-align: center;
+}
+
+.seller-health-value {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--moss);
+}
+
+.seller-tips {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 20px;
+}
+
+.seller-tip-card {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--beige2);
+}
+
+.seller-tip-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--moss);
+}
+
+.seller-tip-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.seller-tip-body {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
 .seller-form {
   padding: 0 20px;
 }

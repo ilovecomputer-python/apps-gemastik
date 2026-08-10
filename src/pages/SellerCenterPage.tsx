@@ -1,10 +1,49 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
-import type { SellerProduct, SellerStore } from "../types";
+import type { SellerOrder, SellerProduct, SellerStore } from "../types";
 import { ApiError, sellerApi } from "../lib/api";
 import { formatPrice } from "../utils/format";
 import TopBar from "../components/TopBar";
 import ProductImage from "../components/ProductImage";
 import Icon from "../components/Icon";
+
+const ORDER_STATUS_LABEL: Record<string, string> = {
+  PAID: "Dibayar",
+  PROCESSING: "Diproses",
+  SHIPPED: "Dikirim",
+  COMPLETED: "Selesai",
+  CANCELLED: "Dibatalkan",
+};
+
+/** What tapping the action button does next, keyed by the order's current status. */
+const NEXT_ACTION_LABEL: Record<string, string> = {
+  PAID: "Konfirmasi",
+  PROCESSING: "Kirim",
+};
+
+const formatOrderDate = (iso: string) =>
+  new Date(iso).toLocaleDateString("id-ID", { day: "numeric", month: "short" });
+
+/**
+ * Short, AURA-specific tips rather than a generic seller-education hub -
+ * each one points at something this app actually does, not a course to enrol in.
+ */
+const SELLER_TIPS: { icon: "sparkle" | "camera" | "star"; title: string; body: string }[] = [
+  {
+    icon: "sparkle",
+    title: "Produk baru otomatis tampil di Baru Rilis",
+    body: "Tidak perlu daftar promosi terpisah - begitu ditambahkan, produkmu langsung masuk kanal yang diurutkan terbaru dulu.",
+  },
+  {
+    icon: "camera",
+    title: "Foto asli bikin pembeli lebih percaya",
+    body: "Produk dengan foto sungguhan (bukan warna polos) lebih meyakinkan saat dibandingkan di katalog.",
+  },
+  {
+    icon: "star",
+    title: "Ulasan pertama paling berharga",
+    body: "Brand baru tampil di halaman Brand Baru supaya dapat ulasan pertamanya - itu yang bikin brand berikutnya makin dipercaya pembeli.",
+  },
+];
 
 interface SellerCenterPageProps {
   onBack: () => void;
@@ -38,12 +77,14 @@ export default function SellerCenterPage({
 }: SellerCenterPageProps) {
   const [store, setStore] = useState<SellerStore | null>(null);
   const [products, setProducts] = useState<SellerProduct[]>([]);
+  const [orders, setOrders] = useState<SellerOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [concerns, setConcerns] = useState<string[]>([]);
+  const [advancingId, setAdvancingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -51,7 +92,12 @@ export default function SellerCenterPage({
       const { store } = await sellerApi.store();
       setStore(store);
       if (store?.status === "APPROVED") {
-        setProducts((await sellerApi.products()).products);
+        const [{ products }, { orders }] = await Promise.all([
+          sellerApi.products(),
+          sellerApi.orders(),
+        ]);
+        setProducts(products);
+        setOrders(orders);
       }
     } catch {
       setStore(null);
@@ -59,6 +105,25 @@ export default function SellerCenterPage({
       setLoading(false);
     }
   }, []);
+
+  const handleAdvance = async (orderId: string) => {
+    setAdvancingId(orderId);
+    try {
+      await sellerApi.advanceOrder(orderId);
+      const [{ store }, { orders }] = await Promise.all([
+        sellerApi.store(),
+        sellerApi.orders(),
+      ]);
+      setStore(store);
+      setOrders(orders);
+    } catch (err) {
+      setError(
+        err instanceof ApiError ? err.message : "Gagal memproses pesanan.",
+      );
+    } finally {
+      setAdvancingId(null);
+    }
+  };
 
   useEffect(() => {
     load();
@@ -152,18 +217,85 @@ export default function SellerCenterPage({
         </div>
       ) : (
         <>
-          <div className="seller-stats">
+          <div className="seller-stats seller-stats-grid">
+            <div className={`seller-stat${store.newOrdersCount > 0 ? " attn" : ""}`}>
+              <div className="seller-stat-value">{store.newOrdersCount}</div>
+              <div className="points-label">Pesanan Baru</div>
+            </div>
+            <div className="seller-stat">
+              <div className="seller-stat-value seller-stat-money">
+                {formatPrice(store.revenueThisMonth)}
+              </div>
+              <div className="points-label">Pendapatan Bulan Ini</div>
+            </div>
             <div className="seller-stat">
               <div className="seller-stat-value">{store.productCount}</div>
               <div className="points-label">Produk</div>
             </div>
             <div className="seller-stat">
-              <div className="seller-stat-value">{store.unitsSold}</div>
-              <div className="points-label">Terjual</div>
-            </div>
-            <div className="seller-stat">
               <div className="seller-stat-value">{store.rating.toFixed(1)}</div>
               <div className="points-label">Rating</div>
+            </div>
+          </div>
+
+          {orders.some((o) => o.status === "PAID" || o.status === "PROCESSING") && (
+            <>
+              <div className="section-heading-row">
+                <h3>Perlu diproses</h3>
+              </div>
+              <div className="cart-list">
+                {orders
+                  .filter((o) => o.status === "PAID" || o.status === "PROCESSING")
+                  .map((order) => (
+                    <div key={order.id} className="admin-card seller-order-row">
+                      <div className="admin-card-head">
+                        <div>
+                          <div className="option-row-title">{order.orderNumber}</div>
+                          <div className="meta">
+                            {formatOrderDate(order.createdAt)} ·{" "}
+                            {order.items.map((i) => `${i.quantity}x ${i.name}`).join(", ")}
+                          </div>
+                        </div>
+                        <span className="badge badge-status-approved">
+                          {ORDER_STATUS_LABEL[order.status] ?? order.status}
+                        </span>
+                      </div>
+                      <div className="admin-card-head">
+                        <span className="meta">Subtotal produkmu</span>
+                        <span className="option-row-title">{formatPrice(order.subtotal)}</span>
+                      </div>
+                      <button
+                        className="btn-secondary seller-advance-btn"
+                        onClick={() => handleAdvance(order.id)}
+                        disabled={advancingId === order.id}
+                      >
+                        {advancingId === order.id
+                          ? "Memproses…"
+                          : NEXT_ACTION_LABEL[order.status]}
+                      </button>
+                    </div>
+                  ))}
+              </div>
+            </>
+          )}
+
+          <div className="section-heading-row">
+            <h3>Performa toko</h3>
+          </div>
+          <div className="seller-health">
+            <div className="seller-health-item">
+              <div className="seller-health-value">
+                {store.fulfillmentRate === null ? "—" : `${store.fulfillmentRate}%`}
+              </div>
+              <div className="points-label">Tingkat selesai</div>
+            </div>
+            <div className="seller-health-item">
+              <div className="seller-health-value">{store.completedOrders}</div>
+              <div className="points-label">Pesanan selesai</div>
+            </div>
+            <div className="seller-health-item">
+              <div className="seller-health-value">{store.unitsSold}</div>
+              <div className="points-label">Terjual</div>
             </div>
           </div>
 
@@ -288,6 +420,23 @@ export default function SellerCenterPage({
               ))}
             </div>
           )}
+
+          <div className="section-heading-row">
+            <h3>Tips untuk penjual</h3>
+          </div>
+          <div className="seller-tips">
+            {SELLER_TIPS.map((tip) => (
+              <div key={tip.title} className="seller-tip-card">
+                <span className="seller-tip-icon">
+                  <Icon name={tip.icon} size={16} />
+                </span>
+                <div>
+                  <div className="seller-tip-title">{tip.title}</div>
+                  <p className="seller-tip-body">{tip.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </>
       )}
     </div>

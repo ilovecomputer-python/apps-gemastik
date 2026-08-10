@@ -33,6 +33,26 @@ async function requireOwnedStore(userId: string) {
  * needs somewhere to see that it is waiting, otherwise applying feels like
  * shouting into a void.
  */
+/** Orders touching this store, regardless of who else's items ride along in the same cart. */
+const storeOrderFilter = (storeId: string) => ({
+  items: { some: { product: { storeId } } },
+});
+
+/**
+ * Orders sit in one of two buckets for a seller: still needs their action, or
+ * already handled. PAID means "pay-in confirmed, nothing packed yet"; PROCESSING
+ * means "packed, not yet handed to courier" - both need the seller to do
+ * something next, which is what the dashboard's "Pesanan Baru" count means.
+ */
+const NEEDS_ACTION_STATUSES = ["PAID", "PROCESSING"] as const;
+
+function startOfThisMonth() {
+  const d = new Date();
+  d.setDate(1);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
 export async function getMyStore(req: Request, res: Response) {
   const store = await prisma.store.findFirst({
     where: { ownerId: req.userId },
@@ -44,13 +64,41 @@ export async function getMyStore(req: Request, res: Response) {
     return;
   }
 
-  const [productCount, sold] = await Promise.all([
-    prisma.product.count({ where: { storeId: store.id } }),
-    prisma.orderItem.aggregate({
-      where: { product: { storeId: store.id } },
-      _sum: { quantity: true },
-    }),
-  ]);
+  const [productCount, sold, newOrders, monthItems, completedCount, cancelledCount] =
+    await Promise.all([
+      prisma.product.count({ where: { storeId: store.id } }),
+      prisma.orderItem.aggregate({
+        where: { product: { storeId: store.id } },
+        _sum: { quantity: true },
+      }),
+      prisma.order.count({
+        where: { status: { in: [...NEEDS_ACTION_STATUSES] }, ...storeOrderFilter(store.id) },
+      }),
+      // Revenue counts only orders that actually settled - PENDING is an
+      // abandoned/unpaid checkout, not money the seller can expect.
+      prisma.orderItem.findMany({
+        where: {
+          product: { storeId: store.id },
+          order: {
+            status: { notIn: ["PENDING", "CANCELLED"] },
+            createdAt: { gte: startOfThisMonth() },
+          },
+        },
+        select: { unitPrice: true, quantity: true },
+      }),
+      prisma.order.count({
+        where: { status: "COMPLETED", ...storeOrderFilter(store.id) },
+      }),
+      prisma.order.count({
+        where: { status: "CANCELLED", ...storeOrderFilter(store.id) },
+      }),
+    ]);
+
+  const revenueThisMonth = monthItems.reduce(
+    (sum, item) => sum + item.unitPrice * item.quantity,
+    0,
+  );
+  const concludedCount = completedCount + cancelledCount;
 
   res.json({
     store: {
@@ -65,8 +113,81 @@ export async function getMyStore(req: Request, res: Response) {
       createdAt: store.createdAt,
       productCount,
       unitsSold: sold._sum.quantity ?? 0,
+      newOrdersCount: newOrders,
+      revenueThisMonth,
+      completedOrders: completedCount,
+      // null (not 0%) until any order has actually concluded - a fresh store
+      // hasn't earned a rate yet, good or bad.
+      fulfillmentRate:
+        concludedCount > 0 ? Math.round((completedCount / concludedCount) * 100) : null,
     },
   });
+}
+
+export async function listMyOrders(req: Request, res: Response) {
+  const store = await requireOwnedStore(req.userId!);
+
+  const orders = await prisma.order.findMany({
+    where: storeOrderFilter(store.id),
+    include: {
+      items: { where: { product: { storeId: store.id } } },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 50,
+  });
+
+  res.json({
+    orders: orders.map((order) => ({
+      id: order.id,
+      orderNumber: order.orderNumber,
+      status: order.status,
+      createdAt: order.createdAt,
+      items: order.items.map((item) => ({
+        name: item.name,
+        unitPrice: item.unitPrice,
+        quantity: item.quantity,
+      })),
+      subtotal: order.items.reduce(
+        (sum, item) => sum + item.unitPrice * item.quantity,
+        0,
+      ),
+    })),
+  });
+}
+
+/** The one forward step a seller may push an order through from here. */
+const NEXT_STATUS: Partial<Record<string, "PROCESSING" | "SHIPPED">> = {
+  PAID: "PROCESSING",
+  PROCESSING: "SHIPPED",
+};
+
+/**
+ * Deliberately one step at a time, not "set to any status" - a seller
+ * shouldn't be able to jump an order straight to COMPLETED or resurrect a
+ * CANCELLED one from this endpoint.
+ */
+export async function advanceOrderStatus(req: Request, res: Response) {
+  const store = await requireOwnedStore(req.userId!);
+
+  const order = await prisma.order.findFirst({
+    where: { id: req.params.id, ...storeOrderFilter(store.id) },
+  });
+  if (!order) throw HttpError.notFound("Pesanan tidak ditemukan");
+
+  const next = NEXT_STATUS[order.status];
+  if (!next) {
+    throw HttpError.conflict(
+      `Pesanan berstatus ${order.status} tidak bisa diproses lebih lanjut dari sini.`,
+      "INVALID_TRANSITION",
+    );
+  }
+
+  const updated = await prisma.order.update({
+    where: { id: order.id },
+    data: { status: next },
+  });
+
+  res.json({ order: { id: updated.id, status: updated.status } });
 }
 
 export async function listMyProducts(req: Request, res: Response) {

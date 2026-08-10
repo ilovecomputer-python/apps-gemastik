@@ -102,11 +102,33 @@ export interface SellerStore {
   createdAt: string;
   productCount: number;
   unitsSold: number;
+  /** Orders sitting at PAID or PROCESSING - awaiting some action from this seller. */
+  newOrdersCount: number;
+  revenueThisMonth: number;
+  completedOrders: number;
+  /** % of concluded (COMPLETED or CANCELLED) orders that completed. Null until any order has concluded. */
+  fulfillmentRate: number | null;
 }
 
 export interface SellerProduct extends Product {
   reviewCount: number;
   launchedAt: string | null;
+}
+
+export interface SellerOrderItem {
+  name: string;
+  unitPrice: number;
+  quantity: number;
+}
+
+/** An order as seen by one of its sellers - only that seller's own line items are included. */
+export interface SellerOrder {
+  id: string;
+  orderNumber: string;
+  status: string;
+  createdAt: string;
+  items: SellerOrderItem[];
+  subtotal: number;
 }
 
 export interface Voucher {
