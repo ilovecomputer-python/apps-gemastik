@@ -1,0 +1,16 @@
+# Unrelated project living in the same repo root - not part of this app,
+# and its node_modules (Remotion + a headless Chrome binary) blows past
+# Vercel's 100MB upload limit on its own.
+motion-graphics
+
+# Mirrors .gitignore explicitly rather than relying on Vercel falling back
+# to it - safer to be redundant here than to accidentally upload secrets.
+node_modules
+dist
+dist-ssr
+*.local
+.env
+.env*
+.vercel
+supabase/.temp
+.git
