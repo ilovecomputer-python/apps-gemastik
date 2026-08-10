@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { z } from "zod";
 import { prisma } from "../../lib/prisma.js";
 import { HttpError } from "../../lib/http-error.js";
 
@@ -81,4 +82,22 @@ export async function rejectBrand(req: Request, res: Response) {
     brand: { id: store.id, name: store.name, status: store.status },
     message: `Pendaftaran ${store.name} ditolak.`,
   });
+}
+
+const updateProductImageSchema = z.object({
+  imageUrl: z.string().url("URL gambar tidak valid"),
+});
+
+/** Backfills a product photo - covers catalogue items seeded/created without one. */
+export async function updateProductImage(req: Request, res: Response) {
+  const { imageUrl } = updateProductImageSchema.parse(req.body);
+  const product = await prisma.product.findUnique({ where: { id: req.params.id } });
+  if (!product) throw HttpError.notFound("Produk tidak ditemukan");
+
+  const updated = await prisma.product.update({
+    where: { id: req.params.id },
+    data: { imageUrl },
+  });
+
+  res.json({ product: { id: updated.id, name: updated.name, imageUrl: updated.imageUrl } });
 }

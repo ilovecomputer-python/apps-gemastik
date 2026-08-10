@@ -7,6 +7,7 @@ import {
   approveBrand,
   listBrandApplications,
   rejectBrand,
+  updateProductImage,
 } from "./admin.controller.js";
 
 export const adminRouter = Router();
@@ -18,3 +19,4 @@ adminRouter.get("/summary", asyncHandler(adminSummary));
 adminRouter.get("/brands", asyncHandler(listBrandApplications));
 adminRouter.post("/brands/:id/approve", asyncHandler(approveBrand));
 adminRouter.post("/brands/:id/reject", asyncHandler(rejectBrand));
+adminRouter.patch("/products/:id/image", asyncHandler(updateProductImage));
