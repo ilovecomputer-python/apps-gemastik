@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import "./App.css";
-import type { BottomTab, View } from "./types";
+import type { BottomTab, SellerStore, View } from "./types";
 import { useAuth } from "./context/AuthContext";
-import { cartApi, lastActiveStore, wishlistApi } from "./lib/api";
+import { cartApi, lastActiveStore, sellerApi, wishlistApi } from "./lib/api";
 import BottomNav from "./components/BottomNav";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
@@ -44,6 +44,7 @@ function App() {
   );
   const [wishlistIds, setWishlistIds] = useState<Set<string>>(new Set());
   const [cartCount, setCartCount] = useState(0);
+  const [sellerStore, setSellerStore] = useState<SellerStore | null>(null);
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem("aura-theme") === "dark",
   );
@@ -123,10 +124,37 @@ function App() {
     setCartCount(items.reduce((sum, i) => sum + i.quantity, 0));
   }, [user]);
 
+  // Drives the seller-focused nav below - an approved store owner gets a
+  // Dashboard+Akun-only bar instead of the buyer tabs. PENDING/REJECTED
+  // applicants are still functionally buyers until a store is actually live.
+  const refreshSellerStore = useCallback(async () => {
+    if (!user) {
+      setSellerStore(null);
+      return;
+    }
+    try {
+      const { store } = await sellerApi.store();
+      setSellerStore(store);
+    } catch {
+      setSellerStore(null);
+    }
+  }, [user]);
+
   useEffect(() => {
     refreshWishlist();
     refreshCart();
-  }, [refreshWishlist, refreshCart]);
+    refreshSellerStore();
+  }, [refreshWishlist, refreshCart, refreshSellerStore]);
+
+  const isSeller = sellerStore?.status === "APPROVED";
+
+  // An approved seller never lingers on the buyer home feed - whichever tab
+  // they logged in through, or however a restored session landed here.
+  useEffect(() => {
+    if (isSeller && view.name === "home") {
+      setView({ name: "seller" });
+    }
+  }, [isSeller, view.name]);
 
   const requireAuth = (next: View) => {
     if (!user) {
@@ -177,6 +205,11 @@ function App() {
         return "brands";
       case "account":
         return "account";
+      // Reachable two ways: an approved seller's own Dashboard tab, or a
+      // buyer/applicant visiting via Akun > Seller Center - only the former
+      // is a bottom-tab root.
+      case "seller":
+        return isSeller ? "dashboard" : "account";
       default:
         return "home";
     }
@@ -189,6 +222,7 @@ function App() {
     // login needed to browse new brands.
     if (tab === "brands") setView({ name: "brands" });
     if (tab === "account") setView({ name: "account" });
+    if (tab === "dashboard") setView({ name: "seller" });
   };
 
   if (authLoading) {
@@ -205,7 +239,6 @@ function App() {
         return (
           <LandingPage
             onEnter={() => setView(user ? { name: "home" } : { name: "login" })}
-            onOpenProfile={() => requireAuth({ name: "account" })}
           />
         );
       case "login":
@@ -367,7 +400,9 @@ function App() {
       case "seller":
         return (
           <SellerCenterPage
-            onBack={() => setView({ name: "account" })}
+            // No back arrow when this *is* the seller's tab root; a buyer or
+            // pending applicant reaches it as a sub-page from Akun instead.
+            onBack={isSeller ? undefined : () => setView({ name: "account" })}
             onApply={() => setView({ name: "brand-onboarding" })}
             onOpenProduct={(id) => setView({ name: "product", id })}
           />
@@ -450,7 +485,11 @@ function App() {
           content instead of walking the whole page. */}
       <main className="app-scroll">{renderView()}</main>
       {!hideNav && (
-        <BottomNav active={activeTab} onSelect={goToTab} />
+        <BottomNav
+          active={activeTab}
+          onSelect={goToTab}
+          variant={isSeller ? "seller" : "buyer"}
+        />
       )}
     </div>
   );

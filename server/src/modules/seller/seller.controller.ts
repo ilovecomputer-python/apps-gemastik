@@ -124,6 +124,76 @@ export async function getMyStore(req: Request, res: Response) {
   });
 }
 
+/** Money still moving through fulfilment - not the seller's to spend yet. */
+const HELD_STATUSES = ["PAID", "PROCESSING", "SHIPPED"] as const;
+const FINANCE_MONTHS = 6;
+
+const sumItems = (items: { unitPrice: number; quantity: number }[]) =>
+  items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+
+/** The first-of-month boundaries for the trailing N months, oldest first. */
+function financeMonthWindows(count: number) {
+  const now = new Date();
+  const windows: { key: string; start: Date; end: Date }[] = [];
+  for (let i = count - 1; i >= 0; i--) {
+    const start = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const end = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
+    const key = `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}`;
+    windows.push({ key, start, end });
+  }
+  return windows;
+}
+
+/**
+ * Saldo toko: a computed balance, not a stored ledger - there is no payout
+ * system behind this, so "available" and "held" are read straight off order
+ * status rather than money actually moving anywhere.
+ */
+export async function getMyFinance(req: Request, res: Response) {
+  const store = await requireOwnedStore(req.userId!);
+  const windows = financeMonthWindows(FINANCE_MONTHS);
+  const windowStart = windows[0].start;
+
+  const [recentItems, completedItems, heldItems] = await Promise.all([
+    prisma.orderItem.findMany({
+      where: {
+        product: { storeId: store.id },
+        order: { status: { notIn: ["PENDING", "CANCELLED"] }, createdAt: { gte: windowStart } },
+      },
+      select: { unitPrice: true, quantity: true, orderId: true, order: { select: { createdAt: true } } },
+    }),
+    prisma.orderItem.findMany({
+      where: { product: { storeId: store.id }, order: { status: "COMPLETED" } },
+      select: { unitPrice: true, quantity: true },
+    }),
+    prisma.orderItem.findMany({
+      where: { product: { storeId: store.id }, order: { status: { in: [...HELD_STATUSES] } } },
+      select: { unitPrice: true, quantity: true },
+    }),
+  ]);
+
+  const monthly = windows.map(({ key, start, end }) => {
+    const items = recentItems.filter(
+      (item) => item.order.createdAt >= start && item.order.createdAt < end,
+    );
+    return {
+      month: key,
+      revenue: sumItems(items),
+      orderCount: new Set(items.map((item) => item.orderId)).size,
+    };
+  });
+
+  const available = sumItems(completedItems);
+  const pending = sumItems(heldItems);
+
+  res.json({
+    finance: {
+      balance: { available, pending, lifetime: available + pending },
+      monthly,
+    },
+  });
+}
+
 export async function listMyOrders(req: Request, res: Response) {
   const store = await requireOwnedStore(req.userId!);
 

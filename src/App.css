@@ -711,6 +711,90 @@
   padding: 8px 18px;
 }
 
+.seller-balance {
+  display: flex;
+  gap: 10px;
+  padding: 0 20px;
+}
+
+.seller-balance-card {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--card);
+  border: 1px solid var(--line);
+}
+
+.seller-balance-value {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--moss);
+  font-variant-numeric: tabular-nums;
+}
+
+.seller-balance-value-muted {
+  color: var(--ink);
+}
+
+.seller-balance-hint {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+.seller-finance-subhead {
+  padding: 0 20px;
+  margin: 2px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.seller-finance-months {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 20px 0;
+}
+
+.seller-finance-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.seller-finance-month-label {
+  flex: 0 0 44px;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.seller-finance-bar-track {
+  flex: 1;
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: var(--beige2);
+  overflow: hidden;
+}
+
+.seller-finance-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--moss);
+  transition: width 0.4s ease;
+}
+
+.seller-finance-month-value {
+  flex: 0 0 auto;
+  min-width: 76px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
 .seller-health {
   display: flex;
   gap: 10px;
@@ -2738,20 +2822,6 @@
   background: linear-gradient(170deg, var(--beige) 0%, var(--beige2) 60%, var(--dark) 130%);
 }
 
-.landing-settings {
-  align-self: flex-end;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  border: 1px solid var(--line);
-  background: var(--card);
-  padding: 8px 14px;
-  border-radius: var(--radius-pill);
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--ink);
-}
-
 .landing-body {
   display: flex;
   flex-direction: column;
@@ -2785,6 +2855,33 @@
   font-weight: 600;
 }
 
+.landing-cta-slot {
+  display: flex;
+  justify-content: center;
+  min-height: 52px;
+}
+
 .landing-cta {
   max-width: 100%;
+}
+
+.landing-cta-in {
+  animation: landing-cta-in 0.5s ease both;
+}
+
+@keyframes landing-cta-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-cta-in {
+    animation: none;
+  }
 }

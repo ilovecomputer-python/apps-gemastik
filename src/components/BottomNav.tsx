@@ -4,19 +4,27 @@ import Icon, { type IconName } from "./Icon";
 interface BottomNavProps {
   active: BottomTab;
   onSelect: (tab: BottomTab) => void;
+  /** A seller account gets a focused nav - just their dashboard and account, no buyer browsing. */
+  variant?: "buyer" | "seller";
 }
 
-const TABS: { key: BottomTab; label: string; icon: IconName }[] = [
+const BUYER_TABS: { key: BottomTab; label: string; icon: IconName }[] = [
   { key: "home", label: "Beranda", icon: "home" },
   { key: "scan", label: "Scan AI", icon: "scan" },
   { key: "brands", label: "Brand Baru", icon: "store" },
   { key: "account", label: "Akun", icon: "user" },
 ];
 
-export default function BottomNav({ active, onSelect }: BottomNavProps) {
+const SELLER_TABS: { key: BottomTab; label: string; icon: IconName }[] = [
+  { key: "dashboard", label: "Dashboard", icon: "store" },
+  { key: "account", label: "Akun", icon: "user" },
+];
+
+export default function BottomNav({ active, onSelect, variant = "buyer" }: BottomNavProps) {
+  const tabs = variant === "seller" ? SELLER_TABS : BUYER_TABS;
   return (
     <nav className="bottom-nav">
-      {TABS.map((tab) => (
+      {tabs.map((tab) => (
         <button
           key={tab.key}
           className={`bottom-nav-item${active === tab.key ? " active" : ""}`}

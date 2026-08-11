@@ -131,6 +131,26 @@ export interface SellerOrder {
   subtotal: number;
 }
 
+export interface SellerMonthlyRevenue {
+  /** "2026-08" - formatted client-side so month names use the browser's own locale data. */
+  month: string;
+  revenue: number;
+  orderCount: number;
+}
+
+/** Computed, not a stored ledger - there is no payout system behind this. */
+export interface SellerFinance {
+  balance: {
+    /** From COMPLETED orders - settled and the seller's to count on. */
+    available: number;
+    /** From PAID/PROCESSING/SHIPPED orders - still moving, not final yet. */
+    pending: number;
+    lifetime: number;
+  };
+  /** Trailing 6 months, oldest first. */
+  monthly: SellerMonthlyRevenue[];
+}
+
 export interface Voucher {
   id: string;
   code: string;
@@ -370,4 +390,4 @@ export type View =
   | { name: "orders" }
   | { name: "addresses" };
 
-export type BottomTab = "home" | "scan" | "brands" | "account";
+export type BottomTab = "home" | "scan" | "brands" | "account" | "dashboard";

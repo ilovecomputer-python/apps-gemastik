@@ -13,6 +13,7 @@
   Review,
   ReviewerStats,
   ScanAnalysis,
+  SellerFinance,
   SellerOrder,
   SellerProduct,
   SellerStore,
@@ -292,6 +293,7 @@ export const sellerApi = {
       auth: true,
     }),
   orders: () => request<{ orders: SellerOrder[] }>("/seller/orders", { auth: true }),
+  finance: () => request<{ finance: SellerFinance }>("/seller/finance", { auth: true }),
   advanceOrder: (id: string) =>
     request<{ order: { id: string; status: string } }>(
       `/seller/orders/${id}/advance`,

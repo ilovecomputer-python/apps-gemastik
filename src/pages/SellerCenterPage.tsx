@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
-import type { SellerOrder, SellerProduct, SellerStore } from "../types";
+import type { SellerFinance, SellerOrder, SellerProduct, SellerStore } from "../types";
 import { ApiError, sellerApi } from "../lib/api";
 import { formatPrice } from "../utils/format";
 import TopBar from "../components/TopBar";
@@ -20,8 +20,26 @@ const NEXT_ACTION_LABEL: Record<string, string> = {
   PROCESSING: "Kirim",
 };
 
+/** Reuses the 3 store-status badge tones for order status, by meaning rather than name. */
+const TX_BADGE_TONE: Record<string, "approved" | "pending" | "rejected"> = {
+  PAID: "pending",
+  PROCESSING: "pending",
+  SHIPPED: "pending",
+  COMPLETED: "approved",
+  CANCELLED: "rejected",
+};
+
 const formatOrderDate = (iso: string) =>
   new Date(iso).toLocaleDateString("id-ID", { day: "numeric", month: "short" });
+
+/** "2026-08" -> "Agu 26", using the browser's own locale data. */
+const formatMonthLabel = (monthKey: string) => {
+  const [year, month] = monthKey.split("-").map(Number);
+  return new Date(year, month - 1, 1).toLocaleDateString("id-ID", {
+    month: "short",
+    year: "2-digit",
+  });
+};
 
 /**
  * Short, AURA-specific tips rather than a generic seller-education hub -
@@ -46,7 +64,8 @@ const SELLER_TIPS: { icon: "sparkle" | "camera" | "star"; title: string; body: s
 ];
 
 interface SellerCenterPageProps {
-  onBack: () => void;
+  /** Omitted when this page is the seller's own bottom-tab root, not a sub-page. */
+  onBack?: () => void;
   onApply: () => void;
   onOpenProduct: (id: string) => void;
 }
@@ -78,6 +97,7 @@ export default function SellerCenterPage({
   const [store, setStore] = useState<SellerStore | null>(null);
   const [products, setProducts] = useState<SellerProduct[]>([]);
   const [orders, setOrders] = useState<SellerOrder[]>([]);
+  const [finance, setFinance] = useState<SellerFinance | null>(null);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -92,12 +112,14 @@ export default function SellerCenterPage({
       const { store } = await sellerApi.store();
       setStore(store);
       if (store?.status === "APPROVED") {
-        const [{ products }, { orders }] = await Promise.all([
+        const [{ products }, { orders }, { finance }] = await Promise.all([
           sellerApi.products(),
           sellerApi.orders(),
+          sellerApi.finance(),
         ]);
         setProducts(products);
         setOrders(orders);
+        setFinance(finance);
       }
     } catch {
       setStore(null);
@@ -192,6 +214,10 @@ export default function SellerCenterPage({
   }
 
   const pendingCopy = STATUS_COPY[store.status];
+  const maxMonthlyRevenue = finance
+    ? Math.max(...finance.monthly.map((m) => m.revenue), 0)
+    : 0;
+  const recentTransactions = orders.filter((o) => o.status !== "PENDING").slice(0, 6);
 
   return (
     <div className="screen">
@@ -276,6 +302,86 @@ export default function SellerCenterPage({
                     </div>
                   ))}
               </div>
+            </>
+          )}
+
+          {finance && (
+            <>
+              <div className="section-heading-row">
+                <h3>Keuangan</h3>
+              </div>
+              <div className="seller-balance">
+                <div className="seller-balance-card">
+                  <div className="points-label">Saldo tersedia</div>
+                  <div className="seller-balance-value">
+                    {formatPrice(finance.balance.available)}
+                  </div>
+                  <p className="seller-balance-hint">Dari pesanan yang sudah selesai</p>
+                </div>
+                <div className="seller-balance-card">
+                  <div className="points-label">Tertahan</div>
+                  <div className="seller-balance-value seller-balance-value-muted">
+                    {formatPrice(finance.balance.pending)}
+                  </div>
+                  <p className="seller-balance-hint">
+                    Masih diproses/dikirim, cair setelah pesanan selesai
+                  </p>
+                </div>
+              </div>
+
+              <div className="seller-finance-subhead">Pendapatan 6 bulan terakhir</div>
+              <div className="seller-finance-months">
+                {finance.monthly.map((m) => (
+                  <div key={m.month} className="seller-finance-row">
+                    <span className="seller-finance-month-label">
+                      {formatMonthLabel(m.month)}
+                    </span>
+                    <div className="seller-finance-bar-track">
+                      <div
+                        className="seller-finance-bar-fill"
+                        style={{
+                          width:
+                            maxMonthlyRevenue > 0
+                              ? `${Math.max(3, Math.round((m.revenue / maxMonthlyRevenue) * 100))}%`
+                              : "0%",
+                        }}
+                      />
+                    </div>
+                    <span className="seller-finance-month-value">
+                      {formatPrice(m.revenue)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {recentTransactions.length > 0 && (
+                <>
+                  <div className="seller-finance-subhead">Transaksi terbaru</div>
+                  <div className="cart-list">
+                    {recentTransactions.map((order) => (
+                      <div key={order.id} className="admin-card">
+                        <div className="admin-card-head">
+                          <div>
+                            <div className="option-row-title">{order.orderNumber}</div>
+                            <div className="meta">{formatOrderDate(order.createdAt)}</div>
+                          </div>
+                          <span
+                            className={`badge badge-status-${TX_BADGE_TONE[order.status] ?? "pending"}`}
+                          >
+                            {ORDER_STATUS_LABEL[order.status] ?? order.status}
+                          </span>
+                        </div>
+                        <div className="admin-card-head">
+                          <span className="meta">Nilai transaksi</span>
+                          <span className="option-row-title">
+                            {formatPrice(order.subtotal)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </>
           )}
 

@@ -1,26 +1,24 @@
-import Icon from "../components/Icon";
+import { useEffect, useState } from "react";
 import Logo from "../components/Logo";
 
 interface LandingPageProps {
   onEnter: () => void;
-  onOpenProfile: () => void;
 }
 
-export default function LandingPage({
-  onEnter,
-  onOpenProfile,
-}: LandingPageProps) {
+// Holds the cover on just the logo for a beat before the CTA appears, so
+// opening the app reads as a brief splash rather than an instant form.
+const CTA_REVEAL_DELAY_MS = 3000;
+
+export default function LandingPage({ onEnter }: LandingPageProps) {
+  const [showCta, setShowCta] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowCta(true), CTA_REVEAL_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="landing">
-      <button
-        className="landing-settings"
-        onClick={onOpenProfile}
-        aria-label="Profil"
-      >
-        <Icon name="user" size={18} />
-        Profil
-      </button>
-
       <div className="landing-body">
         <Logo size={120} className="landing-mark" />
         <div className="landing-wordmark">
@@ -29,9 +27,13 @@ export default function LandingPage({
         </div>
       </div>
 
-      <button className="btn-primary landing-cta" onClick={onEnter}>
-        Masuk ke AURA
-      </button>
+      <div className="landing-cta-slot">
+        {showCta && (
+          <button className="btn-primary landing-cta landing-cta-in" onClick={onEnter}>
+            Masuk ke AURA
+          </button>
+        )}
+      </div>
     </div>
   );
 }
