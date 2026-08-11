@@ -84,6 +84,24 @@ export async function rejectBrand(req: Request, res: Response) {
   });
 }
 
+/**
+ * Detaches a store from whoever owns it, without touching its review status
+ * or listing. For when a store ends up linked to the wrong account (e.g. a
+ * test application submitted through a shared/demo login) and that account
+ * shouldn't be treated as that store's seller anymore.
+ */
+export async function unlinkStoreOwner(req: Request, res: Response) {
+  const store = await prisma.store.findUnique({ where: { id: req.params.id } });
+  if (!store) throw HttpError.notFound("Brand tidak ditemukan");
+
+  const updated = await prisma.store.update({
+    where: { id: req.params.id },
+    data: { ownerId: null },
+  });
+
+  res.json({ store: { id: updated.id, name: updated.name, ownerId: updated.ownerId } });
+}
+
 const updateProductImageSchema = z.object({
   imageUrl: z.string().url("URL gambar tidak valid"),
 });
