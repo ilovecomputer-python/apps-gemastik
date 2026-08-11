@@ -17,8 +17,8 @@ export default function ScanPage({
       <TopBar title="AI Scan Studio" onBack={onBack} />
       <div className="scan-intro">
         <p>
-          Foto wajahmu dianalisa AI. Hasil langsung tersambung ke rekomendasi
-          produk.
+          Dua cara mengenal kulitmu di AURA: foto untuk warna & shade, atau
+          jawab quiz untuk kondisi kulitmu.
         </p>
       </div>
       <div className="scan-mode-list">
@@ -27,10 +27,10 @@ export default function ScanPage({
             <Icon name="face" size={20} />
           </span>
           <div>
-            <div className="scan-mode-title">Analisis Kulit</div>
+            <div className="scan-mode-title">Analisis Warna & Shade</div>
             <p className="scan-mode-desc">
-              Kondisi kulit, tipe kulit, dan undertone untuk rekomendasi
-              skincare sekaligus shade makeup.
+              Foto wajahmu diukur AI untuk undertone dan personal colour,
+              lalu dicocokkan ke shade foundation yang beneran ada di katalog.
             </p>
           </div>
           <Icon name="chevron-right" size={16} className="scan-mode-chevron" />
@@ -43,8 +43,8 @@ export default function ScanPage({
           <div>
             <div className="scan-mode-title">Beauty Quiz</div>
             <p className="scan-mode-desc">
-              Tanpa foto — jawab beberapa pertanyaan, dapat trial kit personal
-              termasuk pilihan dari brand baru.
+              Tanpa foto — jawab soal kondisi dan tipe kulitmu, dapat trial
+              kit personal termasuk pilihan dari brand baru.
             </p>
           </div>
           <Icon name="chevron-right" size={16} className="scan-mode-chevron" />

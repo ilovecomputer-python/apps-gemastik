@@ -22,16 +22,6 @@ export interface Product {
   imageUrl: string | null;
 }
 
-/** One of the five skin conditions from the labelled dataset taxonomy. */
-export interface ScanCondition {
-  key: string;
-  label: string;
-  score: number;
-  severity: string;
-  advice: string;
-  noticeable: boolean;
-}
-
 export interface ScanRecommendation {
   product: Product;
   reason: string;
@@ -59,19 +49,23 @@ export interface SkinShadeResult {
   matchedShade: string | null;
 }
 
-/** Result of the single unified skin scan. */
+/** Raw colorimetry behind the result, so it reads as measured, not guessed. */
+export interface ScanMeasurement {
+  lab: { l: number; a: number; b: number };
+  ita: number;
+  chroma: number;
+}
+
+/** Result of the colour-only skin scan (skin condition/type live in the beauty quiz instead). */
 export interface ScanAnalysis {
   headline: string;
   detail: string;
   warning: string | null;
   disclaimer: string;
   recommendations: ScanRecommendation[];
-  skinType: string;
-  skinTypeLabel: string;
-  conditions: ScanCondition[];
-  topConcerns: string[];
   personalColour: PersonalColourResult;
   skinShade: SkinShadeResult;
+  measurement: ScanMeasurement;
 }
 
 export interface CartLine {
@@ -294,11 +288,19 @@ export interface QuizQuestion {
   options: QuizOption[];
 }
 
+/** A self-reported skin concern, with the same advice copy the old AI scan used per condition. */
+export interface ConcernDetail {
+  key: string;
+  label: string;
+  advice: string;
+}
+
 export interface SkinProfile {
   skinType: string;
   skinTypeLabel: string;
   concerns: string[];
   concernLabels: string[];
+  concernDetails: ConcernDetail[];
   newBrandOk: boolean;
 }
 

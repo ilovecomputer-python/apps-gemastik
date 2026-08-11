@@ -1,41 +1,32 @@
 import type { Request, Response } from "express";
-import type { Prisma } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 import { HttpError } from "../../lib/http-error.js";
 import { isGeminiConfigured } from "../../lib/gemini.js";
 import { toPublicProduct } from "../products/products.serializer.js";
 import { analyzeScanSchema } from "./scan.schema.js";
 import { analyseSkin, type ImageInput } from "./scan.vision.js";
-import {
-  CONCERN_ADVICE,
-  CONCERN_LABEL,
-  NOTICEABLE_THRESHOLD,
-  SKIN_CONCERNS,
-  SKIN_TYPE_LABEL,
-  UNDERTONE_ADVICE,
-  UNDERTONE_LABEL,
-  severityLabel,
-  type SkinConcern,
-} from "./scan.taxonomy.js";
+import { sampleSkinColour } from "./scan.pixels.js";
 import {
   FITZPATRICK_LABEL,
   SEASON_PROFILE,
+  UNDERTONE_ADVICE,
+  UNDERTONE_LABEL,
+  computeIta,
+  deriveChroma,
+  deriveHue,
   deriveSeason,
+  deriveValue,
+  itaToFitzpatrick,
+  labChroma,
   matchShadeCode,
+  rgbToLab,
   type Hue,
 } from "./scan.colour.js";
 
 const DISCLAIMER =
-  "Hasil ini analisis kosmetik berbasis AI, bukan diagnosis medis. Untuk keluhan kulit yang menetap, konsultasikan ke dokter kulit.";
+  "Hasil warna & shade ini analisis kosmetik berbasis pengukuran foto, bukan diagnosis medis. Akurasi warna tetap dipengaruhi pencahayaan foto.";
 
 const productInclude = { store: true } as const;
-
-/** "a", "a dan b", "a, b, dan c" */
-function joinIndonesian(items: string[]): string {
-  if (items.length <= 1) return items[0] ?? "";
-  if (items.length === 2) return `${items[0]} dan ${items[1]}`;
-  return `${items.slice(0, -1).join(", ")}, dan ${items[items.length - 1]}`;
-}
 
 function ensureUsableSubject(vision: { subject: string }) {
   if (vision.subject === "other") {
@@ -57,65 +48,16 @@ function qualityWarning(imageQuality: string): string | null {
 }
 
 /**
- * Rank skincare against the detected concerns. A product scores the sum of the
- * severities of every concern it targets, so the most relevant items for the
- * user's dominant problem float to the top.
- */
-async function recommendSkincare(
-  scores: Record<SkinConcern, number>,
-  detected: SkinConcern[],
-) {
-  if (detected.length === 0) {
-    const fallback = await prisma.product.findMany({
-      where: { category: "SKINCARE" },
-      include: productInclude,
-      orderBy: { rating: "desc" },
-      take: 4,
-    });
-    return fallback.map((product) => ({
-      product: toPublicProduct(product),
-      reason: "Perawatan harian untuk menjaga kondisi kulitmu tetap sehat.",
-    }));
-  }
-
-  const products = await prisma.product.findMany({
-    where: { concerns: { hasSome: detected } },
-    include: productInclude,
-  });
-
-  return products
-    .map((product) => {
-      const matched = product.concerns.filter((c): c is SkinConcern =>
-        detected.includes(c as SkinConcern),
-      );
-      const score = matched.reduce((sum, c) => sum + (scores[c] ?? 0), 0);
-      const labels = matched.map((c) => CONCERN_LABEL[c].toLowerCase());
-      return {
-        product: toPublicProduct(product),
-        reason: `Membantu mengatasi ${joinIndonesian(labels)}.`,
-        score,
-      };
-    })
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 5)
-    .map(({ product, reason }) => ({ product, reason }));
-}
-
-/**
  * Makeup picks for the colour analysis. Products whose shades follow the
  * catalogue's N/W/C depth convention get a concrete shade recommendation;
  * the rest are matched through the seasonal palette instead.
  */
-async function recommendMakeup(
-  hue: Hue,
-  fitzpatrick: number,
-  seasonLabel: string,
-) {
+async function recommendMakeup(hue: Hue, fitzpatrick: number, seasonLabel: string) {
   const products = await prisma.product.findMany({
     where: { category: "MAKEUP" },
     include: productInclude,
     orderBy: { rating: "desc" },
-    take: 4,
+    take: 8,
   });
 
   return products.map((product) => {
@@ -144,46 +86,28 @@ export async function analyzeScan(req: Request, res: Response) {
   const vision = await analyseSkin(image);
   ensureUsableSubject(vision);
 
-  const scores = SKIN_CONCERNS.reduce(
-    (acc, concern) => {
-      const raw = Number(vision.conditions?.[concern] ?? 0);
-      acc[concern] = Math.max(0, Math.min(100, Math.round(raw)));
-      return acc;
-    },
-    {} as Record<SkinConcern, number>,
-  );
+  // Everything colour-related from here is MEASURED off the photo's own
+  // pixels, not asked of the vision model — see scan.pixels.ts / scan.colour.ts.
+  const rgb = await sampleSkinColour(base64, vision.skinPatch);
+  const lab = rgbToLab(rgb);
 
-  const ranked = [...SKIN_CONCERNS].sort((a, b) => scores[b] - scores[a]);
-  const detected = ranked.filter((c) => scores[c] >= NOTICEABLE_THRESHOLD);
+  const hue = deriveHue(lab);
+  const value = deriveValue(lab);
+  const chroma = deriveChroma(lab);
+  const ita = computeIta(lab);
+  const fitzpatrick = itaToFitzpatrick(ita);
 
-  const conditions = ranked.map((concern) => ({
-    key: concern,
-    label: CONCERN_LABEL[concern],
-    score: scores[concern],
-    severity: severityLabel(scores[concern]),
-    advice: CONCERN_ADVICE[concern],
-    noticeable: scores[concern] >= NOTICEABLE_THRESHOLD,
-  }));
+  const undertoneLabel = UNDERTONE_LABEL[hue];
 
-  const skinTypeLabel = SKIN_TYPE_LABEL[vision.skinType] ?? vision.skinType;
-  const undertoneLabel = UNDERTONE_LABEL[vision.hue] ?? vision.hue;
-
-  // Personal colour: the model rated the axes, we derive the season.
-  const season = deriveSeason(vision.hue, vision.value, vision.chroma);
+  // Personal colour: the axes are measured, the season is derived from a
+  // fixed table so the classification stays auditable.
+  const season = deriveSeason(hue, value, chroma);
   const seasonProfile = SEASON_PROFILE[season];
 
-  // Skin shade: Fitzpatrick depth, clamped to the scale's real range.
-  const fitzpatrick = Math.max(1, Math.min(6, Math.round(vision.fitzpatrick)));
+  const headline = `${seasonProfile.label} · ${undertoneLabel}`;
 
-  const headline =
-    detected.length > 0
-      ? `Kulit ${skinTypeLabel}, fokus ${CONCERN_LABEL[detected[0]].toLowerCase()}`
-      : `Kulit ${skinTypeLabel}, kondisi terjaga`;
-
-  const [skincare, makeup] = await Promise.all([
-    recommendSkincare(scores, detected),
-    recommendMakeup(vision.hue, fitzpatrick, seasonProfile.label),
-  ]);
+  const makeup = await recommendMakeup(hue, fitzpatrick, seasonProfile.label);
+  const matchedShade = makeup.find((m) => m.matchedShade)?.matchedShade ?? null;
 
   if (req.userId) {
     await prisma.scanResult.create({
@@ -192,17 +116,14 @@ export async function analyzeScan(req: Request, res: Response) {
         mode: "SKIN",
         headline,
         detail: vision.notes,
-        skinType: vision.skinType,
-        undertone: vision.hue,
-        conditions: scores as unknown as Prisma.InputJsonValue,
         // Personal colour + shade, stored so later sessions can personalise
         // without asking the user to scan again.
+        undertone: hue,
         season,
-        colourValue: vision.value,
-        colourChroma: vision.chroma,
+        colourValue: value,
+        colourChroma: chroma,
         fitzpatrick,
-        matchedShade:
-          makeup.find((m) => m.matchedShade)?.matchedShade ?? null,
+        matchedShade,
       },
     });
   }
@@ -212,37 +133,34 @@ export async function analyzeScan(req: Request, res: Response) {
     detail: vision.notes,
     warning: qualityWarning(vision.imageQuality),
 
-    // 1. Skin condition — the dataset-backed analysis
-    skinType: vision.skinType,
-    skinTypeLabel,
-    conditions,
-    topConcerns: detected,
-
-    // 2. Personal colour — derived from the rated axes
+    // Personal colour — derived from measured Lab axes.
     personalColour: {
       season,
       label: seasonProfile.label,
       summary: seasonProfile.summary,
       palette: seasonProfile.palette,
       avoid: seasonProfile.avoid,
-      axes: {
-        hue: vision.hue,
-        value: vision.value,
-        chroma: vision.chroma,
-      },
+      axes: { hue, value, chroma },
     },
 
-    // 3. Skin shade — Fitzpatrick depth + undertone, matched to real codes
+    // Skin shade — ITA°-derived depth + undertone, matched to real shade codes.
     skinShade: {
       fitzpatrick,
       fitzpatrickLabel: FITZPATRICK_LABEL[fitzpatrick],
-      undertone: vision.hue,
+      undertone: hue,
       undertoneLabel,
-      undertoneAdvice: UNDERTONE_ADVICE[vision.hue] ?? "",
-      matchedShade: makeup.find((m) => m.matchedShade)?.matchedShade ?? null,
+      undertoneAdvice: UNDERTONE_ADVICE[hue] ?? "",
+      matchedShade,
     },
 
-    recommendations: [...skincare, ...makeup],
+    // Raw measurements, so the result is auditable rather than a black box.
+    measurement: {
+      lab: { l: Math.round(lab.l * 10) / 10, a: Math.round(lab.a * 10) / 10, b: Math.round(lab.b * 10) / 10 },
+      ita: Math.round(ita * 10) / 10,
+      chroma: Math.round(labChroma(lab) * 10) / 10,
+    },
+
+    recommendations: makeup,
     disclaimer: DISCLAIMER,
   });
 }

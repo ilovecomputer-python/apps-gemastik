@@ -68,6 +68,7 @@ export async function submitQuiz(req: Request, res: Response) {
       skinTypeLabel: profile.skinTypeLabel,
       concerns: result.quizResult.concerns,
       concernLabels: profile.concernLabels,
+      concernDetails: profile.concernDetails,
       newBrandOk: result.quizResult.newBrandOk,
     },
     kit: {

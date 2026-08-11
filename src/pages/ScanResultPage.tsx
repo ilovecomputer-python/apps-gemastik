@@ -10,12 +10,6 @@ interface ScanResultPageProps {
   onOpenProduct: (id: string) => void;
 }
 
-function severityClass(score: number): string {
-  if (score >= 65) return "high";
-  if (score >= 30) return "medium";
-  return "low";
-}
-
 export default function ScanResultPage({
   result,
   onBack,
@@ -70,39 +64,15 @@ export default function ScanResultPage({
         </div>
       </div>
 
+      <p className="scan-measurement">
+        Diukur dari foto: L*{result.measurement.lab.l} a*{result.measurement.lab.a}{" "}
+        b*{result.measurement.lab.b} · ITA° {result.measurement.ita}
+      </p>
+
       {result.warning && (
         <div className="scan-warning">
           <Icon name="sparkle" size={15} />
           <span>{result.warning}</span>
-        </div>
-      )}
-
-      {result.conditions && result.conditions.length > 0 && (
-        <div className="checkout-section">
-          <h3 className="section-title">Kondisi kulit terdeteksi</h3>
-          <div className="condition-list">
-            {result.conditions.map((condition) => (
-              <div key={condition.key} className="condition-row">
-                <div className="condition-head">
-                  <span className="condition-label">{condition.label}</span>
-                  <span
-                    className={`condition-score ${severityClass(condition.score)}`}
-                  >
-                    {condition.severity}
-                  </span>
-                </div>
-                <div className="condition-bar">
-                  <span
-                    className={`condition-fill ${severityClass(condition.score)}`}
-                    style={{ width: `${condition.score}%` }}
-                  />
-                </div>
-                {condition.noticeable && (
-                  <p className="condition-advice">{condition.advice}</p>
-                )}
-              </div>
-            ))}
-          </div>
         </div>
       )}
 

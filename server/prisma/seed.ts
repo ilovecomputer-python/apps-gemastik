@@ -326,12 +326,15 @@ const quizQuestions: {
     order: 2,
     question: "Apa masalah kulit utamamu? (boleh pilih lebih dari satu)",
     multiSelect: true,
+    // Same 5-class taxonomy as Product.concerns[] (see quiz.scoring.ts), so a
+    // reported concern matches real products directly instead of through
+    // fuzzy keyword search.
     options: [
       { label: "Jerawat", tags: ["acne"] },
-      { label: "Kusam", tags: ["dull"] },
+      { label: "Komedo", tags: ["blackheads"] },
+      { label: "Noda hitam", tags: ["dark_spots"] },
       { label: "Pori besar", tags: ["pores"] },
-      { label: "Tanda penuaan", tags: ["aging"] },
-      { label: "Dehidrasi", tags: ["dehydration"] },
+      { label: "Garis halus", tags: ["wrinkles"] },
     ],
   },
   {
@@ -465,20 +468,19 @@ async function main() {
   }
 
   console.log("Seeding beauty quiz questions...");
-  const existingQuestionCount = await prisma.quizQuestion.count();
-  if (existingQuestionCount === 0) {
-    for (const q of quizQuestions) {
-      await prisma.quizQuestion.create({
-        data: {
-          order: q.order,
-          question: q.question,
-          multiSelect: q.multiSelect,
-          options: { create: q.options },
-        },
-      });
-    }
-  } else {
-    console.log("Quiz questions already exist, skipping");
+  // Synced on every run, not just seeded once: QuizResult stores the derived
+  // profile (skinType/concerns as plain values), never a QuizOption id, so
+  // replacing the question set here can't orphan historical results.
+  await prisma.quizQuestion.deleteMany({});
+  for (const q of quizQuestions) {
+    await prisma.quizQuestion.create({
+      data: {
+        order: q.order,
+        question: q.question,
+        multiSelect: q.multiSelect,
+        options: { create: q.options },
+      },
+    });
   }
 
   console.log("Seeding vouchers...");

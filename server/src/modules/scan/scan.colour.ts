@@ -1,11 +1,13 @@
 /**
  * Seasonal personal colour analysis.
  *
- * The vision model is deliberately NOT asked to name a season. It only rates
- * three perceptual axes that are actually visible in a photo, and the season
- * is derived here by a fixed table. That keeps the classification auditable:
- * a wrong result can be traced to the axis that was misjudged instead of
- * disappearing into the model.
+ * The vision model is never asked to name a season, nor to judge colour at
+ * all. It only locates a clean skin patch in the photo (see scan.vision.ts);
+ * the three perceptual axes below are then MEASURED from that patch's actual
+ * pixels (see scan.pixels.ts + the colorimetry section further down this
+ * file), and the season is derived here by a fixed table. That keeps the
+ * whole chain auditable: a wrong result can be traced to a specific measured
+ * number, not "the model felt like it".
  *
  * Basis: seasonal colour analysis — Itten's colour theory, developed by
  * Suzanne Caygill, popularised by Carole Jackson (*Color Me Beautiful*, 1980).
@@ -21,6 +23,18 @@ export const CHROMAS = ["soft", "medium", "clear"] as const;
 export type Hue = (typeof HUES)[number];
 export type Value = (typeof VALUES)[number];
 export type Chroma = (typeof CHROMAS)[number];
+
+export const UNDERTONE_LABEL: Record<Hue, string> = {
+  warm: "Warm Undertone",
+  neutral: "Neutral Undertone",
+  cool: "Cool Undertone",
+};
+
+export const UNDERTONE_ADVICE: Record<Hue, string> = {
+  warm: "Pilih foundation dan lipstik berdasar kuning, peach, atau coral.",
+  neutral: "Hampir semua shade cocok. Pilih yang paling mendekati warna leher.",
+  cool: "Pilih shade berdasar pink, mauve, atau berry untuk hasil paling menyatu.",
+};
 
 export const SEASONS = [
   "light_spring",
@@ -165,6 +179,12 @@ export const SEASON_PROFILE: Record<Season, SeasonProfile> = {
  * Fitzpatrick skin phototype (T.B. Fitzpatrick, 1975) — a dermatological
  * scale, used here to give skin depth a grounded range rather than an
  * invented one. Values run I-VI; we carry them as 1-6.
+ *
+ * The authentic Fitzpatrick scale is itself a self-report sun-reaction
+ * questionnaire, not something a photo can measure. What a photo CAN measure
+ * is skin colour depth, via ITA° (see the colorimetry section below); we map
+ * the computed ITA° onto this same I-VI numbering so the shade-matching table
+ * below has one consistent depth scale, rather than inventing a second one.
  */
 export const FITZPATRICK_LABEL: Record<number, string> = {
   1: "Sangat terang (Tipe I)",
@@ -233,4 +253,127 @@ export function matchShadeCode(
   );
 
   return { shade: best.shade, exactUndertone: sameUndertone.length > 0 };
+}
+
+/**
+ * Colorimetry: turns a sampled skin-patch pixel colour into the hue/value/
+ * chroma/fitzpatrick axes above, by measurement instead of a vision model's
+ * free-text opinion.
+ *
+ * Pipeline: sRGB -> linear RGB -> CIE-XYZ (D65) -> CIE-Lab. All standard,
+ * textbook colour-space conversions (see e.g. Fairchild, *Color Appearance
+ * Models*), independently checkable — scripts/eval/colour-validate.cjs
+ * verifies this file's Lab output against published reference conversions
+ * (pure white/black, mid-grey, a handful of standard chart patches).
+ *
+ * From L*a*b*, two published measures do the rest of the work:
+ *
+ *  - ITA° (Individual Typology Angle), Chardon, Cretois & Hourseau 1991,
+ *    "Skin colour typology and suntanning pathways", Int. J. Cosmetic
+ *    Science 13(4). ITA° = atan2(L* - 50, b*) * 180/pi is the standard
+ *    INSTRUMENTAL measure of skin colour depth in dermatology/cosmetic
+ *    science — the photo-based analogue to the (self-reported) Fitzpatrick
+ *    scale. Its published bands are reproduced in `itaToFitzpatrick` below.
+ *
+ *  - L* itself (lightness) and C*ab = sqrt(a*^2 + b*^2) (chroma) are the
+ *    literal Lab-space definitions of this module's "value" and "chroma"
+ *    axes — those axis names were not a coincidence even before this file
+ *    computed them for real, and now they are the same quantities Lab
+ *    already defines, just bucketed into three bands for the season table.
+ *
+ * Undertone (warm/neutral/cool) uses the Lab hue angle, atan2(b*, a*) — a
+ * standard colour-space construct — but the specific degree cut-offs below
+ * are a practical choice for the narrow slice of the plane real skin tones
+ * occupy, not a single universally-cited constant. Documented as such,
+ * honestly, in docs/RASIONALISASI.md §1.2 — same "medium confidence" tier as
+ * the season system itself, rather than overclaiming it.
+ */
+
+export interface RGB {
+  r: number;
+  g: number;
+  b: number;
+}
+
+export interface Lab {
+  l: number;
+  a: number;
+  b: number;
+}
+
+function srgbChannelToLinear(channel: number): number {
+  const v = channel / 255;
+  return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+}
+
+/** D65 reference white, 2-degree observer — the sRGB standard illuminant. */
+const D65 = { x: 0.95047, y: 1.0, z: 1.08883 };
+
+function xyzChannelToLab(t: number): number {
+  const delta = 6 / 29;
+  return t > delta ** 3 ? Math.cbrt(t) : t / (3 * delta * delta) + 4 / 29;
+}
+
+/** sRGB (0-255 per channel) -> CIE-Lab (D65), via linear RGB and XYZ. */
+export function rgbToLab({ r, g, b }: RGB): Lab {
+  const rl = srgbChannelToLinear(r);
+  const gl = srgbChannelToLinear(g);
+  const bl = srgbChannelToLinear(b);
+
+  // sRGB -> XYZ, D65 (IEC 61966-2-1).
+  const x = rl * 0.4124564 + gl * 0.3575761 + bl * 0.1804375;
+  const y = rl * 0.2126729 + gl * 0.7151522 + bl * 0.072175;
+  const z = rl * 0.0193339 + gl * 0.119192 + bl * 0.9503041;
+
+  const fx = xyzChannelToLab(x / D65.x);
+  const fy = xyzChannelToLab(y / D65.y);
+  const fz = xyzChannelToLab(z / D65.z);
+
+  return { l: 116 * fy - 16, a: 500 * (fx - fy), b: 200 * (fy - fz) };
+}
+
+/** ITA°, Chardon/Cretois/Hourseau 1991. */
+export function computeIta(lab: Lab): number {
+  return (Math.atan2(lab.l - 50, lab.b) * 180) / Math.PI;
+}
+
+/** Published ITA° bands, re-numbered onto this module's I-VI (1-6) scale. */
+export function itaToFitzpatrick(ita: number): number {
+  if (ita > 55) return 1; // Very light
+  if (ita > 41) return 2; // Light
+  if (ita > 28) return 3; // Intermediate
+  if (ita > 10) return 4; // Tan
+  if (ita > -30) return 5; // Brown
+  return 6; // Dark
+}
+
+export function labChroma(lab: Lab): number {
+  return Math.sqrt(lab.a ** 2 + lab.b ** 2);
+}
+
+/** Hue angle in the Lab a*-b* plane, degrees, wrapped to [0, 360). */
+export function labHueAngle(lab: Lab): number {
+  const deg = (Math.atan2(lab.b, lab.a) * 180) / Math.PI;
+  return deg < 0 ? deg + 360 : deg;
+}
+
+/** See the module-level colorimetry doc comment re: these cut-offs. */
+export function deriveHue(lab: Lab): Hue {
+  const angle = labHueAngle(lab);
+  if (angle >= 60) return "warm";
+  if (angle >= 50) return "neutral";
+  return "cool";
+}
+
+export function deriveValue(lab: Lab): Value {
+  if (lab.l >= 65) return "light";
+  if (lab.l >= 45) return "medium";
+  return "deep";
+}
+
+export function deriveChroma(lab: Lab): Chroma {
+  const c = labChroma(lab);
+  if (c >= 28) return "clear";
+  if (c >= 16) return "medium";
+  return "soft";
 }

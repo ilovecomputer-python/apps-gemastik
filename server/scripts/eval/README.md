@@ -1,5 +1,20 @@
 # AI Scan accuracy evaluation
 
+This folder holds two, methodologically different evaluations — kept
+together because both are about "how do we know the scan pipeline's numbers
+mean anything", but they answer it in different ways for different parts of
+the app. See `docs/RASIONALISASI.md` for how the two map onto the current
+(colour-only scan + survey-based condition) architecture.
+
+## Skin condition classification (historical)
+
+The scan's condition-detection prompt has since been retired — skin
+condition is now self-reported in the beauty quiz (see §1.1 of the
+rationale doc) rather than read off a photo, because the accuracy work below
+never got past a small, inconclusive sample. It is kept here as the honest
+record of what was tried and why the app moved away from it, not as a
+description of what's currently deployed.
+
 Measures the skin-scan vision pipeline against the labelled **Skin v2** dataset
 (one folder per class: `acne`, `blackheades`, `dark spots`, `pores`,
 `wrinkles`).
@@ -53,3 +68,18 @@ resume the next day against the same `results.jsonl`.
 
 Never mix models in one `results.jsonl` — each file must describe a single
 model for the metrics to mean anything.
+
+## Colour/shade colorimetry (current)
+
+`colour-validate.ts` checks the pipeline that's actually live: sRGB -> CIE-Lab
+-> ITA° in `src/modules/scan/scan.colour.ts`. This is a deterministic formula,
+not a model prediction, so "accuracy" means "is the maths correct" rather
+than "does it match a labelled example" — there is no labelled skin-colour
+dataset to compare against (see docs/RASIONALISASI.md §1.2-1.3), and there
+doesn't need to be: the checks are analytic invariants the transform must
+satisfy by construction (white/black/grey points, monotonic lightness, ITA°
+band ordering), verified against the exact code that ships, not a reimplementation.
+
+```bash
+npx tsx scripts/eval/colour-validate.ts
+```

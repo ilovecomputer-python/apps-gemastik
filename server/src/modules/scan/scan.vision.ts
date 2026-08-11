@@ -1,15 +1,6 @@
 import { Type } from "@google/genai";
 import { GEMINI_MODEL, getGemini } from "../../lib/gemini.js";
 import { HttpError } from "../../lib/http-error.js";
-import { SKIN_CONCERNS, SKIN_TYPES } from "./scan.taxonomy.js";
-import {
-  CHROMAS,
-  HUES,
-  VALUES,
-  type Chroma,
-  type Hue,
-  type Value,
-} from "./scan.colour.js";
 
 export interface ImageInput {
   mimeType: string;
@@ -17,72 +8,92 @@ export interface ImageInput {
 }
 
 /**
- * What the photo actually shows. Skin analysis stays useful on a macro shot of
- * a single area (a user zooming into their nose), so those are accepted too —
- * only genuinely unrelated images are rejected.
+ * What the photo actually shows. Colour analysis stays useful on a macro shot
+ * of a single area (a user zooming into their cheek), so those are accepted
+ * too — only genuinely unrelated images are rejected.
  */
 export type VisionSubject = "face" | "skin_closeup" | "other";
 
+export interface NormalisedBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 /**
- * One vision call covers everything the app needs about a face: the five
- * dataset conditions, the skin type, and the undertone used for shade
- * matching. Splitting these into separate calls would triple both the latency
- * and the API quota for no extra signal.
+ * The vision call's ONLY job now is framing: is this a usable photo, and
+ * where in it is a clean, representative patch of bare skin? It is
+ * deliberately NOT asked to judge skin condition, type, or colour — those
+ * either come from the user's own survey answers (condition, type — see the
+ * quiz module) or are MEASURED from the located patch's actual pixels (see
+ * scan.pixels.ts + scan.colour.ts), not guessed from a photo by an LLM.
  */
 export interface SkinVision {
   subject: VisionSubject;
   imageQuality: "good" | "fair" | "poor";
   notes: string;
-  skinType: (typeof SKIN_TYPES)[number];
-  conditions: Record<(typeof SKIN_CONCERNS)[number], number>;
-  /**
-   * Perceptual axes for personal colour. The model rates these; the season is
-   * derived from them in scan.colour.ts, so the classification stays
-   * auditable. `hue` doubles as the undertone used for shade matching.
-   */
-  hue: Hue;
-  value: Value;
-  chroma: Chroma;
-  /** Fitzpatrick phototype I-VI, carried as 1-6. */
-  fitzpatrick: number;
+  /** Normalised (0-1) box over bare skin, clear of hair/eyes/lips/makeup/shadow. */
+  skinPatch: NormalisedBox | null;
 }
 
 const SYSTEM_INSTRUCTION = [
-  "Kamu adalah asisten analisis kecantikan untuk marketplace skincare Indonesia.",
-  "Tugasmu menilai tampilan kulit wajah secara KOSMETIK, bukan diagnosis medis.",
-  "Jangan pernah menyebut nama penyakit, jangan memberi saran pengobatan medis.",
+  "Kamu adalah asisten framing foto untuk analisis warna kulit KOSMETIK,",
+  "bukan diagnosis medis. Jangan menilai kondisi kulit, tipe kulit, atau",
+  "warna apa pun — tugasmu murni menentukan apakah foto ini bisa dipakai dan",
+  "di mana letak area kulit polos yang bersih untuk diukur warnanya.",
   "Isi field subject dengan: 'face' jika terlihat wajah manusia,",
   "'skin_closeup' jika foto makro kulit manusia tanpa wajah utuh,",
   "atau 'other' jika gambar bukan kulit manusia sama sekali.",
-  "Jika subject='other', jangan mengarang penilaian apa pun.",
-  "Tulis field notes dalam Bahasa Indonesia yang ramah, maksimal 2 kalimat.",
+  "Jika subject='other', jangan mengarang skinPatch apa pun — isi null.",
+  "Tulis field notes dalam Bahasa Indonesia yang ramah, maksimal 2 kalimat,",
+  "tanpa menyebut kondisi atau warna kulit.",
 ].join(" ");
 
 const PROMPT = [
-  "Analisis kondisi kulit wajah pada foto ini.",
-  "Beri skor 0-100 untuk setiap kondisi berikut berdasarkan seberapa terlihat pada wajah:",
-  "- acne: jerawat aktif, bruntusan, kemerahan meradang",
-  "- blackheads: komedo hitam/putih, terutama area hidung dan dagu",
-  "- dark_spots: noda hitam, bekas jerawat, hiperpigmentasi tidak merata",
-  "- pores: pori-pori yang terlihat membesar",
-  "- wrinkles: garis halus dan kerutan",
-  "Skor 0 berarti tidak terlihat sama sekali, 100 berarti sangat dominan.",
-  "Tentukan juga tipe kulit dari tampilan minyak dan teksturnya.",
-  "",
-  "Lalu nilai empat atribut warna berikut. JANGAN menyebut nama musim apa pun —",
-  "cukup nilai apa yang terlihat, penentuan musim dilakukan di sistem kami.",
-  "- hue: dasar warna kulit. warm = kuning/keemasan/peach,",
-  "  cool = pink/kebiruan/kemerahan, neutral = campuran keduanya.",
-  "  Perhatikan area pipi dan rahang, abaikan pengaruh makeup.",
-  "- value: terang-gelapnya keseluruhan penampilan (kulit, rambut, alis, mata).",
-  "  light = didominasi terang, deep = didominasi gelap.",
-  "- chroma: pekat atau lembutnya warna alami serta kontras antar fitur.",
-  "  soft = berdebu/menyatu/kontras rendah, clear = jernih/pekat/kontras tinggi.",
-  "- fitzpatrick: fototipe kulit skala 1-6 (1 sangat terang dan mudah terbakar",
-  "  matahari, 6 sangat gelap dan jarang terbakar).",
-  "Jika foto hanya makro kulit tanpa wajah utuh, nilai atribut warna sebaik",
-  "mungkin dari warna kulit yang terlihat.",
+  "Lihat foto ini dan tentukan:",
+  "1. subject: apa yang terlihat (lihat definisi di instruksi sistem).",
+  "2. imageQuality: kualitas foto untuk pengukuran warna (pencahayaan, fokus).",
+  "3. notes: ringkasan singkat dan ramah tentang foto ini (BUKAN kondisi kulit).",
+  "4. skinPatch: kotak normalisasi (0-1) di sekitar sepetak kulit POLOS yang",
+  "   representatif dan mudah diukur warnanya — idealnya area pipi.",
+  "   Hindari mata, bibir, alis, rambut, bayangan keras, pantulan cahaya",
+  "   terang (specular highlight), dan area yang tertutup makeup tebal.",
+  "   Kotak boleh kecil (misal 15-25% lebar/tinggi foto) selama isinya benar-",
+  "   benar kulit polos. Jika tidak ada wajah/kulit yang jelas, isi null.",
 ].join("\n");
+
+const responseSchema = {
+  type: Type.OBJECT,
+  properties: {
+    subject: {
+      type: Type.STRING,
+      enum: ["face", "skin_closeup", "other"],
+      description: "apa yang terlihat pada foto",
+    },
+    imageQuality: {
+      type: Type.STRING,
+      enum: ["good", "fair", "poor"],
+      description: "kualitas foto untuk pengukuran warna (pencahayaan, fokus, sudut)",
+    },
+    notes: {
+      type: Type.STRING,
+      description: "ringkasan singkat dan ramah tentang foto, bukan kondisi kulit",
+    },
+    skinPatch: {
+      type: Type.OBJECT,
+      nullable: true,
+      properties: {
+        x: { type: Type.NUMBER, description: "sisi kiri kotak, 0-1" },
+        y: { type: Type.NUMBER, description: "sisi atas kotak, 0-1" },
+        width: { type: Type.NUMBER, description: "lebar kotak, 0-1" },
+        height: { type: Type.NUMBER, description: "tinggi kotak, 0-1" },
+      },
+      required: ["x", "y", "width", "height"],
+    },
+  },
+  required: ["subject", "imageQuality", "notes", "skinPatch"],
+};
 
 const MAX_ATTEMPTS = 3;
 /** Cap a single vision call so a stalled upstream can't hang the request. */
@@ -111,60 +122,6 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function analyseSkin(image: ImageInput): Promise<SkinVision> {
   const ai = getGemini();
-
-  const conditionProps = Object.fromEntries(
-    SKIN_CONCERNS.map((concern) => [
-      concern,
-      {
-        type: Type.INTEGER,
-        description: `tingkat keparahan ${concern} pada skala 0-100`,
-      },
-    ]),
-  );
-
-  const responseSchema = {
-    type: Type.OBJECT,
-    properties: {
-      subject: {
-        type: Type.STRING,
-        enum: ["face", "skin_closeup", "other"],
-        description: "apa yang terlihat pada foto",
-      },
-      imageQuality: {
-        type: Type.STRING,
-        enum: ["good", "fair", "poor"],
-        description: "kualitas foto untuk analisis (pencahayaan, fokus, sudut)",
-      },
-      notes: {
-        type: Type.STRING,
-        description: "ringkasan singkat kondisi dalam Bahasa Indonesia",
-      },
-      skinType: { type: Type.STRING, enum: [...SKIN_TYPES] },
-      hue: { type: Type.STRING, enum: [...HUES] },
-      value: { type: Type.STRING, enum: [...VALUES] },
-      chroma: { type: Type.STRING, enum: [...CHROMAS] },
-      fitzpatrick: {
-        type: Type.INTEGER,
-        description: "fototipe kulit Fitzpatrick, 1 sampai 6",
-      },
-      conditions: {
-        type: Type.OBJECT,
-        properties: conditionProps,
-        required: [...SKIN_CONCERNS],
-      },
-    },
-    required: [
-      "subject",
-      "imageQuality",
-      "notes",
-      "skinType",
-      "hue",
-      "value",
-      "chroma",
-      "fitzpatrick",
-      "conditions",
-    ],
-  };
 
   let response;
   let lastError = "";

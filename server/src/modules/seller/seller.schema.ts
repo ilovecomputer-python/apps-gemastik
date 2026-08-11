@@ -9,7 +9,7 @@ export const createProductSchema = z.object({
     .trim()
     .min(30, "Deskripsi minimal 30 karakter")
     .max(1000),
-  /** Values must come from the scan taxonomy so the AI scan can match them. */
+  /** Must match the taxonomy in quiz.scoring.ts so the beauty quiz can recommend this product. */
   concerns: z
     .array(z.enum(["acne", "blackheads", "dark_spots", "pores", "wrinkles"]))
     .max(5)

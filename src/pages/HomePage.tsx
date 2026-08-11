@@ -174,8 +174,8 @@ export default function HomePage({
           <span className="banner-eyebrow">AI SCAN STUDIO</span>
           <h2 className="banner-title">Temukan shade dan skincare-mu</h2>
           <p className="banner-copy">
-            Scan wajah untuk mencari undertone, bentuk wajah, dan kondisi
-            kulit dengan presisi
+            Scan wajah untuk warna & shade yang terukur, atau jawab quiz
+            singkat untuk kondisi kulitmu
           </p>
         </button>
         <div className="banner banner-umkm">
