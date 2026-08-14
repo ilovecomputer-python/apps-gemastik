@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { prisma } from "../../lib/prisma.js";
 import { HttpError } from "../../lib/http-error.js";
+import { resolveFeePercentsByStore } from "../../lib/commission.js";
 import { createOrderSchema } from "./orders.schema.js";
 import { markVoucherUsed, resolveVoucher } from "./orders.voucher.js";
 
@@ -46,6 +47,12 @@ export async function createOrder(req: Request, res: Response) {
   const discount = applied?.discount ?? 0;
   const total = subtotal + shippingOption.price - discount;
 
+  // Resolved from each store's GMV so far - this order isn't in the DB yet,
+  // so it doesn't count toward its own tier. Fixed on the item from here on.
+  const feePercentByStore = await resolveFeePercentsByStore(
+    cartItems.map((item) => item.product.storeId),
+  );
+
   const order = await prisma.$transaction(async (tx) => {
     const created = await tx.order.create({
       data: {
@@ -66,6 +73,7 @@ export async function createOrder(req: Request, res: Response) {
             name: item.product.name,
             unitPrice: item.product.price,
             quantity: item.quantity,
+            platformFeePercent: feePercentByStore.get(item.product.storeId) ?? null,
           })),
         },
       },

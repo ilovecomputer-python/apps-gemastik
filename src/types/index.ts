@@ -132,7 +132,11 @@ export interface SellerMonthlyRevenue {
   orderCount: number;
 }
 
-/** Computed, not a stored ledger - there is no payout system behind this. */
+/**
+ * Computed, not a stored ledger - there is no payout system behind this.
+ * Every figure here is net of the platform's commission; gross sales volume
+ * lives separately on SellerStore.revenueThisMonth.
+ */
 export interface SellerFinance {
   balance: {
     /** From COMPLETED orders - settled and the seller's to count on. */
@@ -141,6 +145,10 @@ export interface SellerFinance {
     pending: number;
     lifetime: number;
   };
+  /** Lifetime commission kept by the platform so far - transparency, not a separate ledger. */
+  feeDeducted: number;
+  /** The tier this store's GMV currently resolves to; null if the ladder has a gap. */
+  currentTier: { name: string; feePercent: number } | null;
   /** Trailing 6 months, oldest first. */
   monthly: SellerMonthlyRevenue[];
 }

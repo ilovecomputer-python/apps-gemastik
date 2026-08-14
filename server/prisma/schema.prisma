@@ -303,6 +303,14 @@ model OrderItem {
   productId String?
   product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
 
+  /**
+   * The seller's tier-resolved commission rate at the moment this line was
+   * ordered, fixed from then on even if tiers/ranges change later - null on
+   * items that predate this feature (and where the fee was never resolved,
+   * e.g. because the store didn't match any tier at the time).
+   */
+  platformFeePercent Float?
+
   @@map("order_items")
 }
 

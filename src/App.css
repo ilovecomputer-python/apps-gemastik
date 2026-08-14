@@ -744,6 +744,11 @@
   margin-top: 2px;
 }
 
+.seller-fee-note {
+  padding: 0 20px;
+  margin-top: -4px;
+}
+
 .seller-finance-subhead {
   padding: 0 20px;
   margin: 2px 0;

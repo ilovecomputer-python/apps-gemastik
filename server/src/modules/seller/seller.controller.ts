@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { prisma } from "../../lib/prisma.js";
 import { HttpError } from "../../lib/http-error.js";
+import { resolveCurrentTier } from "../../lib/commission.js";
 import { toPublicProduct } from "../products/products.serializer.js";
 import { createProductSchema } from "./seller.schema.js";
 
@@ -131,6 +132,16 @@ const FINANCE_MONTHS = 6;
 const sumItems = (items: { unitPrice: number; quantity: number }[]) =>
   items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 
+type FeeableItem = { unitPrice: number; quantity: number; platformFeePercent: number | null };
+
+/** Gross line value minus its stamped platform fee - items predating the feature (null) pay none. */
+const netItems = (items: FeeableItem[]) =>
+  items.reduce((sum, item) => {
+    const gross = item.unitPrice * item.quantity;
+    const fee = item.platformFeePercent ?? 0;
+    return sum + Math.round(gross * (1 - fee / 100));
+  }, 0);
+
 /** The first-of-month boundaries for the trailing N months, oldest first. */
 function financeMonthWindows(count: number) {
   const now = new Date();
@@ -154,41 +165,55 @@ export async function getMyFinance(req: Request, res: Response) {
   const windows = financeMonthWindows(FINANCE_MONTHS);
   const windowStart = windows[0].start;
 
-  const [recentItems, completedItems, heldItems] = await Promise.all([
+  const [recentItems, completedItems, heldItems, currentTier] = await Promise.all([
     prisma.orderItem.findMany({
       where: {
         product: { storeId: store.id },
         order: { status: { notIn: ["PENDING", "CANCELLED"] }, createdAt: { gte: windowStart } },
       },
-      select: { unitPrice: true, quantity: true, orderId: true, order: { select: { createdAt: true } } },
+      select: {
+        unitPrice: true,
+        quantity: true,
+        platformFeePercent: true,
+        orderId: true,
+        order: { select: { createdAt: true } },
+      },
     }),
     prisma.orderItem.findMany({
       where: { product: { storeId: store.id }, order: { status: "COMPLETED" } },
-      select: { unitPrice: true, quantity: true },
+      select: { unitPrice: true, quantity: true, platformFeePercent: true },
     }),
     prisma.orderItem.findMany({
       where: { product: { storeId: store.id }, order: { status: { in: [...HELD_STATUSES] } } },
-      select: { unitPrice: true, quantity: true },
+      select: { unitPrice: true, quantity: true, platformFeePercent: true },
     }),
+    resolveCurrentTier(store.id),
   ]);
 
+  // Net of the platform fee, so what's shown here is what the seller actually
+  // gets - "revenue" (gross) already lives on the dashboard's own stat.
   const monthly = windows.map(({ key, start, end }) => {
     const items = recentItems.filter(
       (item) => item.order.createdAt >= start && item.order.createdAt < end,
     );
     return {
       month: key,
-      revenue: sumItems(items),
+      revenue: netItems(items),
       orderCount: new Set(items.map((item) => item.orderId)).size,
     };
   });
 
-  const available = sumItems(completedItems);
-  const pending = sumItems(heldItems);
+  const available = netItems(completedItems);
+  const pending = netItems(heldItems);
+  const grossSettled = sumItems(completedItems) + sumItems(heldItems);
 
   res.json({
     finance: {
       balance: { available, pending, lifetime: available + pending },
+      // Transparency, not a separate ledger: how much of the gross sales
+      // above was kept by the platform as commission, lifetime to date.
+      feeDeducted: grossSettled - (available + pending),
+      currentTier: currentTier && { name: currentTier.name, feePercent: currentTier.feePercent },
       monthly,
     },
   });

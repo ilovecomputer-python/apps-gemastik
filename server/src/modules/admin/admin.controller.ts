@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { z } from "zod";
 import { prisma } from "../../lib/prisma.js";
 import { HttpError } from "../../lib/http-error.js";
+import { GMV_EXCLUDED_STATUSES, resolveTier } from "../../lib/commission.js";
 
 const VALID_STATUSES = ["PENDING", "APPROVED", "REJECTED"] as const;
 
@@ -100,16 +101,6 @@ export async function unlinkStoreOwner(req: Request, res: Response) {
   });
 
   res.json({ store: { id: updated.id, name: updated.name, ownerId: updated.ownerId } });
-}
-
-/** A PENDING cart or a CANCELLED order never became real revenue - GMV excludes both. */
-const GMV_EXCLUDED_STATUSES = ["PENDING", "CANCELLED"] as const;
-
-type TierRow = { id: string; name: string; minGmv: number; maxGmv: number | null; feePercent: number };
-
-/** First tier (by sortOrder) whose range contains the GMV; null if the ladder has a gap. */
-function resolveTier(gmv: number, tiers: TierRow[]): TierRow | null {
-  return tiers.find((t) => gmv >= t.minGmv && (t.maxGmv === null || gmv <= t.maxGmv)) ?? null;
 }
 
 /**

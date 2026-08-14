@@ -309,6 +309,11 @@ export default function SellerCenterPage({
             <>
               <div className="section-heading-row">
                 <h3>Keuangan</h3>
+                {finance.currentTier && (
+                  <span className="badge badge-status-approved">
+                    Tier {finance.currentTier.name} · {finance.currentTier.feePercent}%
+                  </span>
+                )}
               </div>
               <div className="seller-balance">
                 <div className="seller-balance-card">
@@ -328,6 +333,10 @@ export default function SellerCenterPage({
                   </p>
                 </div>
               </div>
+              <p className="seller-balance-hint seller-fee-note">
+                Saldo di atas sudah dipotong komisi platform - Rp
+                {finance.feeDeducted.toLocaleString("id-ID")} dipotong sejauh ini.
+              </p>
 
               <div className="seller-finance-subhead">Pendapatan 6 bulan terakhir</div>
               <div className="seller-finance-months">
