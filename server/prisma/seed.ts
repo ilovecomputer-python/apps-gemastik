@@ -527,11 +527,19 @@ async function main() {
   console.log("Seeding commission tiers...");
   // Created once, never overwritten on later runs - an admin is expected to
   // tune these ranges after launch, and a reseed must not stomp their edits
-  // back to these placeholder numbers.
+  // back to these defaults.
+  //
+  // Ranges mirror PP No. 7 Tahun 2021's UMKM omzet-tahunan criteria, mapped
+  // onto this ladder's fixed 3-tier/7-5-3% structure:
+  //   Usaha Mikro   (<= Rp2M/tahun)          -> UMKM tier
+  //   Usaha Kecil    (Rp2M - Rp15M/tahun)     -> Menengah tier
+  //   Usaha Menengah + Usaha Besar (> Rp15M) -> Enterprise tier
+  // (GMV here is trailing-12-month, matching the regulation's "tahunan" -
+  // see commission.ts's computeStoreGmv.)
   const commissionTiers = [
-    { sortOrder: 0, name: "UMKM", minGmv: 0, maxGmv: 50_000_000, feePercent: 3 },
-    { sortOrder: 1, name: "Menengah", minGmv: 50_000_001, maxGmv: 500_000_000, feePercent: 5 },
-    { sortOrder: 2, name: "Enterprise", minGmv: 500_000_001, maxGmv: null, feePercent: 7 },
+    { sortOrder: 0, name: "UMKM", minGmv: 0, maxGmv: 2_000_000_000, feePercent: 3 },
+    { sortOrder: 1, name: "Menengah", minGmv: 2_000_000_001, maxGmv: 15_000_000_000, feePercent: 5 },
+    { sortOrder: 2, name: "Enterprise", minGmv: 15_000_000_001, maxGmv: null, feePercent: 7 },
   ];
   for (const tier of commissionTiers) {
     const existing = await prisma.commissionTier.findUnique({

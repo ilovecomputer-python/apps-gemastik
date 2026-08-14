@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { z } from "zod";
 import { prisma } from "../../lib/prisma.js";
 import { HttpError } from "../../lib/http-error.js";
-import { GMV_EXCLUDED_STATUSES, resolveTier } from "../../lib/commission.js";
+import { computeGmvByStoreBulk, resolveTier } from "../../lib/commission.js";
 
 const VALID_STATUSES = ["PENDING", "APPROVED", "REJECTED"] as const;
 
@@ -104,33 +104,20 @@ export async function unlinkStoreOwner(req: Request, res: Response) {
 }
 
 /**
- * The commission ladder plus, for every approved store, its real lifetime GMV
- * and which tier that currently resolves to - so an admin adjusting a range
- * sees the actual effect instead of tuning the numbers blind.
+ * The commission ladder plus, for every approved store, its real trailing-
+ * 12-month GMV and which tier that currently resolves to - so an admin
+ * adjusting a range sees the actual effect instead of tuning the numbers blind.
  */
 export async function listCommissionTiers(_req: Request, res: Response) {
-  const [tiers, stores, settledItems] = await Promise.all([
+  const [tiers, stores, gmvByStore] = await Promise.all([
     prisma.commissionTier.findMany({ orderBy: { sortOrder: "asc" } }),
     prisma.store.findMany({
       where: { status: "APPROVED" },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     }),
-    prisma.orderItem.findMany({
-      where: { order: { status: { notIn: [...GMV_EXCLUDED_STATUSES] } } },
-      select: { unitPrice: true, quantity: true, product: { select: { storeId: true } } },
-    }),
+    computeGmvByStoreBulk(),
   ]);
-
-  const gmvByStore = new Map<string, number>();
-  for (const item of settledItems) {
-    // A deleted product leaves its historical order items behind with
-    // product set to null (see schema's onDelete: SetNull) - nothing to
-    // attribute those to anymore.
-    if (!item.product) continue;
-    const storeId = item.product.storeId;
-    gmvByStore.set(storeId, (gmvByStore.get(storeId) ?? 0) + item.unitPrice * item.quantity);
-  }
 
   res.json({
     tiers: tiers.map((t) => ({

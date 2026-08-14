@@ -245,9 +245,11 @@ export default function AdminPage({ onBack }: AdminPageProps) {
       </div>
       <div className="admin-intro">
         <p>
-          Potongan aplikasi bertingkat berdasarkan GMV (total transaksi) toko -
-          makin besar tokonya, makin besar potongannya, supaya brand UMKM kecil
-          lebih ringan. Rentang GMV di bawah masih placeholder, sesuaikan bebas.
+          Potongan aplikasi bertingkat berdasarkan GMV 12 bulan terakhir toko,
+          disepadankan dengan kriteria UMKM resmi (PP No. 7/2021: Usaha Mikro,
+          Kecil, Menengah) - makin besar omzet tahunannya, makin besar
+          potongannya, supaya Usaha Mikro tetap paling ringan. Sesuaikan
+          rentangnya di bawah kalau kriterianya berubah.
         </p>
       </div>
 
@@ -342,7 +344,7 @@ export default function AdminPage({ onBack }: AdminPageProps) {
                   <div key={s.id} className="admin-card admin-card-head">
                     <div>
                       <div className="option-row-title">{s.name}</div>
-                      <div className="meta">GMV {formatPrice(s.gmv)}</div>
+                      <div className="meta">GMV 12 bln: {formatPrice(s.gmv)}</div>
                     </div>
                     {s.tier ? (
                       <span className="badge badge-status-approved">
