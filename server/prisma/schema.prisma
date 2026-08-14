@@ -515,10 +515,10 @@ model ReviewHelpful {
 model CommissionTier {
   id         String  @id @default(cuid())
   name       String
-  /** Inclusive lower bound, in Rupiah. */
-  minGmv     Int
+  /** Inclusive lower bound, in Rupiah. BigInt because Menengah/Enterprise ranges exceed Postgres INTEGER's ~2.14B ceiling. */
+  minGmv     BigInt
   /** Inclusive upper bound; null means "and above" (the top tier). */
-  maxGmv     Int?
+  maxGmv     BigInt?
   feePercent Float
   /** Evaluation/display order, lowest GMV first. */
   sortOrder  Int     @unique

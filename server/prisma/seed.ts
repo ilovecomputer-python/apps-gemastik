@@ -545,7 +545,15 @@ async function main() {
     const existing = await prisma.commissionTier.findUnique({
       where: { sortOrder: tier.sortOrder },
     });
-    if (!existing) await prisma.commissionTier.create({ data: tier });
+    if (!existing) {
+      await prisma.commissionTier.create({
+        data: {
+          ...tier,
+          minGmv: BigInt(tier.minGmv),
+          maxGmv: tier.maxGmv === null ? null : BigInt(tier.maxGmv),
+        },
+      });
+    }
   }
 
   console.log("Seeding admin user...");

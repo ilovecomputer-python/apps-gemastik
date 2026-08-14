@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "commission_tiers" ALTER COLUMN "minGmv" SET DATA TYPE BIGINT,
+ALTER COLUMN "maxGmv" SET DATA TYPE BIGINT;

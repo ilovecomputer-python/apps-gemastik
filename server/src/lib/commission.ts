@@ -30,6 +30,28 @@ export function resolveTier(gmv: number, tiersAscending: TierRow[]): TierRow | n
   );
 }
 
+/**
+ * minGmv/maxGmv are stored as BigInt (Postgres INTEGER's ~2.14B ceiling is
+ * too narrow for the Menengah/Enterprise ranges) - GMV itself never
+ * approaches Number.MAX_SAFE_INTEGER, so the rest of the app works with
+ * plain numbers and only the Prisma read/write boundary touches bigint.
+ */
+export function toTierRow(t: {
+  id: string;
+  name: string;
+  minGmv: bigint;
+  maxGmv: bigint | null;
+  feePercent: number;
+}): TierRow {
+  return {
+    id: t.id,
+    name: t.name,
+    minGmv: Number(t.minGmv),
+    maxGmv: t.maxGmv === null ? null : Number(t.maxGmv),
+    feePercent: t.feePercent,
+  };
+}
+
 /** Trailing 12-month settled GMV for one store - see oneYearAgo() for why not lifetime. */
 export async function computeStoreGmv(storeId: string): Promise<number> {
   const items = await prisma.orderItem.findMany({
@@ -69,11 +91,11 @@ export async function computeGmvByStoreBulk(): Promise<Map<string, number>> {
 
 /** The full tier row a store currently resolves to, based on its trailing-12-month GMV. */
 export async function resolveCurrentTier(storeId: string): Promise<TierRow | null> {
-  const [tiers, gmv] = await Promise.all([
+  const [tiersRaw, gmv] = await Promise.all([
     prisma.commissionTier.findMany({ orderBy: { sortOrder: "asc" } }),
     computeStoreGmv(storeId),
   ]);
-  return resolveTier(gmv, tiers);
+  return resolveTier(gmv, tiersRaw.map(toTierRow));
 }
 
 /**
@@ -87,7 +109,8 @@ export async function resolveFeePercentsByStore(
   const uniqueIds = [...new Set(storeIds)];
   if (uniqueIds.length === 0) return new Map();
 
-  const tiers = await prisma.commissionTier.findMany({ orderBy: { sortOrder: "asc" } });
+  const tiersRaw = await prisma.commissionTier.findMany({ orderBy: { sortOrder: "asc" } });
+  const tiers = tiersRaw.map(toTierRow);
   const entries = await Promise.all(
     uniqueIds.map(async (storeId) => {
       const gmv = await computeStoreGmv(storeId);

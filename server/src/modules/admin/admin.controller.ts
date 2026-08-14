@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { z } from "zod";
 import { prisma } from "../../lib/prisma.js";
 import { HttpError } from "../../lib/http-error.js";
-import { computeGmvByStoreBulk, resolveTier } from "../../lib/commission.js";
+import { computeGmvByStoreBulk, resolveTier, toTierRow } from "../../lib/commission.js";
 
 const VALID_STATUSES = ["PENDING", "APPROVED", "REJECTED"] as const;
 
@@ -109,7 +109,7 @@ export async function unlinkStoreOwner(req: Request, res: Response) {
  * adjusting a range sees the actual effect instead of tuning the numbers blind.
  */
 export async function listCommissionTiers(_req: Request, res: Response) {
-  const [tiers, stores, gmvByStore] = await Promise.all([
+  const [tiersRaw, stores, gmvByStore] = await Promise.all([
     prisma.commissionTier.findMany({ orderBy: { sortOrder: "asc" } }),
     prisma.store.findMany({
       where: { status: "APPROVED" },
@@ -118,6 +118,7 @@ export async function listCommissionTiers(_req: Request, res: Response) {
     }),
     computeGmvByStoreBulk(),
   ]);
+  const tiers = tiersRaw.map(toTierRow);
 
   res.json({
     tiers: tiers.map((t) => ({
@@ -152,8 +153,8 @@ export async function updateCommissionTier(req: Request, res: Response) {
   const tier = await prisma.commissionTier.findUnique({ where: { id: req.params.id } });
   if (!tier) throw HttpError.notFound("Tier tidak ditemukan");
 
-  const nextMin = input.minGmv ?? tier.minGmv;
-  const nextMax = input.maxGmv === undefined ? tier.maxGmv : input.maxGmv;
+  const nextMin = input.minGmv ?? Number(tier.minGmv);
+  const nextMax = input.maxGmv === undefined ? (tier.maxGmv === null ? null : Number(tier.maxGmv)) : input.maxGmv;
   if (nextMax !== null && nextMax <= nextMin) {
     throw HttpError.badRequest(
       "GMV maksimum harus lebih besar dari minimum.",
@@ -163,15 +164,21 @@ export async function updateCommissionTier(req: Request, res: Response) {
 
   const updated = await prisma.commissionTier.update({
     where: { id: req.params.id },
-    data: input,
+    data: {
+      ...(input.minGmv !== undefined ? { minGmv: BigInt(input.minGmv) } : {}),
+      ...(input.maxGmv !== undefined
+        ? { maxGmv: input.maxGmv === null ? null : BigInt(input.maxGmv) }
+        : {}),
+      ...(input.feePercent !== undefined ? { feePercent: input.feePercent } : {}),
+    },
   });
 
   res.json({
     tier: {
       id: updated.id,
       name: updated.name,
-      minGmv: updated.minGmv,
-      maxGmv: updated.maxGmv,
+      minGmv: Number(updated.minGmv),
+      maxGmv: updated.maxGmv === null ? null : Number(updated.maxGmv),
       feePercent: updated.feePercent,
     },
   });
