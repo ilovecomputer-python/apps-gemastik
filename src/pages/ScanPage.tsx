@@ -37,9 +37,6 @@ export default function ScanPage({
         </button>
 
         <button className="scan-mode-card scan-mode-highlight" onClick={onOpenQuiz}>
-          <span className="scan-mode-icon">
-            <Icon name="sparkle" size={20} />
-          </span>
           <div>
             <div className="scan-mode-title">Beauty Quiz</div>
             <p className="scan-mode-desc">
