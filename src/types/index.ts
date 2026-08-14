@@ -180,6 +180,25 @@ export interface BrandApplication {
   productCount: number;
 }
 
+/** One rung of the platform's take-rate ladder, keyed by a store's lifetime GMV. */
+export interface CommissionTier {
+  id: string;
+  name: string;
+  minGmv: number;
+  /** null means "and above" - the top tier has no ceiling. */
+  maxGmv: number | null;
+  feePercent: number;
+}
+
+/** An approved store's real GMV and which commission tier it currently resolves to. */
+export interface CommissionTierStore {
+  id: string;
+  name: string;
+  gmv: number;
+  /** null when the ladder has a gap the store's GMV falls into. */
+  tier: { id: string; name: string; feePercent: number } | null;
+}
+
 export interface Address {
   id: string;
   label: string;

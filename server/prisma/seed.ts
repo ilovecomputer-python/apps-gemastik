@@ -524,6 +524,22 @@ async function main() {
     });
   }
 
+  console.log("Seeding commission tiers...");
+  // Created once, never overwritten on later runs - an admin is expected to
+  // tune these ranges after launch, and a reseed must not stomp their edits
+  // back to these placeholder numbers.
+  const commissionTiers = [
+    { sortOrder: 0, name: "UMKM", minGmv: 0, maxGmv: 50_000_000, feePercent: 3 },
+    { sortOrder: 1, name: "Menengah", minGmv: 50_000_001, maxGmv: 500_000_000, feePercent: 5 },
+    { sortOrder: 2, name: "Enterprise", minGmv: 500_000_001, maxGmv: null, feePercent: 7 },
+  ];
+  for (const tier of commissionTiers) {
+    const existing = await prisma.commissionTier.findUnique({
+      where: { sortOrder: tier.sortOrder },
+    });
+    if (!existing) await prisma.commissionTier.create({ data: tier });
+  }
+
   console.log("Seeding admin user...");
   const adminEmail = "admin@aura.id";
   const existingAdmin = await prisma.user.findUnique({

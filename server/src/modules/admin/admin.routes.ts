@@ -6,8 +6,10 @@ import {
   adminSummary,
   approveBrand,
   listBrandApplications,
+  listCommissionTiers,
   rejectBrand,
   unlinkStoreOwner,
+  updateCommissionTier,
   updateProductImage,
 } from "./admin.controller.js";
 
@@ -21,4 +23,6 @@ adminRouter.get("/brands", asyncHandler(listBrandApplications));
 adminRouter.post("/brands/:id/approve", asyncHandler(approveBrand));
 adminRouter.post("/brands/:id/reject", asyncHandler(rejectBrand));
 adminRouter.post("/stores/:id/unlink-owner", asyncHandler(unlinkStoreOwner));
+adminRouter.get("/commission-tiers", asyncHandler(listCommissionTiers));
+adminRouter.patch("/commission-tiers/:id", asyncHandler(updateCommissionTier));
 adminRouter.patch("/products/:id/image", asyncHandler(updateProductImage));

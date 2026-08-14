@@ -1,8 +1,22 @@
 import { useCallback, useEffect, useState } from "react";
-import type { BrandApplication } from "../types";
+import type { BrandApplication, CommissionTier, CommissionTierStore } from "../types";
 import { ApiError, adminApi } from "../lib/api";
+import { formatPrice } from "../utils/format";
 import TopBar from "../components/TopBar";
 import Icon from "../components/Icon";
+
+/** Text-input mirror of a tier's numeric fields, so a field can sit empty mid-edit. */
+interface TierDraft {
+  minGmv: string;
+  maxGmv: string;
+  feePercent: string;
+}
+
+const toDraft = (t: CommissionTier): TierDraft => ({
+  minGmv: String(t.minGmv),
+  maxGmv: t.maxGmv === null ? "" : String(t.maxGmv),
+  feePercent: String(t.feePercent),
+});
 
 interface AdminPageProps {
   onBack: () => void;
@@ -24,6 +38,68 @@ export default function AdminPage({ onBack }: AdminPageProps) {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const [tiers, setTiers] = useState<CommissionTier[]>([]);
+  const [tierStores, setTierStores] = useState<CommissionTierStore[]>([]);
+  const [tierDrafts, setTierDrafts] = useState<Record<string, TierDraft>>({});
+  const [tiersLoading, setTiersLoading] = useState(true);
+  const [tierError, setTierError] = useState<string | null>(null);
+  const [tierNotice, setTierNotice] = useState<string | null>(null);
+  const [savingTierId, setSavingTierId] = useState<string | null>(null);
+
+  const loadTiers = useCallback(async () => {
+    setTiersLoading(true);
+    setTierError(null);
+    try {
+      const { tiers, stores } = await adminApi.commissionTiers();
+      setTiers(tiers);
+      setTierStores(stores);
+      setTierDrafts(Object.fromEntries(tiers.map((t) => [t.id, toDraft(t)])));
+    } catch (err) {
+      setTierError(
+        err instanceof ApiError ? err.message : "Gagal memuat tier komisi.",
+      );
+    } finally {
+      setTiersLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadTiers();
+  }, [loadTiers]);
+
+  const saveTier = async (tier: CommissionTier) => {
+    const draft = tierDrafts[tier.id];
+    const minGmv = Number(draft.minGmv);
+    const feePercent = Number(draft.feePercent);
+    if (!Number.isFinite(minGmv) || !Number.isFinite(feePercent)) {
+      setTierError("GMV minimum dan potongan harus berupa angka.");
+      return;
+    }
+    const maxGmv = draft.maxGmv.trim() === "" ? null : Number(draft.maxGmv);
+    if (maxGmv !== null && !Number.isFinite(maxGmv)) {
+      setTierError("GMV maksimum harus berupa angka, atau dikosongkan.");
+      return;
+    }
+
+    setSavingTierId(tier.id);
+    setTierError(null);
+    try {
+      const { tier: updated } = await adminApi.updateCommissionTier(tier.id, {
+        minGmv,
+        maxGmv,
+        feePercent,
+      });
+      setTierNotice(`Tier ${updated.name} disimpan.`);
+      await loadTiers();
+    } catch (err) {
+      setTierError(
+        err instanceof ApiError ? err.message : "Gagal menyimpan tier.",
+      );
+    } finally {
+      setSavingTierId(null);
+    }
+  };
 
   const load = useCallback(async (status: Tab) => {
     setLoading(true);
@@ -162,6 +238,127 @@ export default function AdminPage({ onBack }: AdminPageProps) {
             </div>
           ))}
         </div>
+      )}
+
+      <div className="section-heading-row">
+        <h3>Komisi Platform</h3>
+      </div>
+      <div className="admin-intro">
+        <p>
+          Potongan aplikasi bertingkat berdasarkan GMV (total transaksi) toko -
+          makin besar tokonya, makin besar potongannya, supaya brand UMKM kecil
+          lebih ringan. Rentang GMV di bawah masih placeholder, sesuaikan bebas.
+        </p>
+      </div>
+
+      {tierNotice && (
+        <div className="admin-notice">
+          <Icon name="sparkle" size={14} />
+          <span>{tierNotice}</span>
+        </div>
+      )}
+      {tierError && <p className="auth-error admin-error">{tierError}</p>}
+
+      {tiersLoading ? (
+        <p className="loading-text">Memuat…</p>
+      ) : (
+        <>
+          <div className="admin-list">
+            {tiers.map((tier) => {
+              const draft = tierDrafts[tier.id];
+              if (!draft) return null;
+              return (
+                <div key={tier.id} className="admin-card">
+                  <div className="admin-card-head">
+                    <div className="option-row-title">{tier.name}</div>
+                    <span className="seller-stat-value">{tier.feePercent}%</span>
+                  </div>
+                  <div className="tier-field-grid">
+                    <label className="auth-field">
+                      <span>GMV minimum (Rp)</span>
+                      <input
+                        type="number"
+                        min={0}
+                        value={draft.minGmv}
+                        onChange={(e) =>
+                          setTierDrafts((prev) => ({
+                            ...prev,
+                            [tier.id]: { ...prev[tier.id], minGmv: e.target.value },
+                          }))
+                        }
+                      />
+                    </label>
+                    <label className="auth-field">
+                      <span>GMV maksimum (Rp)</span>
+                      <input
+                        type="number"
+                        min={0}
+                        placeholder="Tidak terbatas"
+                        value={draft.maxGmv}
+                        onChange={(e) =>
+                          setTierDrafts((prev) => ({
+                            ...prev,
+                            [tier.id]: { ...prev[tier.id], maxGmv: e.target.value },
+                          }))
+                        }
+                      />
+                    </label>
+                    <label className="auth-field">
+                      <span>Potongan (%)</span>
+                      <input
+                        type="number"
+                        min={0}
+                        max={100}
+                        step={0.5}
+                        value={draft.feePercent}
+                        onChange={(e) =>
+                          setTierDrafts((prev) => ({
+                            ...prev,
+                            [tier.id]: { ...prev[tier.id], feePercent: e.target.value },
+                          }))
+                        }
+                      />
+                    </label>
+                  </div>
+                  <button
+                    className="btn-secondary tier-save-btn"
+                    onClick={() => saveTier(tier)}
+                    disabled={savingTierId === tier.id}
+                  >
+                    {savingTierId === tier.id ? "Menyimpan…" : "Simpan"}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          {tierStores.length > 0 && (
+            <>
+              <div className="section-heading-row">
+                <h3>Toko & tier saat ini</h3>
+              </div>
+              <div className="admin-list">
+                {tierStores.map((s) => (
+                  <div key={s.id} className="admin-card admin-card-head">
+                    <div>
+                      <div className="option-row-title">{s.name}</div>
+                      <div className="meta">GMV {formatPrice(s.gmv)}</div>
+                    </div>
+                    {s.tier ? (
+                      <span className="badge badge-status-approved">
+                        {s.tier.name} · {s.tier.feePercent}%
+                      </span>
+                    ) : (
+                      <span className="badge badge-status-rejected">
+                        Tidak ada tier
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </>
       )}
     </div>
   );

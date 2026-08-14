@@ -2,6 +2,8 @@
   Address,
   BrandApplication,
   CartLine,
+  CommissionTier,
+  CommissionTierStore,
   Order,
   PaymentMethod,
   PaymentSession,
@@ -337,6 +339,20 @@ export const adminApi = {
     request<{ message: string }>(`/admin/brands/${id}/reject`, {
       method: "POST",
       auth: true,
+    }),
+  commissionTiers: () =>
+    request<{ tiers: CommissionTier[]; stores: CommissionTierStore[] }>(
+      "/admin/commission-tiers",
+      { auth: true },
+    ),
+  updateCommissionTier: (
+    id: string,
+    data: { minGmv?: number; maxGmv?: number | null; feePercent?: number },
+  ) =>
+    request<{ tier: CommissionTier }>(`/admin/commission-tiers/${id}`, {
+      method: "PATCH",
+      auth: true,
+      body: data,
     }),
 };
 

@@ -496,3 +496,25 @@ model ReviewHelpful {
   @@unique([userId, reviewId])
   @@map("review_helpful_votes")
 }
+
+/**
+ * The platform's take-rate ladder: a store's lifetime GMV decides which row
+ * applies, so bigger sellers absorb a larger cut and small UMKM keep more of
+ * each sale. Ranges start as placeholders - the exact GMV cutoffs are tuned
+ * by an admin, not fixed in code.
+ */
+model CommissionTier {
+  id         String  @id @default(cuid())
+  name       String
+  /** Inclusive lower bound, in Rupiah. */
+  minGmv     Int
+  /** Inclusive upper bound; null means "and above" (the top tier). */
+  maxGmv     Int?
+  feePercent Float
+  /** Evaluation/display order, lowest GMV first. */
+  sortOrder  Int     @unique
+
+  updatedAt DateTime @updatedAt
+
+  @@map("commission_tiers")
+}

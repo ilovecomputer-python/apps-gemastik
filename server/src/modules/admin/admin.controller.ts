@@ -102,6 +102,103 @@ export async function unlinkStoreOwner(req: Request, res: Response) {
   res.json({ store: { id: updated.id, name: updated.name, ownerId: updated.ownerId } });
 }
 
+/** A PENDING cart or a CANCELLED order never became real revenue - GMV excludes both. */
+const GMV_EXCLUDED_STATUSES = ["PENDING", "CANCELLED"] as const;
+
+type TierRow = { id: string; name: string; minGmv: number; maxGmv: number | null; feePercent: number };
+
+/** First tier (by sortOrder) whose range contains the GMV; null if the ladder has a gap. */
+function resolveTier(gmv: number, tiers: TierRow[]): TierRow | null {
+  return tiers.find((t) => gmv >= t.minGmv && (t.maxGmv === null || gmv <= t.maxGmv)) ?? null;
+}
+
+/**
+ * The commission ladder plus, for every approved store, its real lifetime GMV
+ * and which tier that currently resolves to - so an admin adjusting a range
+ * sees the actual effect instead of tuning the numbers blind.
+ */
+export async function listCommissionTiers(_req: Request, res: Response) {
+  const [tiers, stores, settledItems] = await Promise.all([
+    prisma.commissionTier.findMany({ orderBy: { sortOrder: "asc" } }),
+    prisma.store.findMany({
+      where: { status: "APPROVED" },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
+    prisma.orderItem.findMany({
+      where: { order: { status: { notIn: [...GMV_EXCLUDED_STATUSES] } } },
+      select: { unitPrice: true, quantity: true, product: { select: { storeId: true } } },
+    }),
+  ]);
+
+  const gmvByStore = new Map<string, number>();
+  for (const item of settledItems) {
+    // A deleted product leaves its historical order items behind with
+    // product set to null (see schema's onDelete: SetNull) - nothing to
+    // attribute those to anymore.
+    if (!item.product) continue;
+    const storeId = item.product.storeId;
+    gmvByStore.set(storeId, (gmvByStore.get(storeId) ?? 0) + item.unitPrice * item.quantity);
+  }
+
+  res.json({
+    tiers: tiers.map((t) => ({
+      id: t.id,
+      name: t.name,
+      minGmv: t.minGmv,
+      maxGmv: t.maxGmv,
+      feePercent: t.feePercent,
+    })),
+    stores: stores.map((s) => {
+      const gmv = gmvByStore.get(s.id) ?? 0;
+      const tier = resolveTier(gmv, tiers);
+      return {
+        id: s.id,
+        name: s.name,
+        gmv,
+        tier: tier && { id: tier.id, name: tier.name, feePercent: tier.feePercent },
+      };
+    }),
+  });
+}
+
+const commissionTierUpdateSchema = z.object({
+  minGmv: z.number().int().min(0).optional(),
+  maxGmv: z.number().int().min(0).nullable().optional(),
+  feePercent: z.number().min(0).max(100).optional(),
+});
+
+/** An admin tunes GMV ranges/rates here directly - the tier names and count are fixed. */
+export async function updateCommissionTier(req: Request, res: Response) {
+  const input = commissionTierUpdateSchema.parse(req.body);
+  const tier = await prisma.commissionTier.findUnique({ where: { id: req.params.id } });
+  if (!tier) throw HttpError.notFound("Tier tidak ditemukan");
+
+  const nextMin = input.minGmv ?? tier.minGmv;
+  const nextMax = input.maxGmv === undefined ? tier.maxGmv : input.maxGmv;
+  if (nextMax !== null && nextMax <= nextMin) {
+    throw HttpError.badRequest(
+      "GMV maksimum harus lebih besar dari minimum.",
+      "INVALID_RANGE",
+    );
+  }
+
+  const updated = await prisma.commissionTier.update({
+    where: { id: req.params.id },
+    data: input,
+  });
+
+  res.json({
+    tier: {
+      id: updated.id,
+      name: updated.name,
+      minGmv: updated.minGmv,
+      maxGmv: updated.maxGmv,
+      feePercent: updated.feePercent,
+    },
+  });
+}
+
 const updateProductImageSchema = z.object({
   imageUrl: z.string().url("URL gambar tidak valid"),
 });

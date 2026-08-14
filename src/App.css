@@ -1149,6 +1149,16 @@
   line-height: 1.45;
 }
 
+.tier-field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.tier-save-btn {
+  align-self: flex-start;
+}
+
 .order-item-list {
   display: flex;
   flex-direction: column;
